@@ -3,6 +3,16 @@
 This directory contains the Astro static web application boundary and the
 complete blog presentation layer.
 
+## Current scaffold
+
+Only presentation primitives exist today: a semantic `BlogShell.astro`, the
+classless stylesheet, localized message/original-language helpers, the GA4
+adapter, and Open Graph/authorship helpers. There is no Astro configuration,
+page directory, artifact loader, route generator, post/list renderer, image
+pipeline, or web artifact writer. The statements below define the target
+boundary for that future implementation; see the repository-root
+`IMPLEMENTATION_STATUS.md` for the complete handoff matrix.
+
 The repository-root `DESIGN.md` is the authoritative Open Design-compatible
 visual contract for this application. It is read by people and design/coding
 agents, not imported by runtime code or shipped as public content. Approved
@@ -34,7 +44,8 @@ Forbidden dependencies:
 
 Changing this application may rerender the site, but must not require edits to post or managed-page source.
 
-The application renders a complete static route set for `en`, `ko`, and `ja`.
+The completed application must render the required static route set for `en`,
+`ko`, and `ja`.
 `src/i18n/messages.ts` owns framework UI copy, while artifacts/config own post
 text and taxonomy/navigation labels. Requested documents never redirect or
 replace content based on browser language or stored preference. Every page
@@ -48,7 +59,9 @@ alternates. This is presentation-neutral metadata for optional post-body
 language context; it never accepts a handwritten URL, exposes review state, or
 redirects the current route.
 
-This application emits final static blog HTML to `.artifacts/web/<mode>/`. Search indexing happens afterward in `packages/search-indexer/` so indexed text matches the delivered HTML.
+The completed application emits final static blog HTML to
+`.artifacts/web/<mode>/`. Search indexing happens afterward in
+`packages/search-indexer/` so indexed text matches the delivered HTML.
 
 Post pages render their table of contents from the validated ordered
 `HeadingArtifact[]`. The application must not parse Markdown or regenerate

@@ -2,12 +2,18 @@
 
 This package will runtime-validate `config/*.yaml`, normalize shared route and URL policy, and provide the route registry used by all route-producing build lanes.
 
+Current implementation is partial: focused pure helpers exist for analytics,
+content provenance, language routes/post-link fallback, and performance-budget
+relationships. There is no unified YAML loader, complete Zod schema set,
+environment/origin resolver, or shared route registry yet. See
+`IMPLEMENTATION_STATUS.md` for the repository-wide handoff.
+
 It owns:
 
 - configuration schemas and field-level diagnostics;
-- normalized supported/source/default languages, locale prefixes, browser
-  preference policy, HTML/hreflang/Open Graph locale values, localized labels,
-  and timezone values;
+- normalized supported/source/default languages, locale prefixes, manual
+  language-selection policy, post-link fallback, HTML/hreflang/Open Graph
+  locale values, localized labels, and timezone values;
 - reserved route and namespace checks, including the configured pagination
   segment and rejection of page zero, duplicate `/page/1/`, fragment-based
   pagination, and route collisions;

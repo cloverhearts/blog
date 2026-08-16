@@ -37,15 +37,61 @@ can be added later through isolated build-time provider plugins.
 > 외부 임베드는 향후 격리된 빌드 타임 제공자 플러그인으로 추가할 수
 > 있습니다.
 
-Production hosting is GitHub Pages through a custom GitHub Actions workflow.
-Only the verified `dist/` release is published; `docs/` remains an unpublished
-build input rather than a Pages source directory. The canonical production
-origin is `https://blog.cloverhearts.com`.
+## Current status / 현재 상태
 
-> 운영 호스팅은 사용자 정의 GitHub Actions 워크플로를 통한 GitHub Pages를
-> 사용합니다. 검증된 `dist/` 릴리스만 게시하며, `docs/`는 Pages 게시
-> 디렉터리가 아니라 게시되지 않는 빌드 입력으로 유지합니다. 운영 canonical
-> 주소는 `https://blog.cloverhearts.com`입니다.
+This repository is currently a specification-led implementation scaffold, not
+a buildable or deployed blog. It includes the approved architecture and policy
+documents, npm workspace/dependency pins, declarative configuration, provisional
+artifact interfaces, a small set of reusable TypeScript primitives, a semantic
+Astro shell/classless stylesheet, and executable contract tests. The content,
+web, search, managed-page, discovery, release, and deployment pipelines remain
+implementation work.
+
+> 현재 저장소는 빌드나 배포가 완료된 블로그가 아니라 스펙을 중심으로 만든
+> 구현 스캐폴드입니다. 확정된 아키텍처와 정책 문서, npm 워크스페이스와
+> 의존성 고정, 선언형 설정, 임시 산출물 인터페이스, 일부 재사용 가능한
+> TypeScript 구성요소, 시맨틱 Astro 셸과 classless 스타일, 실행 가능한 계약
+> 테스트가 포함되어 있습니다. 콘텐츠·웹·검색·관리 페이지·검색 정보·릴리스·
+> 배포 파이프라인은 후속 구현 대상입니다.
+
+The exact implemented/missing matrix and the required starting point for the
+next coding agent are in
+[IMPLEMENTATION_STATUS.md](./IMPLEMENTATION_STATUS.md). The target specification
+is in [IMPLEMENTATION_SPEC.md](./IMPLEMENTATION_SPEC.md), and phase exit criteria
+are in [DEVELOPMENT_PLAN.md](./DEVELOPMENT_PLAN.md).
+
+> 실제 구현된 범위와 미구현 범위, 다음 개발 AI가 시작해야 할 지점은
+> [IMPLEMENTATION_STATUS.md](./IMPLEMENTATION_STATUS.md)에 정리되어 있습니다.
+> 목표 스펙은 [IMPLEMENTATION_SPEC.md](./IMPLEMENTATION_SPEC.md), 단계별 완료
+> 조건은 [DEVELOPMENT_PLAN.md](./DEVELOPMENT_PLAN.md)를 따릅니다.
+
+The commands available now are:
+
+> 현재 실행 가능한 명령은 다음과 같습니다.
+
+```text
+npm ci
+npm run typecheck
+npm run test:contracts
+npm run test:policy
+npm test
+```
+
+There is no working site `dev`, `build`, or deployment command yet.
+
+> 아직 사이트 개발 서버, 전체 빌드 또는 배포 명령은 구현되지 않았습니다.
+
+The production target is GitHub Pages through a custom GitHub Actions workflow.
+The future workflow publishes only a verified `dist/` release; `docs/` remains
+an unpublished build input rather than a Pages source directory. The canonical
+production origin is `https://blog.cloverhearts.com`. The repository currently
+has only a quality workflow, not the Pages deployment workflow.
+
+> 운영 목표는 사용자 정의 GitHub Actions 워크플로를 통한 GitHub Pages
+> 배포입니다. 향후 워크플로는 검증된 `dist/` 릴리스만 게시하며, `docs/`는
+> Pages 게시 디렉터리가 아니라 비공개 빌드 입력으로 유지합니다. 운영
+> canonical 주소는 `https://blog.cloverhearts.com`입니다. 현재 저장소에는
+> Pages 배포가 아닌 품질 검사 워크플로만 있습니다.
 
 Korean is the blog's unprefixed default and no-JavaScript fallback. English is
 published under `/en/` and Japanese under `/ja/`. Requested documents never
@@ -96,11 +142,13 @@ uppercase `DESIGN.md` and does not inherit the blog design.
 See [ARCHITECTURE.md](./ARCHITECTURE.md) for dependency boundaries,
 [GITHUB_PAGES.md](./GITHUB_PAGES.md) for the deployment contract,
 [IMPLEMENTATION_SPEC.md](./IMPLEMENTATION_SPEC.md) for the approved coding
-stack and handoff profile, [DEVELOPMENT_PLAN.md](./DEVELOPMENT_PLAN.md) for
+stack and target profile,
+[IMPLEMENTATION_STATUS.md](./IMPLEMENTATION_STATUS.md) for the actual baseline
+and developer handoff, [DEVELOPMENT_PLAN.md](./DEVELOPMENT_PLAN.md) for
 implementation phases, [UX_FLOW.md](./UX_FLOW.md) for interaction and
-information flow, [CONTENT_RULES.md](./CONTENT_RULES.md) for authoring
-rules, and [I18N.md](./I18N.md) for English/Korean/Japanese publishing,
-discovery, language switching, and post-link fallback.
+information flow, [CONTENT_RULES.md](./CONTENT_RULES.md) for authoring rules,
+and [I18N.md](./I18N.md) for English/Korean/Japanese publishing, discovery,
+language switching, and post-link fallback.
 Operational details are in [DEVELOPMENT.md](./DEVELOPMENT.md), discovery rules in
 [SEO.md](./SEO.md), AI crawler and agent guidance in
 [AI_DISCOVERY.md](./AI_DISCOVERY.md), publication behavior in
@@ -110,7 +158,8 @@ in [History.md](./History.md).
 
 > 의존성 경계는 [ARCHITECTURE.md](./ARCHITECTURE.md), 배포 계약은
 > [GITHUB_PAGES.md](./GITHUB_PAGES.md), 승인된 구현 스택 및 인계 기준은
-> [IMPLEMENTATION_SPEC.md](./IMPLEMENTATION_SPEC.md), 구현 단계는
+> [IMPLEMENTATION_SPEC.md](./IMPLEMENTATION_SPEC.md), 실제 구현 현황과 개발
+> 인계 기준은 [IMPLEMENTATION_STATUS.md](./IMPLEMENTATION_STATUS.md), 구현 단계는
 > [DEVELOPMENT_PLAN.md](./DEVELOPMENT_PLAN.md), 상호작용과 정보 흐름은
 > [UX_FLOW.md](./UX_FLOW.md), 작성 규칙은
 > [CONTENT_RULES.md](./CONTENT_RULES.md), 영어·한국어·일본어 발행·발견,
@@ -125,18 +174,18 @@ in [History.md](./History.md).
 
 ## AI discovery / AI 검색 지원
 
-The discovery build generates an AI-aware `robots.txt` and a concise root
-`llms.txt`. AI search, user-directed retrieval, model-development, and public
-dataset crawlers are explicitly allowed for public, indexable content. The
-generated agent guide links canonical language homes, feeds, the sitemap, and
-selected public pages without publishing source Markdown or duplicating every
-post.
+The planned discovery build generates an AI-aware `robots.txt` and a concise
+root `llms.txt`. AI search, user-directed retrieval, model-development, and
+public dataset crawlers are explicitly allowed for public, indexable content.
+The implemented renderer primitives cover deterministic `robots.txt` and
+`llms.txt` text, but config/artifact ingestion, sitemap, RSS, manifests, and
+output writing remain unfinished.
 
-> 검색 정보 빌드는 AI를 고려한 `robots.txt`와 간결한 루트 `llms.txt`를
+> 향후 검색 정보 빌드는 AI를 고려한 `robots.txt`와 간결한 루트 `llms.txt`를
 > 생성합니다. 공개·색인 가능한 콘텐츠에 대해 AI 검색, 사용자 요청형 조회,
-> 모델 개발 및 공개 데이터셋 크롤러를 명시적으로 허용합니다. 생성된
-> 에이전트 가이드는 원본 Markdown이나 모든 포스트를 중복 게시하지 않고
-> 언어별 대표 경로, 피드, 사이트맵 및 선별된 공개 페이지를 연결합니다.
+> 모델 개발 및 공개 데이터셋 크롤러를 명시적으로 허용합니다. 현재는
+> 결정론적인 `robots.txt`·`llms.txt` 텍스트 렌더러만 구현되어 있으며,
+> 설정/산출물 입력, 사이트맵, RSS, 매니페스트 및 파일 출력은 미구현입니다.
 
 Crawler access and guide inclusion are configured only in
 `config/ai-crawlers.yaml`; generated files must not be edited by hand.
@@ -148,19 +197,18 @@ control, or a substitute for canonical HTML and page-level metadata.
 > 지원 제안이며 인증·접근 통제 수단이나 canonical HTML 및 페이지별
 > 메타데이터를 대체하는 수단이 아닙니다.
 
-Each post artifact also carries one English, owner-declared provenance statement
-for the original work. The static page emits it as custom document-head metadata
-only: the original work is human-authored, and AI assistance on that work was
-limited to proofreading. Translation provenance remains separate in
-`originalLanguage`, internal review status, and validated alternate metadata;
-review status is not reader-facing post chrome.
+The post artifact contract requires one English, owner-declared provenance
+statement for the original work. The final static renderer must emit it only as
+custom document-head metadata: the original work is human-authored, and AI
+assistance on that work was limited to proofreading. The configuration and
+head-metadata helpers exist; end-to-end artifact production and page rendering
+do not yet exist.
 
-> 각 포스트 산출물에는 원저작물에 대한 영문 저자 선언 메타데이터가 하나씩
-> 포함됩니다. 정적 페이지는 이를 문서 head의 사용자 정의 메타데이터로만
-> 내보냅니다. 원저작물은 사람이 작성했고 AI는 교정에만 제한적으로
-> 사용되었다는 선언이며, 번역 과정은 원문 언어, 내부 검토 상태, 검증된
-> 대체 언어 경로 메타데이터로 별도 관리합니다. 검토 상태는 독자에게 보이는
-> 포스트 UI로 노출하지 않습니다.
+> 포스트 산출물 계약은 원저작물에 대한 영문 저자 선언을 하나 요구합니다.
+> 최종 정적 렌더러는 사람이 원문을 작성하고 AI는 교정에만 제한적으로
+> 사용되었다는 내용을 문서 head의 사용자 정의 메타데이터로만 내보내야
+> 합니다. 설정과 head 메타데이터 헬퍼는 존재하지만 종단 간 산출물 생성과
+> 페이지 렌더링은 아직 구현되지 않았습니다.
 
 Behavior and policy changes must include their tests in the same task.
 [TESTING.md](./TESTING.md) defines positive/negative/boundary/regression

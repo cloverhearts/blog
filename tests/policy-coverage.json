@@ -10,7 +10,7 @@
         },
         {
           "path": "AGENTS.md",
-          "sha256": "5137c93668c4c917e8997c58958b48520d2d0a29ad4c21c66609e3a8d41433ae"
+          "sha256": "01de5bf7ea856bcf13f9bd4668123f9db6058af68349de4da17317fc75ab3819"
         },
         {
           "path": "QUALITY_GATES.md",
@@ -18,7 +18,7 @@
         },
         {
           "path": "DEVELOPMENT.md",
-          "sha256": "17d25ef01cf358b112e50a9cc1e529cb25b397072232bba9d3be09f790b847e8"
+          "sha256": "ea85b23376ab3e457b580c8c4d1900a2d8b56d783cd4e5d2cb16cfc7f3ee2dfb"
         },
         {
           "path": "tests/contracts/policy-governance.test.ts",
@@ -122,7 +122,7 @@
       "sources": [
         {
           "path": "IMPLEMENTATION_SPEC.md",
-          "sha256": "10c6fe41e361301095ff932e0ff15aa7d35c7b658ad01086465ace4f5ab261a6"
+          "sha256": "ec8e84aaaefa8e723756db29afcf3a20043015796800001a488dd49ea9227a48"
         },
         {
           "path": "decisions/0004-implementation-stack.md",

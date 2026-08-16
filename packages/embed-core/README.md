@@ -2,6 +2,11 @@
 
 This package will provide the provider-neutral build-time extension point for external content such as maps, video, audio, diagrams, and other allowlisted embeds.
 
+Current implementation is interface-only. Runtime validation, registry loading,
+sanitization, security aggregation, deterministic execution, and fixtures are
+not implemented, and no real provider plugin exists. See
+`IMPLEMENTATION_STATUS.md` for the complete handoff.
+
 It owns:
 
 - the plugin API and registry loader;

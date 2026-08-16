@@ -75,6 +75,10 @@
 ## Architecture boundaries
 
 - `ARCHITECTURE.md` is authoritative for dependency direction, ownership, intermediate artifacts, and release assembly. Read it before changing repository structure, build boundaries, artifact contracts, or cross-package imports.
+- `IMPLEMENTATION_STATUS.md` is authoritative for what is actually executable,
+  partial, scaffolded, or still missing. Every implementation agent must read
+  it before coding and update its status matrix when a build lane materially
+  advances; package presence alone is not completion evidence.
 - `GITHUB_PAGES.md` is authoritative for the production hosting boundary, `dist/` shape, base-path portability, Pages verification, and deployment workflow. Read it before changing release layout, public URL resolution, deployment automation, DNS assumptions, or static-host security behavior.
 - The root `DESIGN.md` is the Open Design-compatible source of truth for the normal blog's visual system. Read it completely before changing blog layout, visual tokens, typography, components, responsive behavior, motion, or presentation assets.
 - `UX_FLOW.md` is authoritative for the normal blog's semantic page frame,

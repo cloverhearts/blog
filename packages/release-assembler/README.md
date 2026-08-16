@@ -2,6 +2,11 @@
 
 This package will merge `.artifacts/web/production/`, `.artifacts/search/production/`, `.artifacts/managed/production/`, and `.artifacts/discovery/production/` into `dist/`.
 
+Current implementation is package scaffold only. There is no artifact reader,
+compatibility/collision/reference validator, `dist/` assembler, release
+manifest, diagnostic report, or `verify:pages` implementation. See
+`IMPLEMENTATION_STATUS.md` for the complete handoff.
+
 It owns runtime input validation, build-mode/schema/provenance compatibility checks, route and emitted-file collision detection, declared external-origin and browser-permission policy checks, route-claim-to-file mapping, static copying, internal reference checks, and the deterministic release manifest. Human timestamps belong in a separate diagnostic report.
 
 For GitHub Pages, it also exposes a read-only `verify:pages` check over `dist/`.

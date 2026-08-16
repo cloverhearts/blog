@@ -4,6 +4,12 @@ This package will transform locale-grouped `docs/` and shared
 `assets/content/` into `.artifacts/content/<mode>/` according to
 `CONTENT_RULES.md`, `I18N.md`, and `packages/contracts/`.
 
+Current implementation is partial: only deterministic heading/TOC and
+translation-publication primitives exist. Source discovery, frontmatter and
+Markdown compilation, sanitization, assets, taxonomy, recommendations, embeds,
+runtime schemas, and artifact writing remain unimplemented. See
+`IMPLEMENTATION_STATUS.md` for the complete handoff.
+
 It owns Markdown parsing, runtime validation, sanitization, logical asset resolution, semantic HTML fragments, taxonomy, recommendation data, search eligibility metadata, deterministic provenance, and separate preview/production content manifests. External-content directives are delegated through `packages/embed-core/`.
 
 It also owns partial and complete `en`/`ko`/`ja` translation-group validation,

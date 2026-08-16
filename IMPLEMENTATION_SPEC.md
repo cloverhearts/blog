@@ -8,6 +8,26 @@ authoritative for their respective subjects. When this summary conflicts with
 an accepted ADR or an authoritative contract, the accepted ADR and scoped
 contract win.
 
+This file describes the approved target, not the current completion state.
+`IMPLEMENTATION_STATUS.md` is the authoritative inventory of executable,
+partial, scaffolded, and missing work. An implementation agent must read both
+files before coding and update the status document whenever a lane materially
+advances.
+
+## Current baseline
+
+- The repository can install dependencies, type-check provisional sources, and
+  run Vitest contract/policy tests.
+- A limited set of configuration, localization, heading, translation-
+  publication, analytics, Open Graph, authorship, and AI-discovery primitives
+  exists.
+- No end-to-end content, web, search, managed-page, discovery, release, or Pages
+  deployment build is complete.
+- The current `.github/workflows/quality.yml` validates the scaffold only; it
+  does not build or deploy GitHub Pages.
+- Root `dev`, `build:*`, `build`, and `verify:pages` commands remain required
+  outputs of the implementation plan.
+
 ## Approved platform
 
 - Runtime: Node.js `24.19.0` LTS.
@@ -82,3 +102,7 @@ See ADR 0006, `DESIGN.md`, `UX_FLOW.md`, and
 
 Every behavioral or policy change includes tests and a `History.md` entry as
 required by `AGENTS.md` and `TESTING.md`.
+
+The agent must not mark a phase complete merely because one helper or package
+exists. Completion requires the executable commands and exit criteria in
+`IMPLEMENTATION_STATUS.md`, `DEVELOPMENT_PLAN.md`, and `QUALITY_GATES.md`.

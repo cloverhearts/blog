@@ -9,6 +9,9 @@ Playwright, and axe-core are selected in ADR 0004. Vitest is the sole focused
 unit/contract runner. Only the test scripts already
 present in `package.json` are executable; the remaining commands below are the
 required implementation surface, not a claim that every build exists.
+See `IMPLEMENTATION_STATUS.md` for the file-level baseline and next-agent
+handoff; this runbook defines the command contract those implementations must
+eventually satisfy.
 
 ## Required environment inputs
 

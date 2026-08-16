@@ -3,6 +3,11 @@
 This package will generate final discovery documents after both the normal blog
 and managed-page outputs are known.
 
+Current implementation is partial: deterministic `robots.txt` and `llms.txt`
+text renderers exist, but configuration/artifact ingestion, sitemap, RSS,
+manifest generation, and filesystem output do not. See
+`IMPLEMENTATION_STATUS.md` for the complete handoff.
+
 Inputs:
 
 - validated production content metadata;

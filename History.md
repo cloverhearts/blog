@@ -17,6 +17,37 @@ unless it changes shared content behavior, routes, schemas, or project rules.
 - Compatibility / follow-up: <migration, known limits, or none>
 ```
 
+## 2026-08-17T00:19:26+09:00 — Implementation-status audit and AI developer handoff
+
+- Change type: Project description, implementation-status audit, specification
+  clarification, package guides, agent workflow, and policy traceability.
+- Reason: Preserve the existing scaffold while preventing the next development
+  AI from mistaking package names, dependencies, provisional interfaces, or
+  isolated helpers for a complete static-blog pipeline.
+- Scope: English-first/Korean-companion project overview; actual versus target
+  capability matrix; lane inputs and required outputs; implementation order and
+  definition of done; content/web/search/managed/discovery/release package
+  status; multilingual phase criteria; implementation/runbook/agent guidance;
+  governed policy hashes.
+- Result: `README.md` now identifies the repository as a specification-led,
+  non-buildable scaffold and points to `IMPLEMENTATION_STATUS.md` as the exact
+  developer handoff. The new status document records each lane as implemented,
+  partial, scaffold-only, or specified-only, names the only commands that
+  currently exist, and separates the approved target from verified capability.
+  Related guides now use future-tense requirements where production pipelines
+  do not exist. Existing executable source and tests were not changed.
+- Validation: Strict TypeScript checking passed. All 52 Vitest contract tests
+  across 9 files passed, and the dedicated policy-governance test passed 1 of 1
+  case. Parsed 13 YAML and 13 JSON files, checked 46 Markdown files for local
+  links and balanced fences, and passed the Git whitespace check.
+- Compatibility / follow-up: This is a documentation-only clarification under
+  the test-policy exemption; no runtime behavior, schema, route, artifact, or
+  content source changed, so no new executable test case was required. The
+  complete content, Astro, search, managed-page, discovery, release, and Pages
+  deployment pipelines remain implementation work. Validation used the
+  available local Node.js 25.2.1/npm 11.18.0; committed production pins remain
+  Node.js 24.19.0/npm 11.17.0.
+
 ## 2026-08-17T00:07:35+09:00 — Multilingual publication and deterministic post-link fallback
 
 - Change type: Localization/discovery policy, publication contract,

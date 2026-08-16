@@ -123,8 +123,10 @@ Exit criteria:
 - malicious markup and missing/out-of-bound assets fail validation;
 - unknown directives, missing fallbacks, unsafe plugin HTML, and undeclared origins fail validation;
 - representative English, Korean, Japanese, and C++ fixtures pass;
-- missing, draft-mismatched, or structurally divergent translation groups fail
-  production validation.
+- a missing or unpublished authored original, invalid review state, or
+  structurally divergent shared group metadata fails production validation;
+  an absent or draft translation sibling remains valid and is omitted from
+  production alternates.
 - generated/explicit anchor, duplicate, hierarchy, broken-fragment, and
   TOC/body-parity fixtures pass deterministically.
 
@@ -135,8 +137,9 @@ Exit criteria:
   do not add a component utility framework or external font request.
 - Implement the semantic page frame and route flows from `UX_FLOW.md` before
   decorative refinement.
-- Render complete English, Korean, and Japanese home, post, category, tag,
-  archive, search, and error routes.
+- Render complete English, Korean, and Japanese system, collection, search, and
+  error routes, plus every independently published post variant. Do not invent
+  a missing post translation.
 - Render first and later global/category/tag/archive list pages at stable
   `/page/<n>/` routes with normal sequential links and self canonicals.
 - Resolve artifact-relative assets to configured public routes.
