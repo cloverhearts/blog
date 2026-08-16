@@ -1,11 +1,9 @@
 # Static Search Indexer Boundary
 
-This package will transform rendered blog HTML from `.artifacts/web/<mode>/` into `.artifacts/search/<mode>/`.
+This package transforms rendered blog HTML from `.artifacts/web/<mode>/` into `.artifacts/search/<mode>/`.
 
-Current implementation is package/dependency scaffold only. It contains no
-Pagefind invocation, HTML eligibility adapter, language index writer, or search
-manifest implementation. See `IMPLEMENTATION_STATUS.md` for the complete
-handoff.
+Run it through `npm run build:search`. Each supported language gets an isolated
+Pagefind index tied to the exact web artifact hash.
 
 It owns final-document text extraction, separate English/Korean/Japanese static
 indexes, index manifests, and provenance tying each index to the exact web

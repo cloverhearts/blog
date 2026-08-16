@@ -22,58 +22,68 @@ Status terms used below:
 
 ## Repository baseline
 
-As of 2026-08-17, this repository is a specification-led scaffold, not a
-buildable or deployable blog. The committed source contains useful policy
-primitives and contract tests, but there is no end-to-end content build, Astro
-route build, search build, managed-page build, release assembly, or Pages
-deployment workflow.
+As of 2026-08-17, the documented command surface is executable. An empty
+production site (no posts or managed pages yet) builds to `dist/` with Korean,
+English, and Japanese system routes, discovery files, and Pages verification.
+First reviewed posts, real provider plugins, and live custom-domain operations
+remain follow-up work.
 
-| Lane | Status | Present now | Still required |
-| --- | --- | --- | --- |
-| Root tooling | Partial | npm workspaces, lockfile, Node/npm pins, strict TypeScript, `typecheck`, Vitest contract/policy scripts, quality workflow | All documented config/content/web/search/managed/discovery/release/build/dev commands |
-| Artifact contracts | Scaffold only | Versioned provisional TypeScript interfaces and artifact constants | Zod runtime schemas, inferred types, JSON Schema, producer/consumer parsing, compatibility failures |
-| Shared configuration | Partial | Declarative YAML; focused pure helpers for analytics, provenance, i18n/link fallback, and performance budgets | One Zod-backed loader for every config file, environment resolution, normalized URLs, route registry, collision checks, field-level diagnostics |
-| Content compiler | Partial | Heading-anchor/TOC primitive and translation-publication primitive | Filesystem discovery, frontmatter/Markdown parsing, sanitization, assets, embeds, taxonomy, recommendations, artifact writing, preview/production manifests |
-| Embed core | Scaffold only | Provider-neutral TypeScript interfaces and policy/config documents | Runtime schemas, explicit registry, sanitizer/security aggregation, deterministic plugin execution, synthetic test provider; no real provider is approved yet |
-| Blog web | Partial | Astro dependency, semantic shell, classless CSS, localized messages, GA4 adapter, authorship/original-language and Open Graph helpers | Astro configuration, pages/routes, artifact ingestion, lists/pagination, post renderer, TOC component, language switcher, fallback-link presentation, images/social cards, web manifest |
-| Search | Scaffold only | Package and Pagefind dependency | Eligible final-HTML ingestion, per-language indexes, deterministic manifest, search page integration |
-| Managed pages | Scaffold only | Package declaration and reusable managed-page template | Schema/config loader, document/presentation/application adapters, independent design/assets/security build, static fallbacks and manifests |
-| Site discovery | Partial | Deterministic `robots.txt` and `llms.txt` rendering primitives | Config/artifact ingestion, sitemap, per-language RSS, canonical URL integration, discovery manifest and output writer |
-| Release assembly | Scaffold only | Package declaration and complete release contract | Manifest ingestion, compatibility/collision/reference checks, `dist/` assembly, deterministic release manifest and diagnostic report |
-| Content/plugins | Specified only | Empty language and asset directories; no post, managed page, or provider plugin | First reviewed content groups, managed-page package, and separately approved provider implementations |
-| Delivery | Partial | Pull-request/main quality workflow for type checking and contract tests | Production builds, Pages verification, artifact upload/deploy workflow, custom-domain operational verification and rollback drill |
+| Lane                 | Status         | Present now                                                                                                                    | Still required                                                                     |
+| -------------------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------- |
+| Root tooling         | Implemented    | npm workspaces, lockfile, Node/npm pins, TypeScript, Vitest, documented command surface, quality and Pages workflows           | Live custom-domain/Search Console operational checks                               |
+| Artifact contracts   | Implemented    | Zod 4 schemas, inferred types, parse helpers, generated JSON Schema                                                            | None for the current schema versions                                               |
+| Shared configuration | Implemented    | Zod-backed loader for every `config/*.yaml` file, URL resolver, route registry, GA4/provenance/budget validation               | None for the current configuration set                                             |
+| Content compiler     | Implemented    | Discovery, frontmatter, sanitization, assets, headings/TOC, translation groups, related posts, preview/production artifacts    | First reviewed production posts under `docs/`                                      |
+| Embed core           | Implemented    | Runtime schemas, explicit registry, sanitizer, deterministic execution, synthetic test plugin                                  | First reviewed real provider plugin                                                |
+| Blog web             | Implemented    | Static renderer, localized routes, classless shell, TOC, Open Graph, authorship meta, social-card derivatives, GA4-off default | Branded design remains deferred; Playwright visual checks against a populated site |
+| Search               | Implemented    | Pagefind per-language indexes tied to the web artifact hash                                                                    | Acceptance fixtures against published multilingual posts                           |
+| Managed pages        | Implemented    | `page.yaml` loader, document/presentation/application adapters, return control, preview/production manifests                   | First real managed-page package                                                    |
+| Site discovery       | Implemented    | Config/artifact ingestion, sitemap, robots, llms.txt, per-language RSS, discovery manifest                                     | None until indexable managed pages exist                                           |
+| Release assembly     | Implemented    | Production-only merge, collision checks, `dist/`, `verify:pages`, release manifest and diagnostic report                       | Isolated `/blog` portability build in CI after Pages environment exists            |
+| Content/plugins      | Specified only | Empty language and asset directories; no production post, managed page, or provider plugin                                     | First reviewed content groups and separately approved providers                    |
+| Delivery             | Partial        | Quality workflow plus Pages upload/deploy workflow                                                                             | Custom-domain DNS, HTTPS enforcement, Search Console, rollback drill               |
 
 ## Commands that exist now
-
-The following are the only supported executable repository commands at this
-baseline:
 
 ```text
 npm ci
 npm run typecheck
+npm run validate:config
+npm run validate:embeds
 npm run test:contracts
 npm run test:policy
+npm run test:i18n
+npm run test:seo
+npm run test:analytics
+npm run test:quality
 npm test
+npm run build:content
+npm run build:web
+npm run build:search
+npm run build:managed
+npm run build:discovery
+npm run build:release
+npm run verify:pages
+npm run build
+npm run dev
 ```
 
-There is no working `dev`, `build`, `build:content`, `build:web`,
-`build:search`, `build:managed`, `build:discovery`, `build:release`, or
-`verify:pages` command yet. Those names in `DEVELOPMENT.md` are required command
-contracts for the implementation agent, not current capabilities.
+Production `build` requires `SITE_ORIGIN=https://blog.cloverhearts.com`. An
+absent or blank `GA4_MEASUREMENT_ID` is the supported analytics-off state.
 
 ## Fixed implementation inputs and outputs
 
 The implementation agent must preserve these lane boundaries:
 
-| Owner | Inputs | Required output |
-| --- | --- | --- |
-| `packages/project-config` | `config/*.yaml`, declared public environment values | Validated immutable configuration and normalized route/URL services |
-| `packages/content-compiler` | `docs/<language>/`, `assets/content/`, validated config, embed core | `.artifacts/content/<mode>/` |
-| `apps/blog-web` | Validated content artifact, shared config, root `DESIGN.md` | `.artifacts/web/<mode>/` |
-| `packages/search-indexer` | Eligible final blog HTML plus exact web/content provenance | `.artifacts/search/<mode>/` |
-| `packages/managed-page-compiler` | `managed-pages/<id>/`, its local `DESIGN.md`, validated config/embed core | `.artifacts/managed/<mode>/` |
-| `packages/site-discovery` | Matching production content/web/managed manifests and crawler config | `.artifacts/discovery/production/` |
-| `packages/release-assembler` | Matching production web/search/managed/discovery artifacts | Verified root `dist/` plus release manifest and separate diagnostic report |
+| Owner                            | Inputs                                                                    | Required output                                                            |
+| -------------------------------- | ------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| `packages/project-config`        | `config/*.yaml`, declared public environment values                       | Validated immutable configuration and normalized route/URL services        |
+| `packages/content-compiler`      | `docs/<language>/`, `assets/content/`, validated config, embed core       | `.artifacts/content/<mode>/`                                               |
+| `apps/blog-web`                  | Validated content artifact, shared config, root `DESIGN.md`               | `.artifacts/web/<mode>/`                                                   |
+| `packages/search-indexer`        | Eligible final blog HTML plus exact web/content provenance                | `.artifacts/search/<mode>/`                                                |
+| `packages/managed-page-compiler` | `managed-pages/<id>/`, its local `DESIGN.md`, validated config/embed core | `.artifacts/managed/<mode>/`                                               |
+| `packages/site-discovery`        | Matching production content/web/managed manifests and crawler config      | `.artifacts/discovery/production/`                                         |
+| `packages/release-assembler`     | Matching production web/search/managed/discovery artifacts                | Verified root `dist/` plus release manifest and separate diagnostic report |
 
 No consumer may repair an invalid producer artifact. Preview artifacts never
 enter the production release. The blog application never reads Markdown, and
@@ -81,25 +91,18 @@ the content compiler never imports blog presentation.
 
 ## Required implementation sequence
 
-The next development agent should begin with Phase 1 rather than expanding the
-UI prototypes:
+The executable phases are present. Remaining work is content and operations:
 
-1. Replace provisional contract interfaces with Zod 4 schemas and inferred
-   TypeScript types while preserving the approved schema versions or writing an
-   explicit migration.
-2. Implement the complete shared configuration loader, public environment
-   resolution, normalized URL builder, locale policy, and route registry.
-3. Add the documented root command surface and deterministic preview/production
-   artifact directories.
-4. Complete the content compiler and its reusable fixture matrix before
-   implementing Astro post/list routes.
-5. Complete the static blog renderer, then Pagefind, managed pages, discovery,
-   release assembly, Pages verification, and deployment in the dependency order
-   defined by `DEVELOPMENT_PLAN.md`.
+1. Add the first reviewed Korean source post and independently reviewed
+   translations when the owner supplies them.
+2. Add a managed-page package only when a standalone profile or application is
+   requested.
+3. Add a real embed provider only after an explicit local plugin review.
+4. Complete custom-domain, HTTPS, Search Console, and rollback operations after
+   the first Pages deployment.
 
-Each phase must satisfy its exit criteria before a downstream phase treats its
-artifacts as stable. Small vertical slices are acceptable, but they must retain
-runtime validation at every producer and consumer boundary.
+Each later change must still satisfy the exit criteria in `DEVELOPMENT.md`,
+`DEVELOPMENT_PLAN.md`, and `QUALITY_GATES.md`.
 
 ## High-risk rules the implementation must not reinterpret
 

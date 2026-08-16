@@ -29,8 +29,20 @@ jobs:
       - name: Install locked dependencies
         run: npm ci
 
-      - name: Type-check provisional sources
+      - name: Validate configuration
+        run: npm run validate:config
+
+      - name: Type-check sources
         run: npm run typecheck
 
       - name: Run contract and policy tests
         run: npm test
+
+      - name: Build production and portability variants
+        env:
+          SITE_ORIGIN: https://blog.cloverhearts.com
+          SITE_BASE_PATH: ""
+        run: |
+          npm run build
+          SITE_BASE_PATH=/blog npm run build:web
+          npm run verify:pages

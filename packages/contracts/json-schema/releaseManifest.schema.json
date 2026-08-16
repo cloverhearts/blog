@@ -1,0 +1,123 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "provenance": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "type": "number",
+          "const": 2
+        },
+        "buildMode": {
+          "type": "string",
+          "const": "production"
+        },
+        "producer": {
+          "type": "string",
+          "minLength": 1
+        },
+        "producerVersion": {
+          "type": "string",
+          "minLength": 1
+        },
+        "inputHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "configHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "contentRulesHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "localizationRulesHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "buildMode",
+        "producer",
+        "producerVersion",
+        "inputHash",
+        "configHash",
+        "contentRulesHash",
+        "localizationRulesHash"
+      ],
+      "additionalProperties": false
+    },
+    "webInputHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "searchInputHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "managedPageInputHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "discoveryInputHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "routes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "route": {
+            "type": "string",
+            "minLength": 1
+          },
+          "ownerKind": {
+            "type": "string",
+            "enum": [
+              "blog",
+              "post",
+              "managed-page",
+              "system"
+            ]
+          },
+          "ownerId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "artifactPath": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "route",
+          "ownerKind",
+          "ownerId",
+          "artifactPath"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "required": [
+    "provenance",
+    "webInputHash",
+    "searchInputHash",
+    "managedPageInputHash",
+    "discoveryInputHash",
+    "routes",
+    "files"
+  ],
+  "additionalProperties": false
+}

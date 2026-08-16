@@ -4,6 +4,36 @@ This file records non-routine changes to the blog project. Entries are ordered
 newest first and use the `Asia/Seoul` timezone. Routine post authoring is omitted
 unless it changes shared content behavior, routes, schemas, or project rules.
 
+## 2026-08-17T01:05:00+09:00 — Executable static-blog pipeline
+
+- Change type: Architecture implementation, runtime contracts, build commands,
+  tests, CI, and implementation-status update.
+- Reason: Replace the specification-led scaffold with the documented Phase 1–8
+  command surface so an empty production site can be validated and assembled.
+- Scope: Zod artifact schemas; shared configuration loader; embed-core
+  registry; content compiler; static blog renderer; Pagefind indexer;
+  managed-page compiler; discovery builder; release assembler; root scripts;
+  quality and Pages workflows; contract fixtures and tests; status and runbook
+  wording.
+- Result: `validate:config`, `validate:embeds`, `build:*`, `build`,
+  `verify:pages`, and `dev` are executable. An empty production site emits
+  localized home/list/search/404 routes, robots, llms.txt, sitemap, RSS, and
+  `dist/index.html` plus `dist/404.html`. Preview and production artifacts stay
+  separated. No production post, managed page, or real provider plugin was
+  added.
+- Validation: Strict TypeScript checking passed. Vitest contract tests passed
+  65 of 65 cases across 15 files, including configuration load/rejection,
+  synthetic embed execution, C++ translation-group compilation, production
+  rejection of a draft original, omission of an unpublished English sibling,
+  and empty-site Pages assembly. `validate:config` and `validate:embeds` were
+  run after the suite. Playwright rendered-browser checks and live GitHub
+  Pages/custom-domain verification were not run.
+- Compatibility / follow-up: First reviewed posts, real embed providers, and
+  custom-domain/Search Console operations remain follow-up. Generated
+  `.artifacts/` and `dist/` stay uncommitted. `CONTENT_RULES.md` now documents
+  the local embed registry entry shape; existing empty `config/embeds.yaml`
+  remains valid.
+
 ## Entry format
 
 ```text

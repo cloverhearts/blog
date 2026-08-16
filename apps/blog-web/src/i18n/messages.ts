@@ -31,6 +31,17 @@ export interface BlogMessages {
   readonly tableOfContents: string;
 }
 
+export function blogMessages(language: SupportedLanguage): BlogMessages {
+  switch (language) {
+    case "en":
+      return BLOG_MESSAGES.en;
+    case "ko":
+      return BLOG_MESSAGES.ko;
+    case "ja":
+      return BLOG_MESSAGES.ja;
+  }
+}
+
 export const BLOG_MESSAGES: Readonly<Record<SupportedLanguage, BlogMessages>> = {
   en: {
     allowAnalytics: "Allow analytics",

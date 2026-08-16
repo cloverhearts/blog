@@ -18,7 +18,7 @@
         },
         {
           "path": "DEVELOPMENT.md",
-          "sha256": "ea85b23376ab3e457b580c8c4d1900a2d8b56d783cd4e5d2cb16cfc7f3ee2dfb"
+          "sha256": "ad826d7843259333a85d2c6d7b29a307ba7025c53d34a20bb25da4a81160c6af"
         },
         {
           "path": "tests/contracts/policy-governance.test.ts",
@@ -66,6 +66,12 @@
             "renders a concise deterministic llms.txt with canonical links",
             "rejects unsafe or structurally empty llms.txt input"
           ]
+        },
+        {
+          "path": "tests/contracts/discovery.test.ts",
+          "cases": [
+            "rejects mixed or stale discovery inputs"
+          ]
         }
       ]
     },
@@ -78,11 +84,11 @@
         },
         {
           "path": "CONTENT_RULES.md",
-          "sha256": "e933b62c010afe0c9b7a1a6caba4a1edd85a57d4e29f8cb62ad5547c8e9fb154"
+          "sha256": "646bc9846ea48702ddc911c594e734a211241845e5eaddd0a4f195fcea2ae211"
         },
         {
           "path": "packages/project-config/src/content-provenance.ts",
-          "sha256": "2f5d015b5cc5423dfd5a68b05987fd4c873485292ee2ebabf1ba701ae541c5dd"
+          "sha256": "fe5c98d30686d127b59ee91c8786ebdf823bd76de754c120ef0bb61fbf8f7517"
         },
         {
           "path": "apps/blog-web/src/seo/authorship-disclosure.ts",
@@ -90,7 +96,7 @@
         },
         {
           "path": "packages/contracts/src/index.ts",
-          "sha256": "7d5238816eb08a19a36dbd871d39ad01704c460c420aeffa32944a0df4808d0b"
+          "sha256": "b43a676a534d00eff44ee41b60f1b6a45f8a4541cdf8f9dc754718facf734391"
         }
       ],
       "tests": [
@@ -101,6 +107,12 @@
             "renders metadata without hidden body text or structured-data claims",
             "escapes the declaration before placing it in the static head",
             "rejects a misleading or expanded AI-assistance declaration"
+          ]
+        },
+        {
+          "path": "tests/contracts/contracts-runtime.test.ts",
+          "cases": [
+            "rejects an unsupported or malformed published content manifest"
           ]
         },
         {
@@ -122,7 +134,7 @@
       "sources": [
         {
           "path": "IMPLEMENTATION_SPEC.md",
-          "sha256": "ec8e84aaaefa8e723756db29afcf3a20043015796800001a488dd49ea9227a48"
+          "sha256": "54a5977c2acc8b1e1153bc8b2df99d6a672851c88a445992b0799e80fe5aed53"
         },
         {
           "path": "decisions/0004-implementation-stack.md",
@@ -130,7 +142,7 @@
         },
         {
           "path": "package.json",
-          "sha256": "754d816d2ccb7bf4c96edbb7a23ed99548ba4c5f4c827c8747760569cfcdeb47"
+          "sha256": "b77d1a7a5a05b69ca93d208eb7b3b4931c7d2b0ec1158421036a94324af4cc2a"
         },
         {
           "path": ".nvmrc",
@@ -148,6 +160,7 @@
             "pins Node 24 LTS and bundled npm for every environment",
             "uses npm workspaces with one committed lockfile",
             "locks every approved implementation dependency",
+            "exposes the documented root command surface",
             "runs contract and policy suites with Vitest",
             "declares every architecture lane as an npm workspace package",
             "records the approved production and classless UX baseline"
@@ -180,11 +193,11 @@
         },
         {
           "path": "apps/blog-web/src/i18n/translation-origin.ts",
-          "sha256": "f2e63a1bb6f0cbad1e0843742414a645c60d3af42e6ea0ff62c8d75eec1a53b9"
+          "sha256": "39a550f45fb26e2e8b6136b2a13e2f1bc95b7f5b20f008acbea30c1ee84b0982"
         },
         {
           "path": "apps/blog-web/src/i18n/messages.ts",
-          "sha256": "175cd5992f89295ee14502724467904de67834d024b5c3922b939b01faf29aa2"
+          "sha256": "73d9fdaab08c818ae9746b22f09ca0f58af2d9cfa3a8d50bdb7d65b645058635"
         }
       ],
       "tests": [
@@ -201,6 +214,14 @@
             "rejects translation metadata when the declared original is absent",
             "renders an optional original reference from validated metadata",
             "omits the optional original reference from the source-language post"
+          ]
+        },
+        {
+          "path": "tests/contracts/project-config.test.ts",
+          "cases": [
+            "loads every shared configuration file and resolves public URLs",
+            "rejects a malformed GA4 measurement ID",
+            "accepts a portability base path without changing the production origin"
           ]
         },
         {
@@ -263,6 +284,27 @@
             "ships semantic classless CSS with resilient Pretendard fallbacks",
             "keeps the Pretendard dynamic subset within the font budget",
             "defines a static recovery path for every primary UX flow"
+          ]
+        },
+        {
+          "path": "tests/contracts/embed-core.test.ts",
+          "cases": [
+            "refuses remote, duplicate, and unregistered embed plugins",
+            "executes a synthetic test-only embed plugin"
+          ]
+        },
+        {
+          "path": "tests/contracts/content-compiler.test.ts",
+          "cases": [
+            "compiles a Korean/English/Japanese C++ group into deterministic production artifacts",
+            "rejects an unpublished authored original before a reviewed translation",
+            "omits an unpublished translation sibling from production"
+          ]
+        },
+        {
+          "path": "tests/contracts/pipeline.test.ts",
+          "cases": [
+            "builds an empty production site with required Pages files"
           ]
         }
       ]

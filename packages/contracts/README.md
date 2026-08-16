@@ -2,10 +2,9 @@
 
 This package is the only cross-boundary TypeScript dependency shared by compilers and consumers.
 
-The current `src/index.ts` is a provisional compile-time model. During Phase 1
-of `DEVELOPMENT_PLAN.md`, the approved Zod 4 runtime schemas become the source of
-truth and TypeScript types are inferred from those schemas. JSON Schema is
-generated from the same definitions for editors and non-TypeScript agents.
+Zod 4 runtime schemas are the source of truth. TypeScript types are inferred
+from those schemas. JSON Schema is generated from the same definitions into
+`packages/contracts/json-schema/` during `validate:config`.
 
 It must remain:
 

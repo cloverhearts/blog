@@ -1,6 +1,6 @@
 # Contract Conformance Tests
 
-This directory will test the boundaries defined by `packages/contracts/` and `ARCHITECTURE.md`.
+This directory tests the boundaries defined by `packages/contracts/` and `ARCHITECTURE.md`.
 
 The mandatory change-to-test workflow is defined in `TESTING.md`.
 `tests/policy-coverage.json` maps high-impact policy sources to exact executable

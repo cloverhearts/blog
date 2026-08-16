@@ -2,16 +2,13 @@
 
 ## Current status
 
-The repository contains architecture, source contracts, and an approved npm
-workspace implementation profile. Node.js 24.19.0 LTS with npm 11.17.0 is
+The repository contains architecture, source contracts, and an executable npm
+workspace implementation. Node.js 24.19.0 LTS with npm 11.17.0 is
 pinned; Astro, Zod 4, unified/remark/rehype, Pagefind, Sharp, Vitest,
 Playwright, and axe-core are selected in ADR 0004. Vitest is the sole focused
-unit/contract runner. Only the test scripts already
-present in `package.json` are executable; the remaining commands below are the
-required implementation surface, not a claim that every build exists.
-See `IMPLEMENTATION_STATUS.md` for the file-level baseline and next-agent
-handoff; this runbook defines the command contract those implementations must
-eventually satisfy.
+unit/contract runner. The command contract below is implemented by the root
+package scripts. See `IMPLEMENTATION_STATUS.md` for the current lane matrix
+and remaining operational follow-up.
 
 ## Required environment inputs
 

@@ -40,12 +40,12 @@ export function resolvePostAuthorshipDisclosure(
     throw new Error("AI assistance must be limited to proofreading.");
   }
 
-  return Object.freeze({
+  return {
     statementLanguage: "en",
     statement,
     claimSource: "owner",
     appliesTo: "original-work",
     primaryCreation: "human",
-    aiAssistance: Object.freeze(["proofreading"] as const),
-  });
+    aiAssistance: ["proofreading"],
+  };
 }

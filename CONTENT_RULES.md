@@ -491,6 +491,9 @@ Map embeds are provider plugins rather than built-in content-compiler behavior. 
 - External-content providers are implemented as reviewed local packages under `plugins/embeds/<plugin-id>/` using the provider-neutral API in `packages/embed-core/`.
 - `packages/content-compiler/` may call embed-core but must not import an individual provider package. The blog application receives only sanitized HTML and framework-neutral artifact records; it must not import provider code.
 - `config/embeds.yaml` is the explicit registry and global policy. Directory scanning, remote plugin packages, runtime marketplace installation, and unregistered directive execution are forbidden.
+- Each enabled registry entry is a local workspace or repository-relative
+  package with `id`, `package`, and `enabled`. Optional `configuration` is a
+  JSON object hashed into provenance. A plugin may export `plugin` or `default`.
 - New embed providers require a provider package, an explicit enabled registry entry, an explicit content-rule change, runtime directive schema, provider fixtures, and security review before use.
 - Each provider must define an allowlisted host, canonical identifier, accessible title, responsive rendering, privacy mode, content-security-policy requirements, iframe permissions, searchable fallback text, and normal-link fallback.
 - Privacy mode is required and must declare whether output is `local-only`, makes an `external-request`, or is `consent-required`. A plugin may not silently load a third party before the approved policy allows it.
@@ -985,7 +988,9 @@ The managed-page shell exposes only these stable styling hooks:
   --managed-return-radius: 999px;
 }
 
-[data-managed-page-return] { /* invariant compiler-owned element */ }
+[data-managed-page-return] {
+  /* invariant compiler-owned element */
+}
 ```
 
 Pages may set the variables but must not replace the element, suppress its focus state, change its stacking behavior so it becomes unreachable, or override the compiler-owned print hiding. The compiler's shell stylesheet loads after page reset styles and before page-specific variable assignments.

@@ -1,0 +1,337 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "translationKey": {
+      "type": "string",
+      "minLength": 1
+    },
+    "language": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "en"
+        },
+        {
+          "type": "string",
+          "const": "ko"
+        },
+        {
+          "type": "string",
+          "const": "ja"
+        }
+      ]
+    },
+    "originalLanguage": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "en"
+        },
+        {
+          "type": "string",
+          "const": "ko"
+        },
+        {
+          "type": "string",
+          "const": "ja"
+        }
+      ]
+    },
+    "translationStatus": {
+      "type": "string",
+      "enum": [
+        "source",
+        "ai-draft",
+        "reviewed"
+      ]
+    },
+    "authorshipDisclosure": {
+      "type": "object",
+      "properties": {
+        "statementLanguage": {
+          "type": "string",
+          "const": "en"
+        },
+        "statement": {
+          "type": "string",
+          "minLength": 1
+        },
+        "claimSource": {
+          "type": "string",
+          "const": "owner"
+        },
+        "appliesTo": {
+          "type": "string",
+          "const": "original-work"
+        },
+        "primaryCreation": {
+          "type": "string",
+          "const": "human"
+        },
+        "aiAssistance": {
+          "type": "array",
+          "prefixItems": [
+            {
+              "type": "string",
+              "const": "proofreading"
+            }
+          ]
+        }
+      },
+      "required": [
+        "statementLanguage",
+        "statement",
+        "claimSource",
+        "appliesTo",
+        "primaryCreation",
+        "aiAssistance"
+      ],
+      "additionalProperties": false
+    },
+    "slug": {
+      "type": "string",
+      "minLength": 1
+    },
+    "route": {
+      "type": "string",
+      "minLength": 1
+    },
+    "category": {
+      "type": "string",
+      "minLength": 1
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "createdAt": {
+      "type": "string"
+    },
+    "updatedAt": {
+      "type": "string"
+    },
+    "excerpt": {
+      "type": "string",
+      "minLength": 1
+    },
+    "readingMinutes": {
+      "type": "integer",
+      "exclusiveMinimum": 0,
+      "maximum": 9007199254740991
+    },
+    "representativeImage": {
+      "type": "string",
+      "enum": [
+        "social-image",
+        "cover",
+        "generated-card"
+      ]
+    },
+    "cover": {
+      "type": "object",
+      "properties": {
+        "assetId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "alt": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "assetId",
+        "alt"
+      ],
+      "additionalProperties": false
+    },
+    "socialImage": {
+      "type": "object",
+      "properties": {
+        "assetId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "alt": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "assetId",
+        "alt"
+      ],
+      "additionalProperties": false
+    },
+    "alternates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "language": {
+            "anyOf": [
+              {
+                "type": "string",
+                "const": "en"
+              },
+              {
+                "type": "string",
+                "const": "ko"
+              },
+              {
+                "type": "string",
+                "const": "ja"
+              }
+            ]
+          },
+          "ownerId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "route": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "language",
+          "ownerId",
+          "route"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "published"
+      ]
+    },
+    "bodyHtml": {
+      "type": "string",
+      "minLength": 1
+    },
+    "headings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "depth": {
+            "anyOf": [
+              {
+                "type": "number",
+                "const": 2
+              },
+              {
+                "type": "number",
+                "const": 3
+              },
+              {
+                "type": "number",
+                "const": 4
+              },
+              {
+                "type": "number",
+                "const": 5
+              },
+              {
+                "type": "number",
+                "const": 6
+              }
+            ]
+          },
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "anchor": {
+            "type": "string",
+            "pattern": "^#[^\\s#]+$"
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1
+          },
+          "parentId": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "depth",
+          "id",
+          "anchor",
+          "text"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "assetIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "embedIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "manualRelatedSlugs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "sourceHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    }
+  },
+  "required": [
+    "id",
+    "translationKey",
+    "language",
+    "originalLanguage",
+    "translationStatus",
+    "authorshipDisclosure",
+    "slug",
+    "route",
+    "category",
+    "title",
+    "description",
+    "tags",
+    "createdAt",
+    "excerpt",
+    "readingMinutes",
+    "representativeImage",
+    "alternates",
+    "status",
+    "bodyHtml",
+    "headings",
+    "assetIds",
+    "embedIds",
+    "manualRelatedSlugs",
+    "sourceHash"
+  ],
+  "additionalProperties": false
+}

@@ -1,3 +1,4 @@
+export { buildDiscovery } from "./build.ts";
 export {
   renderLlmsTxt,
   renderRobotsTxt,

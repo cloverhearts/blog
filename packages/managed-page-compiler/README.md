@@ -1,11 +1,9 @@
 # Managed Page Compiler Boundary
 
-This package will transform self-contained packages in `managed-pages/` into `.artifacts/managed/<mode>/` according to `CONTENT_RULES.md` and `packages/contracts/`.
+This package transforms self-contained packages in `managed-pages/` into `.artifacts/managed/<mode>/` according to `CONTENT_RULES.md` and `packages/contracts/`.
 
-Current implementation is package scaffold only. The reusable template exists,
-but there is no runtime schema, entry adapter, security intersection, asset
-pipeline, page build, or manifest writer. See `IMPLEMENTATION_STATUS.md` for the
-complete handoff.
+Run it through `npm run build:managed`. An empty `managed-pages/` directory
+produces a valid empty production manifest.
 
 It owns managed-page runtime validation, Open Design-compatible page-local `DESIGN.md` ingestion, declared entrypoint adapters, standalone documents or bundles, page-local assets, security declarations, the invariant return control, no-script fallbacks, print behavior, route claims, deterministic provenance, and separate preview/production manifests.
 

@@ -39,29 +39,21 @@ can be added later through isolated build-time provider plugins.
 
 ## Current status / 현재 상태
 
-This repository is currently a specification-led implementation scaffold, not
-a buildable or deployed blog. It includes the approved architecture and policy
-documents, npm workspace/dependency pins, declarative configuration, provisional
-artifact interfaces, a small set of reusable TypeScript primitives, a semantic
-Astro shell/classless stylesheet, and executable contract tests. The content,
-web, search, managed-page, discovery, release, and deployment pipelines remain
-implementation work.
+The documented build command surface is executable. An empty production site
+assembles to `dist/` with localized system routes and discovery files. First
+reviewed posts, real embed providers, and live custom-domain operations remain
+follow-up work. See [IMPLEMENTATION_STATUS.md](./IMPLEMENTATION_STATUS.md).
 
-> 현재 저장소는 빌드나 배포가 완료된 블로그가 아니라 스펙을 중심으로 만든
-> 구현 스캐폴드입니다. 확정된 아키텍처와 정책 문서, npm 워크스페이스와
-> 의존성 고정, 선언형 설정, 임시 산출물 인터페이스, 일부 재사용 가능한
-> TypeScript 구성요소, 시맨틱 Astro 셸과 classless 스타일, 실행 가능한 계약
-> 테스트가 포함되어 있습니다. 콘텐츠·웹·검색·관리 페이지·검색 정보·릴리스·
-> 배포 파이프라인은 후속 구현 대상입니다.
+> 문서화된 빌드 명령은 실행 가능합니다. 게시된 포스트가 없어도 운영 사이트는
+> 언어별 시스템 라우트와 검색 정보 파일과 함께 `dist/`로 조립됩니다. 첫 검토
+> 포스트, 실제 임베드 제공자, 커스텀 도메인 운영 작업은 후속 과제입니다.
+> 자세한 범위는 [IMPLEMENTATION_STATUS.md](./IMPLEMENTATION_STATUS.md)를
+> 참고합니다.
 
-The exact implemented/missing matrix and the required starting point for the
-next coding agent are in
-[IMPLEMENTATION_STATUS.md](./IMPLEMENTATION_STATUS.md). The target specification
-is in [IMPLEMENTATION_SPEC.md](./IMPLEMENTATION_SPEC.md), and phase exit criteria
+The target specification is in
+[IMPLEMENTATION_SPEC.md](./IMPLEMENTATION_SPEC.md), and phase exit criteria
 are in [DEVELOPMENT_PLAN.md](./DEVELOPMENT_PLAN.md).
 
-> 실제 구현된 범위와 미구현 범위, 다음 개발 AI가 시작해야 할 지점은
-> [IMPLEMENTATION_STATUS.md](./IMPLEMENTATION_STATUS.md)에 정리되어 있습니다.
 > 목표 스펙은 [IMPLEMENTATION_SPEC.md](./IMPLEMENTATION_SPEC.md), 단계별 완료
 > 조건은 [DEVELOPMENT_PLAN.md](./DEVELOPMENT_PLAN.md)를 따릅니다.
 
@@ -72,12 +64,16 @@ The commands available now are:
 ```text
 npm ci
 npm run typecheck
+npm run validate:config
+npm run validate:embeds
 npm run test:contracts
 npm run test:policy
 npm test
+npm run build
+npm run dev
 ```
 
-There is no working site `dev`, `build`, or deployment command yet.
+Production `build` requires `SITE_ORIGIN=https://blog.cloverhearts.com`.
 
 > 아직 사이트 개발 서버, 전체 빌드 또는 배포 명령은 구현되지 않았습니다.
 

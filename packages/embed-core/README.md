@@ -1,11 +1,11 @@
 # Embed Core Boundary
 
-This package will provide the provider-neutral build-time extension point for external content such as maps, video, audio, diagrams, and other allowlisted embeds.
+This package provides the provider-neutral build-time extension point for external content such as maps, video, audio, diagrams, and other allowlisted embeds.
 
-Current implementation is interface-only. Runtime validation, registry loading,
-sanitization, security aggregation, deterministic execution, and fixtures are
-not implemented, and no real provider plugin exists. See
-`IMPLEMENTATION_STATUS.md` for the complete handoff.
+Runtime validation, explicit registry loading, sanitization, and deterministic
+execution are implemented. No real provider plugin is approved yet; tests use a
+synthetic plugin under `tests/fixtures/plugins/test-embed/`. See
+`IMPLEMENTATION_STATUS.md`.
 
 It owns:
 
@@ -40,6 +40,5 @@ plugins:
 
 The plugin declares what it needs, while the registry grants the maximum approved policy. Embed-core rejects requirements outside that intersection.
 
-The current `src/index.ts` is a provisional TypeScript contract. Zod 4 runtime
-schemas and the concrete explicit npm-workspace registry loader are Phase 1
-implementation work.
+Zod 4 runtime schemas and the explicit registry loader are the implementation
+source of truth.

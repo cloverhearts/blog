@@ -75,6 +75,29 @@ test("locks every approved implementation dependency", () => {
   }
 });
 
+test("exposes the documented root command surface", () => {
+  const packageJson = JSON.parse(read("package.json")) as RootPackage;
+  for (const command of [
+    "validate:config",
+    "validate:embeds",
+    "test:i18n",
+    "test:seo",
+    "test:analytics",
+    "test:quality",
+    "build:content",
+    "build:web",
+    "build:search",
+    "build:managed",
+    "build:discovery",
+    "build:release",
+    "verify:pages",
+    "build",
+    "dev",
+  ]) {
+    assert.ok(packageJson.scripts[command], `Missing root command: ${command}`);
+  }
+});
+
 test("runs contract and policy suites with Vitest", () => {
   const packageJson = JSON.parse(read("package.json")) as RootPackage;
   assert.equal(packageJson.scripts.test, "npm run test:contracts");

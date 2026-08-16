@@ -21,7 +21,22 @@
     "test": "npm run test:contracts",
     "test:contracts": "vitest run tests/contracts",
     "test:policy": "vitest run tests/contracts/policy-governance.test.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "validate:config": "node --experimental-strip-types packages/project-config/src/cli.ts",
+    "validate:embeds": "node --experimental-strip-types packages/embed-core/src/cli.ts",
+    "test:i18n": "vitest run tests/contracts/i18n.test.ts",
+    "test:seo": "vitest run tests/contracts/open-graph.test.ts tests/contracts/discovery.test.ts",
+    "test:analytics": "vitest run tests/contracts/google-analytics.test.ts",
+    "test:quality": "vitest run tests/contracts",
+    "build:content": "node --experimental-strip-types packages/content-compiler/src/cli.ts",
+    "build:web": "node --experimental-strip-types apps/blog-web/src/cli.ts",
+    "build:search": "node --experimental-strip-types packages/search-indexer/src/cli.ts",
+    "build:managed": "node --experimental-strip-types packages/managed-page-compiler/src/cli.ts",
+    "build:discovery": "node --experimental-strip-types packages/site-discovery/src/cli.ts",
+    "build:release": "node --experimental-strip-types packages/release-assembler/src/cli.ts",
+    "verify:pages": "node --experimental-strip-types packages/release-assembler/src/cli.ts --verify",
+    "build": "node --experimental-strip-types scripts/build.ts",
+    "dev": "node --experimental-strip-types scripts/dev.ts"
   },
   "devDependencies": {
     "@playwright/test": "^1.62.1",

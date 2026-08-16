@@ -1,0 +1,141 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "provenance": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "type": "number",
+          "const": 2
+        },
+        "buildMode": {
+          "type": "string",
+          "const": "production"
+        },
+        "producer": {
+          "type": "string",
+          "minLength": 1
+        },
+        "producerVersion": {
+          "type": "string",
+          "minLength": 1
+        },
+        "inputHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "configHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "contentRulesHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "localizationRulesHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "buildMode",
+        "producer",
+        "producerVersion",
+        "inputHash",
+        "configHash",
+        "contentRulesHash",
+        "localizationRulesHash"
+      ],
+      "additionalProperties": false
+    },
+    "contentInputHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "routes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "route": {
+            "type": "string",
+            "minLength": 1
+          },
+          "ownerKind": {
+            "type": "string",
+            "enum": [
+              "blog",
+              "post",
+              "managed-page",
+              "system"
+            ]
+          },
+          "ownerId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "artifactPath": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "route",
+          "ownerKind",
+          "ownerId",
+          "artifactPath"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "routesByLanguage": {
+      "type": "object",
+      "properties": {
+        "en": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "ko": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "ja": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "required": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "provenance",
+    "contentInputHash",
+    "routes",
+    "files",
+    "routesByLanguage"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,343 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "provenance": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "type": "number",
+          "const": 2
+        },
+        "buildMode": {
+          "type": "string",
+          "const": "production"
+        },
+        "producer": {
+          "type": "string",
+          "minLength": 1
+        },
+        "producerVersion": {
+          "type": "string",
+          "minLength": 1
+        },
+        "inputHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "configHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "contentRulesHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "localizationRulesHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "buildMode",
+        "producer",
+        "producerVersion",
+        "inputHash",
+        "configHash",
+        "contentRulesHash",
+        "localizationRulesHash"
+      ],
+      "additionalProperties": false
+    },
+    "pages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "route": {
+            "type": "string",
+            "minLength": 1
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "document",
+              "presentation",
+              "application"
+            ]
+          },
+          "language": {
+            "anyOf": [
+              {
+                "type": "string",
+                "const": "en"
+              },
+              {
+                "type": "string",
+                "const": "ko"
+              },
+              {
+                "type": "string",
+                "const": "ja"
+              }
+            ]
+          },
+          "translationKey": {
+            "type": "string",
+            "minLength": 1
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1
+          },
+          "returnTo": {
+            "type": "string",
+            "minLength": 1
+          },
+          "robots": {
+            "type": "string",
+            "enum": [
+              "index",
+              "noindex"
+            ]
+          },
+          "sitemap": {
+            "type": "boolean"
+          },
+          "entryArtifactPath": {
+            "type": "string",
+            "minLength": 1
+          },
+          "security": {
+            "type": "object",
+            "properties": {
+              "csp": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "directive": {
+                      "type": "string",
+                      "enum": [
+                        "frame-src",
+                        "script-src",
+                        "connect-src",
+                        "img-src",
+                        "style-src",
+                        "font-src",
+                        "media-src",
+                        "worker-src"
+                      ]
+                    },
+                    "origins": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  },
+                  "required": [
+                    "directive",
+                    "origins"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "iframePermissions": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "required": [
+              "csp",
+              "iframePermissions"
+            ],
+            "additionalProperties": false
+          },
+          "assets": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "logicalPath": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "artifactPath": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "image",
+                    "video",
+                    "audio",
+                    "font",
+                    "download"
+                  ]
+                },
+                "mediaType": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "hash": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "bytes": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "width": {
+                  "type": "integer",
+                  "exclusiveMinimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "height": {
+                  "type": "integer",
+                  "exclusiveMinimum": 0,
+                  "maximum": 9007199254740991
+                }
+              },
+              "required": [
+                "id",
+                "logicalPath",
+                "artifactPath",
+                "kind",
+                "mediaType",
+                "hash",
+                "bytes"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "sourceHash": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "alternates": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "language": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "const": "en"
+                    },
+                    {
+                      "type": "string",
+                      "const": "ko"
+                    },
+                    {
+                      "type": "string",
+                      "const": "ja"
+                    }
+                  ]
+                },
+                "ownerId": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "route": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "language",
+                "ownerId",
+                "route"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "status": {
+            "type": "string",
+            "const": "published"
+          }
+        },
+        "required": [
+          "id",
+          "route",
+          "kind",
+          "language",
+          "title",
+          "description",
+          "returnTo",
+          "robots",
+          "sitemap",
+          "entryArtifactPath",
+          "security",
+          "assets",
+          "sourceHash",
+          "alternates",
+          "status"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "routes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "route": {
+            "type": "string",
+            "minLength": 1
+          },
+          "ownerKind": {
+            "type": "string",
+            "enum": [
+              "blog",
+              "post",
+              "managed-page",
+              "system"
+            ]
+          },
+          "ownerId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "artifactPath": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "route",
+          "ownerKind",
+          "ownerId",
+          "artifactPath"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "provenance",
+    "pages",
+    "routes"
+  ],
+  "additionalProperties": false
+}

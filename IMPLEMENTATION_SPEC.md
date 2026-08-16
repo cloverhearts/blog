@@ -16,17 +16,15 @@ advances.
 
 ## Current baseline
 
-- The repository can install dependencies, type-check provisional sources, and
-  run Vitest contract/policy tests.
-- A limited set of configuration, localization, heading, translation-
-  publication, analytics, Open Graph, authorship, and AI-discovery primitives
-  exists.
-- No end-to-end content, web, search, managed-page, discovery, release, or Pages
-  deployment build is complete.
-- The current `.github/workflows/quality.yml` validates the scaffold only; it
-  does not build or deploy GitHub Pages.
-- Root `dev`, `build:*`, `build`, and `verify:pages` commands remain required
-  outputs of the implementation plan.
+- The repository can install dependencies, type-check sources, run Vitest
+  contract/policy tests, and execute the documented build command surface.
+- Runtime Zod schemas, the shared configuration loader, embed-core registry,
+  content compiler, static blog renderer, Pagefind indexer, managed-page
+  compiler, discovery builder, and release assembler are present.
+- `.github/workflows/quality.yml` validates configuration, contracts, and a
+  production build. `.github/workflows/pages.yml` uploads verified `dist/`.
+- Custom-domain DNS, Search Console, and field Core Web Vitals remain
+  operational follow-up after the first HTTPS deployment.
 
 ## Approved platform
 

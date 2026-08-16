@@ -1,6 +1,6 @@
 # Source Fixtures
 
-This directory will contain small, committed sources used to prove content and managed-page behavior.
+This directory contains small, committed sources used to prove content and managed-page behavior. The synthetic test embed plugin lives at `tests/fixtures/plugins/test-embed/`. Additional post and managed-page fixtures are created in temporary directories by the contract suite.
 
 Planned fixture groups include valid and invalid posts, complete and broken
 English/Korean/Japanese translation groups, localized routes/taxonomy/search,

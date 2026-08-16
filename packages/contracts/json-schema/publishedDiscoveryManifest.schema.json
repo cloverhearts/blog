@@ -1,0 +1,170 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "provenance": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "type": "number",
+          "const": 3
+        },
+        "buildMode": {
+          "type": "string",
+          "const": "production"
+        },
+        "producer": {
+          "type": "string",
+          "minLength": 1
+        },
+        "producerVersion": {
+          "type": "string",
+          "minLength": 1
+        },
+        "inputHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "configHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "contentRulesHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "localizationRulesHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "buildMode",
+        "producer",
+        "producerVersion",
+        "inputHash",
+        "configHash",
+        "contentRulesHash",
+        "localizationRulesHash"
+      ],
+      "additionalProperties": false
+    },
+    "contentInputHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "webInputHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "managedPageInputHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "crawlerPolicyHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "includedRoutes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "robotsRoute": {
+      "type": "string",
+      "minLength": 1
+    },
+    "llmsRoute": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sitemapRoute": {
+      "type": "string",
+      "minLength": 1
+    },
+    "feedRoutesByLanguage": {
+      "type": "object",
+      "properties": {
+        "en": {
+          "type": "string",
+          "minLength": 1
+        },
+        "ko": {
+          "type": "string",
+          "minLength": 1
+        },
+        "ja": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "additionalProperties": false
+    },
+    "routes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "route": {
+            "type": "string",
+            "minLength": 1
+          },
+          "ownerKind": {
+            "type": "string",
+            "enum": [
+              "blog",
+              "post",
+              "managed-page",
+              "system"
+            ]
+          },
+          "ownerId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "artifactPath": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "route",
+          "ownerKind",
+          "ownerId",
+          "artifactPath"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "required": [
+    "provenance",
+    "contentInputHash",
+    "webInputHash",
+    "managedPageInputHash",
+    "crawlerPolicyHash",
+    "includedRoutes",
+    "robotsRoute",
+    "llmsRoute",
+    "sitemapRoute",
+    "feedRoutesByLanguage",
+    "routes",
+    "files"
+  ],
+  "additionalProperties": false
+}

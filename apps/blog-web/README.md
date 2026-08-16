@@ -3,14 +3,13 @@
 This directory contains the Astro static web application boundary and the
 complete blog presentation layer.
 
-## Current scaffold
+## Current implementation
 
-Only presentation primitives exist today: a semantic `BlogShell.astro`, the
-classless stylesheet, localized message/original-language helpers, the GA4
-adapter, and Open Graph/authorship helpers. There is no Astro configuration,
-page directory, artifact loader, route generator, post/list renderer, image
-pipeline, or web artifact writer. The statements below define the target
-boundary for that future implementation; see the repository-root
+`npm run build:web` reads a validated content artifact and writes
+`.artifacts/web/<mode>/`. The renderer emits localized home, list, taxonomy,
+search, 404, and post routes, plus social-card derivatives and the classless
+stylesheet. `astro.config.ts` keeps the approved Astro static boundary for
+future page-level refinement. See the repository-root
 `IMPLEMENTATION_STATUS.md` for the complete handoff matrix.
 
 The repository-root `DESIGN.md` is the authoritative Open Design-compatible

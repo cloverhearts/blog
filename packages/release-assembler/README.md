@@ -1,11 +1,8 @@
 # Release Assembler Boundary
 
-This package will merge `.artifacts/web/production/`, `.artifacts/search/production/`, `.artifacts/managed/production/`, and `.artifacts/discovery/production/` into `dist/`.
+This package merges `.artifacts/web/production/`, `.artifacts/search/production/`, `.artifacts/managed/production/`, and `.artifacts/discovery/production/` into `dist/`.
 
-Current implementation is package scaffold only. There is no artifact reader,
-compatibility/collision/reference validator, `dist/` assembler, release
-manifest, diagnostic report, or `verify:pages` implementation. See
-`IMPLEMENTATION_STATUS.md` for the complete handoff.
+Run it through `npm run build:release` and `npm run verify:pages`.
 
 It owns runtime input validation, build-mode/schema/provenance compatibility checks, route and emitted-file collision detection, declared external-origin and browser-permission policy checks, route-claim-to-file mapping, static copying, internal reference checks, and the deterministic release manifest. Human timestamps belong in a separate diagnostic report.
 

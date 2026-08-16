@@ -1,12 +1,9 @@
 # Shared Project Configuration Boundary
 
-This package will runtime-validate `config/*.yaml`, normalize shared route and URL policy, and provide the route registry used by all route-producing build lanes.
+This package runtime-validates `config/*.yaml`, normalizes shared route and URL policy, and provides the route registry used by all route-producing build lanes.
 
-Current implementation is partial: focused pure helpers exist for analytics,
-content provenance, language routes/post-link fallback, and performance-budget
-relationships. There is no unified YAML loader, complete Zod schema set,
-environment/origin resolver, or shared route registry yet. See
-`IMPLEMENTATION_STATUS.md` for the repository-wide handoff.
+Run it through `npm run validate:config`. See `IMPLEMENTATION_STATUS.md` for the
+repository-wide handoff.
 
 It owns:
 
@@ -31,10 +28,8 @@ It owns:
 
 It must remain framework-neutral. It must not contain blog design, parse post Markdown, render managed pages, or read environment secrets beyond resolving explicitly declared public build values such as the canonical site origin. `GA4_MEASUREMENT_ID` is also an explicitly declared public build value: blank disables analytics and an invalid non-blank value fails validation.
 
-`src/i18n.ts` is the provisional pure language/route resolver. The future YAML
-runtime schema must validate that `config/site.yaml` expresses the same
-supported set instead of allowing these values to drift.
+`src/i18n.ts` remains the pure language/route resolver. The YAML loader
+validates that `config/site.yaml` expresses the same supported set.
 
-`src/performance-budgets.ts` is the provisional host-ceiling and relationship
-validator. The future Zod schema must preserve its positive-integer, headroom,
-and nested-budget checks with field-level errors.
+`src/performance-budgets.ts` remains the host-ceiling validator and is invoked
+by the unified configuration loader.

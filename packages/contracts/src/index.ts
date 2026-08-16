@@ -1,65 +1,160 @@
-/**
- * Provisional compile-time model for the first artifact contract.
- *
- * These interfaces must be replaced by types inferred from Zod runtime schemas
- * during Phase 1. See ARCHITECTURE.md and
- * DEVELOPMENT_PLAN.md; TypeScript interfaces alone are not runtime validation.
- */
+import type { z } from "zod";
 
-export const CONTENT_ARTIFACT_SCHEMA_VERSION = 7 as const;
-export const WEB_ARTIFACT_SCHEMA_VERSION = 2 as const;
-export const SEARCH_ARTIFACT_SCHEMA_VERSION = 2 as const;
-export const MANAGED_PAGE_ARTIFACT_SCHEMA_VERSION = 2 as const;
-export const DISCOVERY_ARTIFACT_SCHEMA_VERSION = 3 as const;
-export const RELEASE_ARTIFACT_SCHEMA_VERSION = 2 as const;
+import { parseWithContract } from "./errors.ts";
+import {
+  assetArtifactSchema,
+  categoryArtifactSchema,
+  discoveryManifestArtifactSchema,
+  embedCspRequirementArtifactSchema,
+  embedPluginReferenceArtifactSchema,
+  embedSecurityArtifactSchema,
+  externalEmbedArtifactSchema,
+  headingArtifactSchema,
+  languageAlternateArtifactSchema,
+  managedPageSourceConfigSchema,
+  postAuthorshipDisclosureArtifactSchema,
+  postImageArtifactSchema,
+  previewContentManifestArtifactSchema,
+  previewDiscoveryManifestArtifactSchema,
+  previewManagedPageArtifactSchema,
+  previewManagedPageManifestArtifactSchema,
+  previewPostArtifactSchema,
+  previewPostSummaryArtifactSchema,
+  previewSearchManifestArtifactSchema,
+  previewWebManifestArtifactSchema,
+  publishedContentManifestArtifactSchema,
+  publishedDiscoveryManifestArtifactSchema,
+  publishedManagedPageArtifactSchema,
+  publishedManagedPageManifestArtifactSchema,
+  publishedPostArtifactSchema,
+  publishedPostSummaryArtifactSchema,
+  publishedSearchManifestArtifactSchema,
+  publishedWebManifestArtifactSchema,
+  releaseManifestArtifactSchema,
+  routeClaimArtifactSchema,
+  searchDocumentMetadataArtifactSchema,
+  searchManifestArtifactSchema,
+  tagArtifactSchema,
+  webManifestArtifactSchema,
+} from "./schemas.ts";
+
+export {
+  CONTENT_ARTIFACT_SCHEMA_VERSION,
+  DISCOVERY_ARTIFACT_SCHEMA_VERSION,
+  MANAGED_PAGE_ARTIFACT_SCHEMA_VERSION,
+  RELEASE_ARTIFACT_SCHEMA_VERSION,
+  SEARCH_ARTIFACT_SCHEMA_VERSION,
+  WEB_ARTIFACT_SCHEMA_VERSION,
+} from "./versions.ts";
+export {
+  artifactProvenanceSchema,
+  assetArtifactSchema,
+  assetKindSchema,
+  buildModeSchema,
+  categoryArtifactSchema,
+  contractJsonSchemaSources,
+  embedClientModeSchema,
+  embedCspDirectiveSchema,
+  embedCspRequirementArtifactSchema,
+  embedPluginReferenceArtifactSchema,
+  embedPrivacyModeSchema,
+  embedSecurityArtifactSchema,
+  externalEmbedArtifactSchema,
+  headingArtifactSchema,
+  headingDepthSchema,
+  languageAlternateArtifactSchema,
+  managedPageEntryFormatSchema,
+  managedPageEntrySourceConfigSchema,
+  managedPageExternalOriginsSourceConfigSchema,
+  managedPageKindSchema,
+  managedPageSecuritySourceConfigSchema,
+  managedPageSourceConfigSchema,
+  postAuthorshipDisclosureArtifactSchema,
+  postImageArtifactSchema,
+  previewContentManifestArtifactSchema,
+  previewDiscoveryManifestArtifactSchema,
+  previewManagedPageArtifactSchema,
+  previewManagedPageManifestArtifactSchema,
+  previewPostArtifactSchema,
+  previewPostSummaryArtifactSchema,
+  previewSearchManifestArtifactSchema,
+  previewWebManifestArtifactSchema,
+  publicationStatusSchema,
+  publishedContentManifestArtifactSchema,
+  publishedDiscoveryManifestArtifactSchema,
+  publishedManagedPageArtifactSchema,
+  publishedManagedPageManifestArtifactSchema,
+  publishedPostArtifactSchema,
+  publishedPostSummaryArtifactSchema,
+  publishedSearchManifestArtifactSchema,
+  publishedWebManifestArtifactSchema,
+  releaseManifestArtifactSchema,
+  representativeImageModeSchema,
+  robotsPolicySchema,
+  routeClaimArtifactSchema,
+  routeOwnerKindSchema,
+  searchDocumentMetadataArtifactSchema,
+  searchManifestArtifactSchema,
+  supportedLanguageSchema,
+  tagArtifactSchema,
+  translationStatusSchema,
+  webManifestArtifactSchema,
+} from "./schemas.ts";
+export {
+  ContractValidationError,
+  formatZodIssues,
+  parseWithContract,
+} from "./errors.ts";
+export { sha256File, sha256Hex, sha256Json, stableSerialize } from "./hash.ts";
 
 export type ContentArtifactSchemaVersion =
-  typeof CONTENT_ARTIFACT_SCHEMA_VERSION;
-export type WebArtifactSchemaVersion = typeof WEB_ARTIFACT_SCHEMA_VERSION;
-export type SearchArtifactSchemaVersion = typeof SEARCH_ARTIFACT_SCHEMA_VERSION;
+  typeof import("./versions.ts").CONTENT_ARTIFACT_SCHEMA_VERSION;
+export type WebArtifactSchemaVersion =
+  typeof import("./versions.ts").WEB_ARTIFACT_SCHEMA_VERSION;
+export type SearchArtifactSchemaVersion =
+  typeof import("./versions.ts").SEARCH_ARTIFACT_SCHEMA_VERSION;
 export type ManagedPageArtifactSchemaVersion =
-  typeof MANAGED_PAGE_ARTIFACT_SCHEMA_VERSION;
+  typeof import("./versions.ts").MANAGED_PAGE_ARTIFACT_SCHEMA_VERSION;
 export type DiscoveryArtifactSchemaVersion =
-  typeof DISCOVERY_ARTIFACT_SCHEMA_VERSION;
+  typeof import("./versions.ts").DISCOVERY_ARTIFACT_SCHEMA_VERSION;
 export type ReleaseArtifactSchemaVersion =
-  typeof RELEASE_ARTIFACT_SCHEMA_VERSION;
+  typeof import("./versions.ts").RELEASE_ARTIFACT_SCHEMA_VERSION;
 
-export type BuildMode = "preview" | "production";
-export type ManagedPageKind = "document" | "presentation" | "application";
-export type ManagedPageEntryFormat = "markdown" | "typescript";
-export type PublicationStatus = "draft" | "published";
-export type RobotsPolicy = "index" | "noindex";
-export type SupportedLanguage = "en" | "ko" | "ja";
-export type TranslationStatus = "source" | "ai-draft" | "reviewed";
-export type RepresentativeImageMode =
-  | "social-image"
-  | "cover"
-  | "generated-card";
-
-export interface LanguageAlternateArtifact {
-  readonly language: SupportedLanguage;
-  readonly ownerId: string;
-  readonly route: string;
-}
-
-export interface PostImageArtifact {
-  readonly assetId: string;
-  readonly alt: string;
-}
-
-export interface PostAuthorshipDisclosureArtifact {
-  readonly statementLanguage: "en";
-  readonly statement: string;
-  readonly claimSource: "owner";
-  readonly appliesTo: "original-work";
-  readonly primaryCreation: "human";
-  readonly aiAssistance: readonly ["proofreading"];
-}
-
-export interface ArtifactProvenance<
+export type BuildMode = z.infer<
+  typeof import("./schemas.ts").buildModeSchema
+>;
+export type ManagedPageKind = z.infer<
+  typeof import("./schemas.ts").managedPageKindSchema
+>;
+export type ManagedPageEntryFormat = z.infer<
+  typeof import("./schemas.ts").managedPageEntryFormatSchema
+>;
+export type PublicationStatus = z.infer<
+  typeof import("./schemas.ts").publicationStatusSchema
+>;
+export type RobotsPolicy = z.infer<
+  typeof import("./schemas.ts").robotsPolicySchema
+>;
+export type SupportedLanguage = z.infer<
+  typeof import("./schemas.ts").supportedLanguageSchema
+>;
+export type TranslationStatus = z.infer<
+  typeof import("./schemas.ts").translationStatusSchema
+>;
+export type RepresentativeImageMode = z.infer<
+  typeof import("./schemas.ts").representativeImageModeSchema
+>;
+export type LanguageAlternateArtifact = z.infer<
+  typeof languageAlternateArtifactSchema
+>;
+export type PostImageArtifact = z.infer<typeof postImageArtifactSchema>;
+export type PostAuthorshipDisclosureArtifact = z.infer<
+  typeof postAuthorshipDisclosureArtifactSchema
+>;
+export type ArtifactProvenance<
   SchemaVersion extends number,
   Mode extends BuildMode,
-> {
+> = {
   readonly schemaVersion: SchemaVersion;
   readonly buildMode: Mode;
   readonly producer: string;
@@ -68,323 +163,201 @@ export interface ArtifactProvenance<
   readonly configHash: string;
   readonly contentRulesHash: string;
   readonly localizationRulesHash: string;
+};
+export type AssetArtifact = z.infer<typeof assetArtifactSchema>;
+export type RouteClaimArtifact = z.infer<typeof routeClaimArtifactSchema>;
+export type HeadingArtifact = z.infer<typeof headingArtifactSchema>;
+export type EmbedPluginReferenceArtifact = z.infer<
+  typeof embedPluginReferenceArtifactSchema
+>;
+export type EmbedCspDirectiveArtifact = z.infer<
+  typeof import("./schemas.ts").embedCspDirectiveSchema
+>;
+export type EmbedCspRequirementArtifact = z.infer<
+  typeof embedCspRequirementArtifactSchema
+>;
+export type EmbedSecurityArtifact = z.infer<typeof embedSecurityArtifactSchema>;
+export type ExternalEmbedArtifact = z.infer<typeof externalEmbedArtifactSchema>;
+export type PreviewPostSummaryArtifact = z.infer<
+  typeof previewPostSummaryArtifactSchema
+>;
+export type PublishedPostSummaryArtifact = z.infer<
+  typeof publishedPostSummaryArtifactSchema
+>;
+export type PreviewPostArtifact = z.infer<typeof previewPostArtifactSchema>;
+export type PublishedPostArtifact = z.infer<typeof publishedPostArtifactSchema>;
+export type CategoryArtifact = z.infer<typeof categoryArtifactSchema>;
+export type TagArtifact = z.infer<typeof tagArtifactSchema>;
+export type SearchDocumentMetadataArtifact = z.infer<
+  typeof searchDocumentMetadataArtifactSchema
+>;
+export type PreviewContentManifestArtifact = z.infer<
+  typeof previewContentManifestArtifactSchema
+>;
+export type PublishedContentManifestArtifact = z.infer<
+  typeof publishedContentManifestArtifactSchema
+>;
+export type WebManifestArtifact<Mode extends BuildMode> = z.infer<
+  ReturnType<typeof webManifestArtifactSchema<Mode>>
+>;
+export type SearchManifestArtifact<Mode extends BuildMode> = z.infer<
+  ReturnType<typeof searchManifestArtifactSchema<Mode>>
+>;
+export type ManagedPageSourceConfig = z.infer<
+  typeof managedPageSourceConfigSchema
+>;
+export type ManagedPageEntrySourceConfig = z.infer<
+  typeof import("./schemas.ts").managedPageEntrySourceConfigSchema
+>;
+export type ManagedPageExternalOriginsSourceConfig = z.infer<
+  typeof import("./schemas.ts").managedPageExternalOriginsSourceConfigSchema
+>;
+export type ManagedPageSecuritySourceConfig = z.infer<
+  typeof import("./schemas.ts").managedPageSecuritySourceConfigSchema
+>;
+export type PreviewManagedPageArtifact = z.infer<
+  typeof previewManagedPageArtifactSchema
+>;
+export type PublishedManagedPageArtifact = z.infer<
+  typeof publishedManagedPageArtifactSchema
+>;
+export type PreviewManagedPageManifestArtifact = z.infer<
+  typeof previewManagedPageManifestArtifactSchema
+>;
+export type PublishedManagedPageManifestArtifact = z.infer<
+  typeof publishedManagedPageManifestArtifactSchema
+>;
+export type DiscoveryManifestArtifact<Mode extends BuildMode> = z.infer<
+  ReturnType<typeof discoveryManifestArtifactSchema<Mode>>
+>;
+export type ReleaseManifestArtifact = z.infer<
+  typeof releaseManifestArtifactSchema
+>;
+
+export function parsePreviewContentManifest(
+  value: unknown,
+): PreviewContentManifestArtifact {
+  return parseWithContract(
+    "preview content manifest",
+    previewContentManifestArtifactSchema,
+    value,
+  );
 }
 
-export interface AssetArtifact {
-  readonly id: string;
-  readonly logicalPath: string;
-  /** POSIX path relative to the artifact root; never a public URL. */
-  readonly artifactPath: string;
-  readonly kind: "image" | "video" | "audio" | "font" | "download";
-  readonly mediaType: string;
-  readonly hash: string;
-  readonly bytes: number;
-  readonly width?: number;
-  readonly height?: number;
+export function parsePublishedContentManifest(
+  value: unknown,
+): PublishedContentManifestArtifact {
+  return parseWithContract(
+    "published content manifest",
+    publishedContentManifestArtifactSchema,
+    value,
+  );
 }
 
-export interface RouteClaimArtifact {
-  readonly route: string;
-  readonly ownerKind: "blog" | "post" | "managed-page" | "system";
-  readonly ownerId: string;
-  readonly artifactPath: string;
+export function parsePreviewPost(value: unknown): PreviewPostArtifact {
+  return parseWithContract("preview post artifact", previewPostArtifactSchema, value);
 }
 
-export interface HeadingArtifact {
-  readonly depth: 2 | 3 | 4 | 5 | 6;
-  readonly id: string;
-  /** Same-document fragment link for the matching generated heading element. */
-  readonly anchor: `#${string}`;
-  readonly text: string;
-  /** Nearest preceding heading with a lower depth; absent for root TOC items. */
-  readonly parentId?: string;
+export function parsePublishedPost(value: unknown): PublishedPostArtifact {
+  return parseWithContract(
+    "published post artifact",
+    publishedPostArtifactSchema,
+    value,
+  );
 }
 
-export interface EmbedPluginReferenceArtifact {
-  readonly id: string;
-  readonly version: string;
-  readonly configurationHash: string;
+export function parsePreviewWebManifest(
+  value: unknown,
+): WebManifestArtifact<"preview"> {
+  return parseWithContract(
+    "preview web manifest",
+    previewWebManifestArtifactSchema,
+    value,
+  );
 }
 
-export type EmbedCspDirectiveArtifact =
-  | "frame-src"
-  | "script-src"
-  | "connect-src"
-  | "img-src"
-  | "style-src"
-  | "font-src"
-  | "media-src"
-  | "worker-src";
-
-export interface EmbedCspRequirementArtifact {
-  readonly directive: EmbedCspDirectiveArtifact;
-  readonly origins: readonly string[];
+export function parsePublishedWebManifest(
+  value: unknown,
+): WebManifestArtifact<"production"> {
+  return parseWithContract(
+    "published web manifest",
+    publishedWebManifestArtifactSchema,
+    value,
+  );
 }
 
-export interface EmbedSecurityArtifact {
-  readonly csp: readonly EmbedCspRequirementArtifact[];
-  readonly iframePermissions: readonly string[];
+export function parsePreviewSearchManifest(
+  value: unknown,
+): SearchManifestArtifact<"preview"> {
+  return parseWithContract(
+    "preview search manifest",
+    previewSearchManifestArtifactSchema,
+    value,
+  );
 }
 
-export interface ExternalEmbedArtifact {
-  readonly id: string;
-  readonly postId: string;
-  readonly pluginId: string;
-  readonly pluginVersion: string;
-  readonly directiveName: string;
-  readonly provider: string;
-  readonly kind: string;
-  readonly title: string;
-  readonly canonicalUrl: string;
-  readonly fallbackText: string;
-  readonly searchableText: string;
-  readonly clientMode: "none" | "progressive";
-  readonly privacyMode:
-    | "local-only"
-    | "external-request"
-    | "consent-required";
-  readonly clientModuleArtifactPath?: string;
-  readonly security: EmbedSecurityArtifact;
-  readonly outputHash: string;
+export function parsePublishedSearchManifest(
+  value: unknown,
+): SearchManifestArtifact<"production"> {
+  return parseWithContract(
+    "published search manifest",
+    publishedSearchManifestArtifactSchema,
+    value,
+  );
 }
 
-interface PostSummaryFields {
-  readonly id: string;
-  readonly translationKey: string;
-  readonly language: SupportedLanguage;
-  readonly originalLanguage: SupportedLanguage;
-  readonly translationStatus: TranslationStatus;
-  readonly authorshipDisclosure: PostAuthorshipDisclosureArtifact;
-  readonly slug: string;
-  readonly route: string;
-  readonly category: string;
-  readonly title: string;
-  readonly description: string;
-  readonly tags: readonly string[];
-  readonly createdAt: string;
-  readonly updatedAt?: string;
-  readonly excerpt: string;
-  readonly readingMinutes: number;
-  readonly representativeImage: RepresentativeImageMode;
-  readonly cover?: PostImageArtifact;
-  readonly socialImage?: PostImageArtifact;
-  readonly alternates: readonly LanguageAlternateArtifact[];
+export function parseManagedPageSourceConfig(
+  value: unknown,
+): ManagedPageSourceConfig {
+  return parseWithContract(
+    "managed page source",
+    managedPageSourceConfigSchema,
+    value,
+  );
 }
 
-export interface PreviewPostSummaryArtifact extends PostSummaryFields {
-  readonly status: PublicationStatus;
+export function parsePreviewManagedPageManifest(
+  value: unknown,
+): PreviewManagedPageManifestArtifact {
+  return parseWithContract(
+    "preview managed-page manifest",
+    previewManagedPageManifestArtifactSchema,
+    value,
+  );
 }
 
-export interface PublishedPostSummaryArtifact extends PostSummaryFields {
-  readonly status: "published";
+export function parsePublishedManagedPageManifest(
+  value: unknown,
+): PublishedManagedPageManifestArtifact {
+  return parseWithContract(
+    "published managed-page manifest",
+    publishedManagedPageManifestArtifactSchema,
+    value,
+  );
 }
 
-interface PostBodyFields {
-  /** Sanitized, semantic, unstyled HTML. It must contain no executable code. */
-  readonly bodyHtml: string;
-  /** Ordered, presentation-neutral source for the post table of contents. */
-  readonly headings: readonly HeadingArtifact[];
-  readonly assetIds: readonly string[];
-  readonly embedIds: readonly string[];
-  readonly manualRelatedSlugs: readonly string[];
-  readonly sourceHash: string;
+export function parsePreviewDiscoveryManifest(
+  value: unknown,
+): DiscoveryManifestArtifact<"preview"> {
+  return parseWithContract(
+    "preview discovery manifest",
+    previewDiscoveryManifestArtifactSchema,
+    value,
+  );
 }
 
-export interface PreviewPostArtifact
-  extends PreviewPostSummaryArtifact,
-    PostBodyFields {}
-
-export interface PublishedPostArtifact
-  extends PublishedPostSummaryArtifact,
-    PostBodyFields {}
-
-export interface CategoryArtifact {
-  readonly id: string;
-  readonly language: SupportedLanguage;
-  readonly label: string;
-  readonly postIds: readonly string[];
+export function parsePublishedDiscoveryManifest(
+  value: unknown,
+): DiscoveryManifestArtifact<"production"> {
+  return parseWithContract(
+    "published discovery manifest",
+    publishedDiscoveryManifestArtifactSchema,
+    value,
+  );
 }
 
-export interface TagArtifact {
-  readonly id: string;
-  readonly language: SupportedLanguage;
-  readonly label: string;
-  readonly postIds: readonly string[];
+export function parseReleaseManifest(value: unknown): ReleaseManifestArtifact {
+  return parseWithContract("release manifest", releaseManifestArtifactSchema, value);
 }
 
-export interface SearchDocumentMetadataArtifact {
-  readonly postId: string;
-  readonly language: SupportedLanguage;
-  readonly originalLanguage: SupportedLanguage;
-  readonly route: string;
-  readonly title: string;
-  readonly description: string;
-  readonly category: string;
-  readonly tags: readonly string[];
-  readonly eligible: boolean;
-}
-
-interface ContentManifestFields<PostSummary> {
-  readonly languages: readonly SupportedLanguage[];
-  readonly posts: readonly PostSummary[];
-  readonly categories: readonly CategoryArtifact[];
-  readonly tags: readonly TagArtifact[];
-  readonly relatedPostIds: Readonly<Record<string, readonly string[]>>;
-  readonly searchDocuments: readonly SearchDocumentMetadataArtifact[];
-  readonly assets: readonly AssetArtifact[];
-  readonly embeds: readonly ExternalEmbedArtifact[];
-  readonly usedEmbedPlugins: readonly EmbedPluginReferenceArtifact[];
-  readonly embedPolicyHash: string;
-  readonly routes: readonly RouteClaimArtifact[];
-}
-
-export interface PreviewContentManifestArtifact
-  extends ContentManifestFields<PreviewPostSummaryArtifact> {
-  readonly provenance: ArtifactProvenance<
-    ContentArtifactSchemaVersion,
-    "preview"
-  >;
-}
-
-export interface PublishedContentManifestArtifact
-  extends ContentManifestFields<PublishedPostSummaryArtifact> {
-  readonly provenance: ArtifactProvenance<
-    ContentArtifactSchemaVersion,
-    "production"
-  >;
-}
-
-export interface WebManifestArtifact<Mode extends BuildMode> {
-  readonly provenance: ArtifactProvenance<WebArtifactSchemaVersion, Mode>;
-  readonly contentInputHash: string;
-  readonly routes: readonly RouteClaimArtifact[];
-  readonly files: readonly string[];
-  readonly routesByLanguage: Readonly<
-    Record<SupportedLanguage, readonly string[]>
-  >;
-}
-
-export interface SearchManifestArtifact<Mode extends BuildMode> {
-  readonly provenance: ArtifactProvenance<SearchArtifactSchemaVersion, Mode>;
-  readonly webInputHash: string;
-  readonly indexedPostIdsByLanguage: Readonly<
-    Record<SupportedLanguage, readonly string[]>
-  >;
-  readonly files: readonly string[];
-}
-
-export interface ManagedPageSourceConfig {
-  readonly schemaVersion: 1;
-  readonly id: string;
-  readonly route: string;
-  readonly kind: ManagedPageKind;
-  readonly entry: ManagedPageEntrySourceConfig;
-  readonly status: PublicationStatus;
-  readonly language: SupportedLanguage;
-  readonly translationKey?: string;
-  readonly title: string;
-  readonly description: string;
-  readonly returnTo: string;
-  readonly robots: RobotsPolicy;
-  readonly sitemap: boolean;
-  readonly security: ManagedPageSecuritySourceConfig;
-}
-
-export interface ManagedPageEntrySourceConfig {
-  readonly format: ManagedPageEntryFormat;
-  readonly path: string;
-}
-
-export interface ManagedPageExternalOriginsSourceConfig {
-  readonly frame: readonly string[];
-  readonly script: readonly string[];
-  readonly connect: readonly string[];
-  readonly image: readonly string[];
-  readonly style: readonly string[];
-  readonly font: readonly string[];
-  readonly media: readonly string[];
-}
-
-export interface ManagedPageSecuritySourceConfig {
-  readonly externalOrigins: ManagedPageExternalOriginsSourceConfig;
-  readonly iframePermissions: readonly string[];
-}
-
-interface ManagedPageArtifactFields {
-  readonly id: string;
-  readonly route: string;
-  readonly kind: ManagedPageKind;
-  readonly language: SupportedLanguage;
-  readonly translationKey?: string;
-  readonly title: string;
-  readonly description: string;
-  readonly returnTo: string;
-  readonly robots: RobotsPolicy;
-  readonly sitemap: boolean;
-  readonly entryArtifactPath: string;
-  readonly security: EmbedSecurityArtifact;
-  readonly assets: readonly AssetArtifact[];
-  readonly sourceHash: string;
-  readonly alternates: readonly LanguageAlternateArtifact[];
-}
-
-export interface PreviewManagedPageArtifact
-  extends ManagedPageArtifactFields {
-  readonly status: PublicationStatus;
-}
-
-export interface PublishedManagedPageArtifact
-  extends ManagedPageArtifactFields {
-  readonly status: "published";
-}
-
-export interface PreviewManagedPageManifestArtifact {
-  readonly provenance: ArtifactProvenance<
-    ManagedPageArtifactSchemaVersion,
-    "preview"
-  >;
-  readonly pages: readonly PreviewManagedPageArtifact[];
-  readonly routes: readonly RouteClaimArtifact[];
-}
-
-export interface PublishedManagedPageManifestArtifact {
-  readonly provenance: ArtifactProvenance<
-    ManagedPageArtifactSchemaVersion,
-    "production"
-  >;
-  readonly pages: readonly PublishedManagedPageArtifact[];
-  readonly routes: readonly RouteClaimArtifact[];
-}
-
-export interface DiscoveryManifestArtifact<Mode extends BuildMode> {
-  readonly provenance: ArtifactProvenance<
-    DiscoveryArtifactSchemaVersion,
-    Mode
-  >;
-  readonly contentInputHash: string;
-  readonly webInputHash: string;
-  readonly managedPageInputHash: string;
-  readonly crawlerPolicyHash: string;
-  readonly includedRoutes: readonly string[];
-  readonly robotsRoute: string;
-  readonly llmsRoute: string;
-  readonly sitemapRoute: string;
-  readonly feedRoutesByLanguage: Readonly<
-    Record<SupportedLanguage, string>
-  >;
-  readonly routes: readonly RouteClaimArtifact[];
-  readonly files: readonly string[];
-}
-
-export interface ReleaseManifestArtifact {
-  readonly provenance: ArtifactProvenance<
-    ReleaseArtifactSchemaVersion,
-    "production"
-  >;
-  readonly webInputHash: string;
-  readonly searchInputHash: string;
-  readonly managedPageInputHash: string;
-  readonly discoveryInputHash: string;
-  readonly routes: readonly RouteClaimArtifact[];
-  readonly files: readonly string[];
-}
+export { generateContractJsonSchemas } from "./json-schema.ts";
