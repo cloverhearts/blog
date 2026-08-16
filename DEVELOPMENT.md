@@ -77,12 +77,11 @@ being described as passed.
 - A preview server serves an assembled preview directory that cannot be uploaded
   by the production Pages workflow.
 - Representative pages are checked with and without JavaScript before a release.
-- Preview checks cover English, Korean, and Japanese routes plus explicit,
-  stored, browser-derived, unsupported, and no-storage language selection;
-  automatic navigation is limited to one existing alternate from an unprefixed
-  Korean route and cannot loop. Explicit `/en/` and `/ja/` visits remain on the
-  requested document; optional post-language context may offer another static
-  sibling without redirecting.
+- Preview checks cover direct English, Korean, and Japanese routes, explicit
+  language-link selection, partial translation groups, and the active-language,
+  English, then Korean post-link fallback. No browser or stored preference may
+  redirect a requested document; optional post-language context may link only
+  the authored original.
 - Local and preview builds do not collect analytics even when a developer has a
   Measurement ID in their shell; the production web build is the only eligible
   mode and still waits for explicit reader consent.

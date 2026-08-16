@@ -9,44 +9,48 @@ export const SUPPORTED_LANGUAGES = [
 ] as const satisfies readonly SupportedLanguage[];
 
 export const DEFAULT_LANGUAGE: SupportedLanguage = "ko";
+export const POST_NAVIGATION_FALLBACK_LANGUAGES = [
+  "en",
+  "ko",
+] as const satisfies readonly SupportedLanguage[];
 
-const LANGUAGE_SET = new Set<string>(SUPPORTED_LANGUAGES);
-
-function asSupportedLanguage(value: string | null | undefined) {
-  if (!value) return null;
-  const [primary] = value.trim().toLowerCase().split("-");
-  return primary && LANGUAGE_SET.has(primary)
-    ? (primary as SupportedLanguage)
-    : null;
+export interface LocalizedPostLinkCandidate {
+  readonly language: SupportedLanguage;
+  readonly route: string;
 }
 
-export function detectBrowserLanguage(
-  browserLanguages: readonly string[],
-): SupportedLanguage {
-  for (const language of browserLanguages) {
-    const supported = asSupportedLanguage(language);
-    if (supported) return supported;
+export interface ResolvedPostNavigationLink
+  extends LocalizedPostLinkCandidate {
+  readonly usedFallback: boolean;
+}
+
+/**
+ * Resolve a published post-group link without consulting browser state.
+ * Prefer the active page language, then English, then Korean. Callers omit the
+ * navigation item when no candidate matches this policy.
+ */
+export function resolvePostNavigationLink(
+  currentLanguage: SupportedLanguage,
+  candidates: readonly LocalizedPostLinkCandidate[],
+): ResolvedPostNavigationLink | null {
+  const priority = [
+    currentLanguage,
+    ...POST_NAVIGATION_FALLBACK_LANGUAGES.filter(
+      (language) => language !== currentLanguage,
+    ),
+  ];
+
+  for (const language of priority) {
+    const candidate = candidates.find((entry) => entry.language === language);
+    if (candidate) {
+      return {
+        ...candidate,
+        usedFallback: language !== currentLanguage,
+      };
+    }
   }
-  return DEFAULT_LANGUAGE;
-}
 
-export interface LanguagePreferenceInput {
-  readonly explicitLanguage?: string | null;
-  readonly storedLanguage?: string | null;
-  readonly browserLanguages?: readonly string[];
-}
-
-/** Explicit choice wins, then stored choice, then browser language, then Korean. */
-export function resolveLanguagePreference({
-  explicitLanguage,
-  storedLanguage,
-  browserLanguages = [],
-}: LanguagePreferenceInput): SupportedLanguage {
-  return (
-    asSupportedLanguage(explicitLanguage) ??
-    asSupportedLanguage(storedLanguage) ??
-    detectBrowserLanguage(browserLanguages)
-  );
+  return null;
 }
 
 /** Resolve one locale-neutral logical route without knowing a deployment base path. */

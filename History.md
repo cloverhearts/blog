@@ -17,6 +17,46 @@ unless it changes shared content behavior, routes, schemas, or project rules.
 - Compatibility / follow-up: <migration, known limits, or none>
 ```
 
+## 2026-08-17T00:07:35+09:00 — Multilingual publication and deterministic post-link fallback
+
+- Change type: Localization/discovery policy, publication contract,
+  configuration, provisional implementation, UX/SEO/architecture guides, ADR,
+  tests, and policy traceability.
+- Reason: Treat Korean, English, and Japanese variants as independently
+  discoverable static publications instead of browser-language conveniences,
+  preserve every intentionally requested URL, and provide deterministic post
+  navigation when the active-language translation is unavailable.
+- Scope: Manual-only language switching; partial translation publication;
+  active-language, English, then Korean collection/related-link fallback;
+  fallback-language labeling; source-before-translation and owner-review
+  validation; localized UI copy; content, publishing, SEO, UX, design,
+  architecture, development, deployment, agent, README, and compiler guides;
+  ADR 0008; policy coverage; localization and site-baseline tests.
+- Result: Removed the browser/stored-language navigation bootstrap and optional
+  browser-preferred post context. Direct URLs now remain stable and language
+  changes use published normal links only. The authored original may publish
+  independently; each reviewed translation may follow without requiring all
+  three languages at once. Post-group navigation resolves one target in active
+  language, English, then Korean order, omits groups with no eligible target,
+  and requires cross-language labels. `config/site.yaml` advances to schema
+  version 6; the variable-length alternate artifact keeps content schema
+  version 7. ADR 0008 supersedes ADR 0007's browser-selection and complete-group
+  publication clauses while retaining Korean-default routes.
+- Validation: All 52 Vitest contract tests across 9 files passed with zero
+  failures, including active-language/English/Korean fallback, missing-target
+  omission, independent reviewed-translation publication, original-first and
+  owner-review rejection, manual selection configuration, route prefixes,
+  original linking, and localized message parity. The dedicated policy test
+  passed 1 of 1 case, strict TypeScript checking passed, 13 YAML and 13 JSON
+  files parsed, 45 Markdown files passed local-link and balanced-fence checks,
+  and the Git whitespace check passed.
+- Compatibility / follow-up: No published post routes exist, so no redirect is
+  required. Full compiler/list renderer, reciprocal partial-group `hreflang`,
+  fallback-summary markup, Pagefind/RSS integration, Astro output, and deployed
+  Pages checks remain implementation work. Validation ran with the available
+  local Node.js 25.2.1/npm 11.18.0; the committed production pins remain Node.js
+  24.19.0/npm 11.17.0 and CI must run the pinned versions.
+
 ## 2026-08-16T23:13:00+09:00 — Korean-default routing and Vitest handoff
 
 - Change type: Localization decision, route policy, optional post UX metadata,

@@ -90,8 +90,8 @@ Rules:
   static files and self canonicals.
 - `404.html` is a complete Korean static document containing navigation back
   to the blog and must work without JavaScript. Localized `/en/404/` and
-  `/ja/404/` documents are also emitted; optional local navigation may choose
-  one based on the requested path or browser language.
+  `/ja/404/` documents are also emitted. Each remains on its requested route
+  and provides explicit localized recovery and language links.
 - Files are regular files. Symbolic and hard links are forbidden.
 - Asset filenames are content-addressed where practical. HTML and discovery
   files are not assumed to be immutable.

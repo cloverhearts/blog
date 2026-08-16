@@ -32,11 +32,10 @@ but the links remain present and usable when JavaScript or CSS is unavailable.
 ## Entry and language flow
 
 - Direct URLs always open the requested static document.
-- An unprefixed Korean route may navigate once to an existing browser-preferred
-  English or Japanese alternate as defined by `I18N.md`.
-- A prefixed route, explicit language choice, or stored choice is respected.
-- The language navigation remains visible after automatic selection and always
-  uses canonical alternate URLs.
+- Browser language, stored preference, IP location, and analytics state never
+  redirect or replace the requested document.
+- The language navigation always remains visible, uses canonical alternate
+  URLs, and lists only published variants. Readers change language explicitly.
 - Korean and English labels receive the first human UX review; Japanese labels
   remain complete and are verified for layout and meaning before release.
 
@@ -55,6 +54,12 @@ Collection pages follow one pattern:
   and tags;
 - normal previous/next pagination links, with page one at the collection root;
 - empty states that link back to broader discovery surfaces.
+
+Each logical post appears at most once in a collection. Its link and summary
+use the current page language when that variant is published, otherwise
+English, otherwise Korean. A cross-language fallback is visibly labeled and
+uses matching `lang` metadata; if none of those variants exists, the item is
+omitted.
 
 Categories communicate editorial grouping. Tags communicate cross-category
 topics. Archive communicates chronology. These concepts are not combined into
@@ -79,12 +84,9 @@ highlighting, and similar conveniences are optional enhancements and never
 replace the static structure.
 
 The optional language-context region sits after the article body when the
-chosen UX enables it. It may identify and link the authored original and may
-offer the same post in the reader's browser-preferred language when that sibling
-exists and differs from the current page. It never exposes translation review
-state, never redirects an explicitly requested `/en/` or `/ja/` route, and is
-not required for publication. The persistent real-link language navigation is
-the static and no-JavaScript fallback.
+chosen UX enables it. It may identify and link the authored original. It never
+exposes translation review state, redirects the current route, or replaces the
+persistent real-link language navigation used to change languages.
 
 ## Search flow
 
@@ -130,8 +132,8 @@ otherwise.
 
 ## Enhancement boundary
 
-The baseline requires JavaScript only for browser-language navigation, local
-search, and optional consented analytics. All other listed flows work as static
+The baseline requires JavaScript only for local search and optional consented
+analytics. All other listed flows work as static
 HTML links and forms or expose a useful static fallback. A future visual system
 may change presentation but not this flow without updating this contract,
 tests, and `History.md` together.

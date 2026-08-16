@@ -54,15 +54,17 @@ The full rationale and replacement rules are in
 - Korean: `/` and other unprefixed routes; default and no-JavaScript fallback.
 - English: `/en/`.
 - Japanese: `/ja/`.
-- An unprefixed route may navigate once to an existing browser-preferred static
-  alternate through local progressive enhancement. Prefixed and explicitly
-  selected routes are respected.
+- A requested route never redirects or changes content based on browser
+  language or stored preference. Language changes use published static
+  alternate links only.
 - Every post artifact carries its current language, original language, and
-  validated alternates. A post UX may optionally use them after the body to
-  link the original and an existing browser-preferred sibling; review state
-  remains artifact metadata and explicit locale routes never auto-redirect.
+  published validated alternates. A post UX may optionally use them after the
+  body to link the original; review state remains artifact metadata.
+- Post lists, taxonomies, archives, pagination, and related links resolve a
+  group to the active language, then English, then Korean, omitting a group
+  with no eligible published target and labeling every cross-language fallback.
 
-See ADR 0007 and `I18N.md`.
+See ADR 0008 and `I18N.md`.
 See ADR 0006, `DESIGN.md`, `UX_FLOW.md`, and
 `config/performance-budgets.yaml` for the production/UX baseline.
 

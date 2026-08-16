@@ -14,8 +14,10 @@ Accepted records:
 - `0003-comments-deferred.md`
 - `0004-implementation-stack.md`
 - `0006-production-ux-and-capacity-baseline.md`
-- `0007-korean-default-language-context.md`
+- `0008-multilingual-publication-and-link-fallback.md`
 
 Superseded records:
 
 - `0005-browser-language-and-original-reference.md` — superseded by ADR 0007
+- `0007-korean-default-language-context.md` — browser selection and publication
+  semantics superseded by ADR 0008; Korean-default route ownership retained

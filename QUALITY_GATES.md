@@ -28,12 +28,14 @@ merely because it compiles or looks correct in one browser.
 - Post TOC navigation is semantic initial HTML; every fragment link resolves to
   exactly one matching heading ID and works without JavaScript.
 - Category, tag, archive, and post lists expose normal links without JavaScript.
-- English, Korean, and Japanese routes each contain complete same-language
-  content/navigation in initial HTML; language switching uses normal links.
+- English, Korean, and Japanese routes each contain complete localized page
+  chrome and document content in initial HTML; language switching uses normal
+  links. A navigation-only fallback summary may use another language only when
+  it is explicitly labeled as required by `I18N.md`.
 - Every post artifact exposes a resolvable original route and validated language
-  alternates. Optional post-body language context may link the original and an
-  existing browser-preferred sibling, but no post chrome exposes translation
-  review state and its absence is not a release failure.
+  alternates. Optional post-body language context may link the original, but no
+  post chrome exposes translation review state and its absence is not a release
+  failure.
 - Every post carries one English owner-declared original-work authorship record
   in document-head metadata, without a matching visually hidden body element.
 - Search explains its client-side requirement and offers normal taxonomy/archive
@@ -54,9 +56,8 @@ merely because it compiles or looks correct in one browser.
   sticky UI.
 - The language switcher announces its purpose/current language, uses text rather
   than flags alone, and remains usable with keyboard, touch, and JavaScript off.
-- Browser-language navigation occurs at most once from an unprefixed Korean route to
-  an existing static alternate, never loops, and never removes the persistent
-  language links.
+- Browser language never redirects or replaces a requested document. Language
+  changes use persistent, keyboard-accessible normal links only.
 - Content remains usable at 200% zoom and does not require horizontal scrolling
   for normal prose.
 - Touch targets, color contrast, reduced motion, and forced/system color modes
@@ -117,8 +118,11 @@ merely because it compiles or looks correct in one browser.
 - A route change has an explicit compatibility entry and never silently breaks a
   published URL.
 - Each localized page has the correct `lang`, a self canonical, reciprocal
-  `hreflang` alternates, and Korean `x-default`; translation groups cannot be
-  partially published.
+  published `hreflang` alternates, and a resolvable `x-default`; partial
+  translation publication is valid when the authored original is published.
+- Post navigation resolves each group once in active-language, English, then
+  Korean order. Cross-language fallbacks are visibly and programmatically
+  labeled, and groups with no eligible target do not produce broken links.
 - Post artifacts and structured data agree on `originalLanguage`; translated
   variants are owner-reviewed before publication, `BlogPosting` records point
   `translationOfWork` to the original canonical. Any optional language-context
@@ -169,8 +173,9 @@ Before launch, automated and manual checks cover at least:
   `4:3`, and `16:9` derivatives are checked for meaningful crops at small
   display size and under both deployment base paths;
 - first and later pages of global, category, tag, and archive listings;
-- browser languages `ko-KR`, `ja-JP`, and an unsupported locale; explicit and
-  stored language choices; missing-storage and JavaScript-disabled behavior;
+- direct Korean, English, and Japanese URLs; explicit language-link choices;
+  partial translation groups, fallback-link order, and JavaScript-disabled
+  behavior;
 - managed document, presentation, and application fixtures;
 - desktop and narrow mobile viewport;
 - keyboard-only, reduced-motion, print, and JavaScript-disabled modes;

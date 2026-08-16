@@ -36,18 +36,17 @@ Changing this application may rerender the site, but must not require edits to p
 
 The application renders a complete static route set for `en`, `ko`, and `ja`.
 `src/i18n/messages.ts` owns framework UI copy, while artifacts/config own post
-text and taxonomy/navigation labels. On an unprefixed route,
-`src/i18n/language-preference.ts` may select one existing preferred-language
-alternate for a same-site `location.replace` navigation. It cannot translate,
-fetch, or replace page content in place, and prefixed routes are respected.
-Every page includes real alternate links and Korean remains the unprefixed
-no-JavaScript fallback.
+text and taxonomy/navigation labels. Requested documents never redirect or
+replace content based on browser language or stored preference. Every page
+includes real published alternate links and Korean remains the unprefixed
+no-JavaScript fallback. Post navigation uses the shared active-language,
+English, then Korean resolver and labels a cross-language fallback.
 
 `src/i18n/translation-origin.ts` compares the current artifact language with
-required `originalLanguage`, resolves the original from validated alternates,
-and can derive an existing browser-preferred sibling. This is
-presentation-neutral metadata for optional post-body language context; it never
-accepts a handwritten URL, exposes review state, or redirects an explicit route.
+required `originalLanguage` and resolves the original from validated published
+alternates. This is presentation-neutral metadata for optional post-body
+language context; it never accepts a handwritten URL, exposes review state, or
+redirects the current route.
 
 This application emits final static blog HTML to `.artifacts/web/<mode>/`. Search indexing happens afterward in `packages/search-indexer/` so indexed text matches the delivered HTML.
 

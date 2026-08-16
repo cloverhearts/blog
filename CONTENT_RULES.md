@@ -13,8 +13,8 @@ A valid post must:
 - remain readable without client-side JavaScript;
 - be deterministic enough for category, tag, recommendation, archive, and final-HTML search indexes to be generated at build time;
 - keep drafts structurally outside production artifacts and releases.
-- publish complete English, Korean, and Japanese static variants without
-  requiring JavaScript to read any variant.
+- publish each reviewed English, Korean, or Japanese variant as an independent,
+  discoverable static document without requiring JavaScript to read it.
 
 ## 2. Source material policy
 
@@ -61,8 +61,8 @@ Rules:
 - Use an existing category directory when one accurately fits the post.
 - `<language>` is exactly `en`, `ko`, or `ja`. The directory is the language
   source of truth; do not repeat it in frontmatter.
-- A post translation group uses the same category, filename, slug, and
-  `translationKey` in all three language directories.
+- Available variants in a post translation group use the same category,
+  filename, slug, and `translationKey` in their language directories.
 - Create a new category only when no existing category is suitable.
 - Category and slug identifiers use lowercase ASCII kebab-case: `a-z`, `0-9`, and `-` only.
 - Use `YYYY-MM-DD`, not underscores, in new post filenames.
@@ -131,8 +131,9 @@ draft: true
 ```
 
 After the owner reviews and approves that translation, use
-`translationStatus: "reviewed"`; publish only when the complete group also
-satisfies the representative-image approval and every other production rule.
+`translationStatus: "reviewed"`; publish that variant when it satisfies the
+representative-image approval and every other production rule. Another missing
+or draft translation does not block it.
 
 ### Optional fields
 
@@ -199,38 +200,38 @@ report the conflict, and request an explicit provenance-policy/schema decision.
 ### Translation-group metadata
 
 `translationKey`, `originalLanguage`, `slug`, category, relative filename,
-tags, `createdAt`, `updatedAt`, `representativeImage`, `draft`, and `related`
-must be identical across the three variants. `translationStatus`, `title`,
-`description`, body text, headings, cover and social-image
+tags, `createdAt`, `updatedAt`, `representativeImage`, and `related`
+must be identical across available variants. `translationStatus`, `draft`,
+`title`, `description`, body text, headings, cover and social-image
 references/alternative text, media alternative text, captions, and descriptive
-link text may be localized. A
-published group is all-or-nothing: production fails if any `en`, `ko`, or `ja`
-variant is absent, draft, or structurally inconsistent.
+link text may be localized. The authored original must exist and be published
+before a translation is published. Production may contain any independently
+approved subset of translations; unpublished variants do not appear in
+alternates, sitemap, RSS, or language switching.
 
 The variant whose path language equals `originalLanguage` must use
 `translationStatus: "source"`; every other variant must use `ai-draft` or
-`reviewed`. A published group requires `reviewed` on every translated variant.
-New AI translations remain `ai-draft` and keep all three group files
-`draft: true` until the owner reviews the translations and approves publication.
+`reviewed`. Every published translated variant requires `reviewed`. New AI
+translations remain `ai-draft` and `draft: true` until the owner reviews that
+specific translation and approves its publication.
 
 `translationStatus` is internal publication provenance, not reader-facing post
 chrome. Every post artifact exposes its current language, `originalLanguage`,
-and validated language alternates as derived metadata. A renderer may use these
-fields for optional language context after the article body: the original
-language/link and, when different and available, a link to the same post in the
-reader's resolved browser language. This UX is not required post chrome and
-must never expose review state or redirect an explicitly requested language
-route. Authors do not add a translation banner, nuance warning, review message,
-browser preference, or handwritten original URL to frontmatter or body
-Markdown.
+and published validated language alternates as derived metadata. A renderer may
+use these fields for optional original-language context after the article body
+and for an explicit real-link language switcher. No browser language is read or
+used to redirect a document. Authors do not add a translation banner, nuance
+warning, review message, browser preference, or handwritten original URL to
+frontmatter or body Markdown.
 
-Korean is the configured authoring source and unprefixed public default.
-When a Korean source is created or materially revised, create/update English
-and Japanese variants in the same task. Preserve facts, code, identifiers,
+Korean is the configured authoring source and unprefixed public default. When a
+Korean source is created or materially revised, create/update English and
+Japanese draft variants in the same task. Preserve facts, code, identifiers,
 URLs, citations, asset references, and explicit heading IDs. When ambiguity
-prevents a trustworthy translation, keep all variants as drafts and report the
-uncertainty instead of inventing content. The complete workflow and routing
-rules are in `I18N.md`.
+prevents a trustworthy translation, keep the affected translation as a draft
+and report the uncertainty instead of inventing content; this does not block a
+valid reviewed source or sibling. The complete workflow and routing rules are
+in `I18N.md`.
 
 `originalLanguage` records authorship origin, not the visitor's preferred
 language, the file's current language, or the language used by an editing tool.
@@ -242,8 +243,10 @@ Legacy `docs/<category>/<date>-<slug>.md` paths are no longer valid. Migrate one
 by placing the source under `docs/ko/` with the same category/filename, adding
 `translationKey`, `originalLanguage`, `translationStatus`, and an explicitly
 approved `representativeImage`, converting tags to configured IDs, and creating matching
-`docs/en/` and `docs/ja/` variants before production. Preserve an already
-published slug; add redirects only if the actual public URL changes.
+`docs/en/` and `docs/ja/` draft variants for review. The Korean original may be
+published independently; each translation enters production only after review.
+Preserve an already published slug; add redirects only if the actual public URL
+changes.
 
 ## 5. Markdown body
 
@@ -504,10 +507,11 @@ Authors and content agents must not manually maintain generated indexes. Build o
 
 The content compiler derives:
 
-- language-scoped category post counts and lists;
-- language-scoped tag post counts and lists;
-- language-scoped archive groupings;
-- same-language automatic related-post scores;
+- translation-group category post counts and localized/fallback-resolved lists;
+- translation-group tag post counts and localized/fallback-resolved lists;
+- translation-group archive groupings;
+- translation-group automatic related-post scores with localized link
+  resolution;
 - reading time and excerpts;
 - ordered heading/anchor metadata for static table-of-contents navigation;
 - asset hashes, dimensions, variants, stable IDs, and artifact-relative paths;
@@ -516,9 +520,12 @@ The content compiler derives:
 - optional post-owned cover/social-image records; final Open Graph derivatives,
   `1:1`, `4:3`, and `16:9` Article image derivatives, and tags remain blog
   web-build responsibilities;
-- translation-group alternates, route claims, and language-scoped search
-  eligibility metadata; together with `originalLanguage`, these alternates are
-  the complete presentation-neutral input for optional post-language context.
+- published translation-group alternates, route claims, language-scoped search
+  eligibility metadata, and deterministic post-navigation targets resolved in
+  active-language, English, then Korean order; together with
+  `originalLanguage`, these alternates are the complete
+  presentation-neutral input for explicit language switching and optional
+  original-language context.
 - the validated shared original-work authorship/AI-assistance declaration for
   every post variant.
 
@@ -688,10 +695,13 @@ Until an automated `content:check` command exists, verify all of the following b
   `socialImage` or `cover` record exists when applicable.
 - The original variant is `translationStatus: source`; every translated variant
   is `ai-draft` or `reviewed`, and no `ai-draft` variant is published.
-- Every variant carries a validated original route and complete language
-  alternates. If optional post-language context is rendered, its original and
-  browser-preferred links resolve to those alternates and review state is not
-  rendered as post chrome.
+- Every production variant carries a validated published original route and
+  all published language alternates. If optional post-language context is
+  rendered, its original link resolves to those alternates and review state is
+  not rendered as post chrome.
+- Post list, taxonomy, archive, pagination, and related links prefer the active
+  language, then English, then Korean; an unmatched group is omitted and every
+  cross-language fallback is visibly and programmatically labeled.
 - Category, filename, filename date, slug, and `createdAt` are internally consistent.
 - The target post and asset paths do not overwrite existing content unintentionally.
 - There is no body-level `#` heading.
@@ -1159,11 +1169,12 @@ Changing an artifact contract requires coordinated updates to its producer, cons
 The runtime schemas in `packages/contracts/` will become the executable source of truth for cross-boundary artifact shapes. TypeScript types must be inferred from them, and producers and consumers must both validate at their respective write/read boundaries.
 
 The contract test suite must include valid and invalid posts, malicious markup,
-missing and escaping assets, all three translation variants, missing/mismatched
-translation groups, valid/invalid translation statuses, attempted publication
-of an AI-draft translation, locale routing, browser-preference navigation,
-redirect-loop prevention, original-route resolution, optional browser-language
-post-context metadata,
+missing and escaping assets, complete and partial translation groups,
+missing/mismatched translation groups, valid/invalid translation statuses,
+attempted publication of an AI-draft translation, locale routing, absence of
+browser-language redirects, active-language/English/Korean post-link fallback,
+missing-fallback omission, original-route resolution, optional
+original-language post-context metadata,
 localized taxonomy,
 English/Korean/Japanese search separation, Korean/Latin/`C++` heading anchors,
 generated-ID collisions, explicit anchors, skipped heading levels, unresolved

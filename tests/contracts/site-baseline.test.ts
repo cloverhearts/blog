@@ -22,11 +22,14 @@ function readYaml<T>(path: string): T {
 }
 
 interface SiteConfiguration {
+  readonly schemaVersion: number;
   readonly production: { readonly origin: string; readonly basePath: string };
   readonly languages: {
     readonly default: string;
     readonly source: string;
     readonly primaryExperience: readonly string[];
+    readonly browserSelection: string;
+    readonly postNavigationFallback: readonly string[];
     readonly supported: ReadonlyArray<{
       readonly id: string;
       readonly routePrefix: string;
@@ -51,8 +54,9 @@ interface NavigationConfiguration {
   }>;
 }
 
-test("pins the production origin, Korean default, and Korean-English UX priority", () => {
+test("pins production origin, Korean defaults, manual language selection, and fallback order", () => {
   const site = readYaml<SiteConfiguration>("config/site.yaml");
+  assert.equal(site.schemaVersion, 6);
   assert.deepEqual(site.production, {
     origin: "https://blog.cloverhearts.com",
     basePath: "",
@@ -60,6 +64,8 @@ test("pins the production origin, Korean default, and Korean-English UX priority
   assert.equal(site.languages.default, "ko");
   assert.equal(site.languages.source, "ko");
   assert.deepEqual(site.languages.primaryExperience, ["ko", "en"]);
+  assert.equal(site.languages.browserSelection, "manual-only");
+  assert.deepEqual(site.languages.postNavigationFallback, ["en", "ko"]);
 });
 
 test("keeps Japanese supported outside the primary design review pair", () => {

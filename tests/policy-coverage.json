@@ -10,15 +10,15 @@
         },
         {
           "path": "AGENTS.md",
-          "sha256": "4a948fdb50a283d4fee6431cdc9a2f2de842019e508ef3d9b1d22517a089b572"
+          "sha256": "5137c93668c4c917e8997c58958b48520d2d0a29ad4c21c66609e3a8d41433ae"
         },
         {
           "path": "QUALITY_GATES.md",
-          "sha256": "4671527f171b4dfcbdd5b1713e3c9cedbae860cac781d2d6b05bad83f7a839e8"
+          "sha256": "c929d634de4974ade30241053727f095bc8714e3f01b3f1eead28328b23cd25c"
         },
         {
           "path": "DEVELOPMENT.md",
-          "sha256": "a9a1eaf15192a956529e668b7a81071a2263546b1c0227f16fe4fad0bdd949b5"
+          "sha256": "17d25ef01cf358b112e50a9cc1e529cb25b397072232bba9d3be09f790b847e8"
         },
         {
           "path": "tests/contracts/policy-governance.test.ts",
@@ -78,7 +78,7 @@
         },
         {
           "path": "CONTENT_RULES.md",
-          "sha256": "db97e0fa2229dc999078d35b737c65d912427969b7e5be2e62118874f0088b23"
+          "sha256": "e933b62c010afe0c9b7a1a6caba4a1edd85a57d4e29f8cb62ad5547c8e9fb154"
         },
         {
           "path": "packages/project-config/src/content-provenance.ts",
@@ -114,12 +114,6 @@
           "cases": [
             "keeps authoring asset limits aligned with release budgets"
           ]
-        },
-        {
-          "path": "tests/contracts/i18n.test.ts",
-          "cases": [
-            "derives optional browser-language post metadata without redirecting"
-          ]
         }
       ]
     },
@@ -128,7 +122,7 @@
       "sources": [
         {
           "path": "IMPLEMENTATION_SPEC.md",
-          "sha256": "f6315219a70c87eacad2428eeeab3871964153c5204e43df1f49d946e63d2aee"
+          "sha256": "10c6fe41e361301095ff932e0ff15aa7d35c7b658ad01086465ace4f5ab261a6"
         },
         {
           "path": "decisions/0004-implementation-stack.md",
@@ -162,48 +156,46 @@
       ]
     },
     {
-      "id": "korean-default-browser-language-context",
+      "id": "multilingual-publication-and-link-fallback",
       "sources": [
         {
           "path": "I18N.md",
-          "sha256": "5a35ef48245b62e4ccffb1e55a6dd257506895c2356d7a6160e5574956a31930"
+          "sha256": "bae657552cbdca326e8a2077f10bd62ec81e9385a339700a9c91b80b235e6a40"
         },
         {
-          "path": "decisions/0007-korean-default-language-context.md",
-          "sha256": "6da072faa1830727ab564a4ab3c3f6425d19fd66736116be0271400a88b46f8d"
+          "path": "decisions/0008-multilingual-publication-and-link-fallback.md",
+          "sha256": "f9120fe38cddf6482755eca5a98e255841e7087d4cbcffb425725ee349f6a2fe"
         },
         {
           "path": "config/site.yaml",
-          "sha256": "89dd22e3eb13cee3d4154ef295ff8f76da7305a6db322c0351cc005438e88960"
+          "sha256": "3652e0210c9797d72b4f9f77bdc5248708df55d96d5006fea0d99f58bfca3b77"
         },
         {
           "path": "packages/project-config/src/i18n.ts",
-          "sha256": "f5b6297a997a03733491e2a9262407328d541e6d9ac29cbdb1f75a4e5f24ab30"
+          "sha256": "abaeba22e34d0a3e111d2364b92b6a3bdac7b04c5c820a9a898f10b33b1d8ce2"
         },
         {
-          "path": "apps/blog-web/src/i18n/language-preference.ts",
-          "sha256": "772177c4c5dd21709c0273606ffee1269f6e1e1f7c66a1ec501a7e36a31e51b4"
+          "path": "packages/content-compiler/src/translation-publication.ts",
+          "sha256": "150a57b61af0e68606c6b7741647cce9180ed5600e2a18ddeecd10000f5e91e0"
         },
         {
           "path": "apps/blog-web/src/i18n/translation-origin.ts",
-          "sha256": "baa781c8510d59efbbda364fe81bc334b8f4846092155b7e2e8e264472fbe411"
+          "sha256": "f2e63a1bb6f0cbad1e0843742414a645c60d3af42e6ea0ff62c8d75eec1a53b9"
         },
         {
           "path": "apps/blog-web/src/i18n/messages.ts",
-          "sha256": "6b68123fc4bfcf33ac05583d1c885c1ca3ea1d923c566e4f9e52848721003c0d"
+          "sha256": "175cd5992f89295ee14502724467904de67834d024b5c3922b939b01faf29aa2"
         }
       ],
       "tests": [
         {
           "path": "tests/contracts/i18n.test.ts",
           "cases": [
-            "uses Korean for unsupported browser languages",
-            "matches Korean and Japanese regional browser languages",
-            "explicit and stored preferences override browser detection",
             "resolves locale-prefixed routes while Korean remains unprefixed",
-            "selects an existing browser-language route for one automatic navigation",
-            "does not navigate when a browser-language translation is unavailable",
-            "stores an explicit language choice",
+            "resolves post navigation in the active language before fallbacks",
+            "falls back to English, then Korean, and otherwise omits the post link",
+            "publishes reviewed translation variants independently",
+            "rejects publication before the authored original or owner review",
             "provides the same non-empty UI message set for every language",
             "identifies translated variants and links them to the original",
             "rejects translation metadata when the declared original is absent",
@@ -214,7 +206,7 @@
         {
           "path": "tests/contracts/site-baseline.test.ts",
           "cases": [
-            "pins the production origin, Korean default, and Korean-English UX priority",
+            "pins production origin, Korean defaults, manual language selection, and fallback order",
             "keeps Japanese supported outside the primary design review pair",
             "uses unprefixed Korean and explicit English and Japanese route trees"
           ]
@@ -230,15 +222,15 @@
         },
         {
           "path": "DESIGN.md",
-          "sha256": "0cbff65e2f0dd109817b718f9cbbb080450caef8f87841a915560070784149f5"
+          "sha256": "82f1a42dee6426bc8270fcaa7d752180293419f1249bee284e5f86595ac22525"
         },
         {
           "path": "UX_FLOW.md",
-          "sha256": "17bdea48f34d72296abbbee306e9a3942106ad6973445cd81efeae1f8a6ea0dc"
+          "sha256": "2124597535f6393b7f5dbf1ad04dacf9f9f8ba06c73e10c168686fd9c608313d"
         },
         {
           "path": "GITHUB_PAGES.md",
-          "sha256": "9e2939f9218cc147281a464231e31191e67a409ca896e5422ddc9de406620352"
+          "sha256": "6557227d7bae82a61f20ef030be9bc8d332dada401f7ab8946745bd5c83fc83d"
         },
         {
           "path": "config/performance-budgets.yaml",

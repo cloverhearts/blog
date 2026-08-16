@@ -32,13 +32,13 @@ Pagefind extended, Sharp, Vitest, Playwright, and axe-core are accepted in ADR
 - Test traceability: every behavioral or machine-enforceable policy change adds
   or updates tests in the same task; high-impact policies are hash- and
   case-mapped through `tests/policy-coverage.json`.
-- Browser language: an unprefixed route may navigate once to an existing
-  browser-preferred static alternate; prefixed routes are respected and Korean
-  remains the no-JavaScript fallback.
+- Language selection: requested routes remain stable regardless of browser or
+  stored language; readers change language only through published static links.
+- Post-link fallback: collection and related links prefer the active language,
+  then English, then Korean, and omit groups with no eligible target.
 - Post-language context: artifacts always provide current/original language and
-  validated alternates. A bottom-of-post UX may optionally link the original
-  and a different existing browser-preferred sibling; it never exposes review
-  state or redirects an explicitly requested language route.
+  published validated alternates. A bottom-of-post UX may optionally link the
+  original; it never exposes review state or redirects the current route.
 - Initial visual system: semantic classless CSS, system colors, automatic
   light/dark behavior, Pretendard Variable for Korean/English, resilient
   fallbacks, and `UX_FLOW.md` as the interaction contract. Branded styling is
@@ -63,8 +63,8 @@ exits. A later branded design remains optional and cannot delay semantic UX.
 - Infer all public TypeScript types from those schemas.
 - Implement `packages/project-config/` for `config/*.yaml` validation and normalized route registration.
 - Validate supported/source/default languages, locale prefixes, localized
-  navigation/taxonomy completeness, pagination segment, preference order,
-  existing-alternate navigation, and redirect-loop prevention.
+  navigation/taxonomy completeness, pagination segment, manual-only language
+  selection, and active-language/English/Korean post-link fallback.
 - Validate the project-wide document/direct-managed-page security maximum in `config/security.yaml`.
 - Validate `config/analytics.yaml` and resolve the optional public
   `GA4_MEASUREMENT_ID`; reject malformed non-blank values and expose a disabled
@@ -92,11 +92,12 @@ Exit criteria:
 ## Phase 2 — deterministic content compiler
 
 - Parse and validate canonical Markdown/frontmatter from `docs/`.
-- Validate complete en/ko/ja translation groups, invariant metadata, and
+- Validate complete and partial en/ko/ja translation groups, invariant metadata, and
   locale-qualified identity before production output.
 - Require one consistent `originalLanguage`, verify that its variant exists,
-  and expose original-language plus complete alternate-route metadata to
-  downstream renderers for optional language-context UX.
+  and expose original-language plus all published alternate-route metadata to
+  downstream renderers for explicit language switching and optional
+  original-language context UX.
 - Validate `translationStatus`: the original is `source`, unreviewed AI
   translations are `ai-draft`, and production accepts only owner-approved
   `reviewed` translated variants.
@@ -144,13 +145,15 @@ Exit criteria:
   loader or analytics origins when the Measurement ID is absent, make no Google
   request before consent, and keep advertising signals and personalization off.
 - Ensure primary post content and navigation links exist in initial HTML.
-- Emit real language-switcher links, localized framework copy, self canonicals,
-  reciprocal `hreflang` alternates, and one loop-free browser-language
-  navigation from an unprefixed Korean route to an existing alternate.
+- Emit real published language-switcher links, localized framework copy, self
+  canonicals, and reciprocal `hreflang` alternates without browser-language
+  navigation.
+- Resolve collection and related-post links to the active-language variant,
+  then English, then Korean; omit unmatched groups and label every
+  cross-language fallback.
 - Provide a presentation-neutral post-language context resolver. An optional
-  post-body treatment may identify/link the original and offer an existing
-  browser-preferred sibling, but explicit route visits remain stable and no
-  review-state banner is exposed.
+  post-body treatment may identify/link the original, but route visits remain
+  stable and no review-state banner is exposed.
 - Generate a complete localized `article` Open Graph set for every post from
   the owner-approved representative-image mode. Render a deterministic local
   `1200 × 630` post card only when that mode was selected, then emit
@@ -182,9 +185,8 @@ Exit criteria:
 - analytics-disabled and consent-denied builds retain identical content and
   navigation behavior; analytics events omit raw searches, identifiers, URL
   queries, and fragments.
-- JavaScript-disabled and unsupported-language visits receive complete Korean
-  content; supported English/Japanese browsers may navigate once to an existing
-  static alternate without a content fetch or redirect loop.
+- JavaScript-disabled visits retain the requested complete static document;
+  browser language never changes the route or article content.
 
 ## Phase 4 — final-HTML search pipeline
 
@@ -246,8 +248,9 @@ Exit criteria:
 - managed pages are absent from RSS regardless of sitemap policy;
 - stale or mixed discovery inputs fail validation;
 - custom-domain and `/blog` builds emit correct absolute discovery URLs.
-- localized HTML alternates are reciprocal, `x-default` points to Korean, and
-  every localized route/feed is present exactly once.
+- published localized HTML alternates are reciprocal, `x-default` resolves to
+  Korean or the documented available fallback, and every eligible localized
+  route/feed is present exactly once.
 - `robots.txt` matches the validated registry and `llms.txt` contains only
   canonical, public, HTTPS links with no drafts, source paths, or timestamps.
 

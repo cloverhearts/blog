@@ -48,12 +48,14 @@ origin is `https://blog.cloverhearts.com`.
 > 주소는 `https://blog.cloverhearts.com`입니다.
 
 Korean is the blog's unprefixed default and no-JavaScript fallback. English is
-published under `/en/` and Japanese under `/ja/`; browser-language navigation
-may select an existing static alternate only from an unprefixed Korean route.
+published under `/en/` and Japanese under `/ja/`. Requested documents never
+redirect based on browser language; readers change language through normal
+links. Post navigation prefers the active language, then English, then Korean.
 
 > 블로그의 무접두 기본 언어와 JavaScript 미지원 시 대체 언어는 한국어입니다.
-> 영어는 `/en/`, 일본어는 `/ja/`에 게시하며, 브라우저 언어에 따른 이동은
-> 무접두 한국어 경로에서 기존 정적 번역본으로 이동할 때만 적용합니다.
+> 영어는 `/en/`, 일본어는 `/ja/`에 게시합니다. 요청한 문서는 브라우저
+> 언어에 따라 자동 이동하지 않으며 독자는 일반 링크로 언어를 변경합니다.
+> 포스트 탐색 링크는 현재 언어, 영어, 한국어 순서로 연결합니다.
 
 Public comments are intentionally excluded from the initial release. The site
 does not require a comment provider, write API, account system, moderation
@@ -97,8 +99,8 @@ See [ARCHITECTURE.md](./ARCHITECTURE.md) for dependency boundaries,
 stack and handoff profile, [DEVELOPMENT_PLAN.md](./DEVELOPMENT_PLAN.md) for
 implementation phases, [UX_FLOW.md](./UX_FLOW.md) for interaction and
 information flow, [CONTENT_RULES.md](./CONTENT_RULES.md) for authoring
-rules, and
-[I18N.md](./I18N.md) for English/Korean/Japanese translation and routing.
+rules, and [I18N.md](./I18N.md) for English/Korean/Japanese publishing,
+discovery, language switching, and post-link fallback.
 Operational details are in [DEVELOPMENT.md](./DEVELOPMENT.md), discovery rules in
 [SEO.md](./SEO.md), AI crawler and agent guidance in
 [AI_DISCOVERY.md](./AI_DISCOVERY.md), publication behavior in
@@ -111,8 +113,9 @@ in [History.md](./History.md).
 > [IMPLEMENTATION_SPEC.md](./IMPLEMENTATION_SPEC.md), 구현 단계는
 > [DEVELOPMENT_PLAN.md](./DEVELOPMENT_PLAN.md), 상호작용과 정보 흐름은
 > [UX_FLOW.md](./UX_FLOW.md), 작성 규칙은
-> [CONTENT_RULES.md](./CONTENT_RULES.md), 영어·한국어·일본어 번역과 라우팅은
-> [I18N.md](./I18N.md)를 참고합니다. 운영 절차는
+> [CONTENT_RULES.md](./CONTENT_RULES.md), 영어·한국어·일본어 발행·발견,
+> 언어 전환 및 포스트 링크 대체 규칙은 [I18N.md](./I18N.md)를 참고합니다.
+> 운영 절차는
 > [DEVELOPMENT.md](./DEVELOPMENT.md), 검색 엔진 발견 규칙은
 > [SEO.md](./SEO.md), AI 크롤러 및 에이전트 지침은
 > [AI_DISCOVERY.md](./AI_DISCOVERY.md), 게시 동작은

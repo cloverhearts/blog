@@ -122,20 +122,24 @@ contain secrets or signed URLs, and are never injected by client JavaScript.
 Other social-card protocols may derive from this same validated record later;
 they must not introduce a second authoring source.
 
-## Multilingual discovery
+## Multilingual publishing and discovery
 
-- Korean is unprefixed and is also the `hreflang="x-default"` target. English
-  uses `/en/` and Japanese uses `/ja/`.
+- Korean is unprefixed and is the normal `hreflang="x-default"` target. English
+  uses `/en/` and Japanese uses `/ja/`. If a partially published post has no
+  Korean variant, `x-default` uses its published English variant; if neither is
+  available, it uses the published authored original.
 - Each normal blog translation declares itself and every other published
   variant. Alternate relationships are reciprocal and use fully qualified
   canonical URLs.
 - Every localized page contains one visible language and same-language chrome;
   translated text is never hidden in one combined document.
-- All variants are reachable through normal `<a>` links. Browser detection is
-  progressive enhancement that may perform one same-site navigation from an
-  unprefixed Korean route to an existing alternate; it never swaps article
-  content in place and must respect prefixed and explicit/persisted selection
-  as specified in `I18N.md`.
+- All variants are reachable through normal `<a>` links. The requested URL is
+  never redirected or replaced based on browser language, stored preference,
+  location, or analytics state. Readers change language only through explicit
+  links as specified in `I18N.md`.
+- Missing translations are valid. `hreflang`, Open Graph alternate locales,
+  structured-data translation relations, and sitemap entries include only
+  published variants and remain reciprocal among that available set.
 - HTML links are the authoritative `hreflang` implementation. The sitemap lists
   each canonical localized route but does not duplicate alternate annotations.
 - Structured data uses the visible page language and localized canonical while
@@ -256,9 +260,10 @@ A production check verifies:
 - managed-page-specific metadata on every published managed page;
 - valid structured data referencing the visible record;
 - sitemap/RSS XML parseability and only eligible canonical URLs;
-- reciprocal `en`/`ko`/`ja`/`x-default` alternate links, self canonicals, valid
-  document language, loop-free browser-language navigation, and no
-  mixed-language page chrome;
+- reciprocal available-language/`x-default` alternate links, self canonicals,
+  valid document language, no browser-language navigation, and no
+  mixed-language page chrome except an explicitly labeled fallback post
+  summary;
 - `originalLanguage` parity across each group, an existing original canonical,
   valid `translationStatus` with no published `ai-draft`, and correct
   `inLanguage`/`translationOfWork`/`workTranslation` relationships;

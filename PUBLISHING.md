@@ -15,7 +15,7 @@
 ## Stable identity and deletion
 
 - Language plus category plus slug identifies a source variant;
-  `translationKey` identifies the three-language post group. Every normalized
+  `translationKey` identifies the multilingual post group. Every normalized
   public route must be globally unique.
 - `originalLanguage` identifies the authored original within the group and is
   stable after publication. A translated variant always retains a normal link
@@ -33,8 +33,11 @@
 - Equal timestamps use normalized slug ascending as a deterministic tie-break.
 - `updatedAt` does not move a post to the top of chronological lists.
 - Category, tag, and archive counts include published production posts only.
-- Lists, counts, pagination, archives, and related posts are isolated to the
-  active language. Translation siblings never appear as separate recommendations.
+- Lists, counts, pagination, archives, and related posts represent each
+  translation group at most once. A link uses the active-language variant when
+  published, otherwise English, otherwise Korean. If none is available, the
+  group is omitted. A fallback entry uses the target variant's real localized
+  summary and carries a visible and machine-readable language label.
 - Pagination size comes from `config/site.yaml`; changing it never requires post
   edits.
 - The route segment comes from `config/routes.yaml`. Page one uses the
@@ -54,11 +57,13 @@
 
 The content compiler emits at most the configured number of recommendations.
 
-1. Valid manual `related` slugs resolve to the same-language variant and appear
-   first in authored order.
+1. Valid manual `related` slugs resolve to the active-language variant, then
+   English, then Korean, and appear first in authored order. A group with none
+   of those published variants is excluded.
 2. Duplicate, self, missing, and draft references are rejected or excluded as
    appropriate to build mode.
-3. Remaining slots are filled by deterministic automatic candidates.
+3. Remaining slots are filled by deterministic automatic translation-group
+   candidates and use the same link fallback order.
 4. Each shared normalized tag contributes three points; the same category
    contributes two points.
 5. Candidates with zero points are not recommended automatically.

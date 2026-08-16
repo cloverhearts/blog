@@ -9,11 +9,12 @@ export {
 } from "./analytics.ts";
 export {
   DEFAULT_LANGUAGE,
+  POST_NAVIGATION_FALLBACK_LANGUAGES,
   SUPPORTED_LANGUAGES,
-  detectBrowserLanguage,
-  resolveLanguagePreference,
   resolveLocalizedRoute,
-  type LanguagePreferenceInput,
+  resolvePostNavigationLink,
+  type LocalizedPostLinkCandidate,
+  type ResolvedPostNavigationLink,
   type SupportedLanguage,
 } from "./i18n.ts";
 export {

@@ -1,8 +1,10 @@
 # ADR 0007: Korean-default routes and optional post-language context
 
-- Status: accepted
+- Status: superseded
 - Date: 2026-08-16
 - Supersedes: ADR 0005 and the locale-default clause of ADR 0006
+- Superseded by: ADR 0008 for browser selection and publication semantics;
+  Korean-default route ownership remains in force
 
 ## Context
 

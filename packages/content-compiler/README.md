@@ -6,15 +6,17 @@ This package will transform locale-grouped `docs/` and shared
 
 It owns Markdown parsing, runtime validation, sanitization, logical asset resolution, semantic HTML fragments, taxonomy, recommendation data, search eligibility metadata, deterministic provenance, and separate preview/production content manifests. External-content directives are delegated through `packages/embed-core/`.
 
-It also owns complete `en`/`ko`/`ja` translation-group validation,
-locale-qualified post IDs, alternate-route records, and language-scoped
-taxonomy/recommendation/search eligibility. It does not perform translation;
-agents author the three source variants before compilation.
+It also owns partial and complete `en`/`ko`/`ja` translation-group validation,
+locale-qualified post IDs, published alternate-route records, group-scoped
+taxonomy/recommendation candidates, deterministic localized link targets, and
+language-scoped search eligibility. It does not perform translation; agents
+author source variants before compilation.
 
 Every group declares one required `originalLanguage`. The compiler validates
-that all variants agree, that the declared original exists, and emits the value
-for presentation and structured-data consumers. Original public URLs are
-derived from alternates rather than authored in frontmatter.
+that all variants agree, that the declared original is published before any
+translation, and emits the value for presentation and structured-data
+consumers. Original public URLs are derived from published alternates rather
+than authored in frontmatter.
 
 Every variant also declares `translationStatus`. The original must be `source`;
 translations are `ai-draft` or `reviewed`. Production rejects an `ai-draft`

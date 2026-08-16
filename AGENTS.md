@@ -83,14 +83,15 @@
 - A managed page never inherits the root `DESIGN.md`. Its local `managed-pages/<page-id>/DESIGN.md` is authoritative for that page.
 - `SEO.md` owns canonical, robots, social metadata, structured data, sitemap, RSS, and discovery presentation rules. `AI_DISCOVERY.md` owns AI crawler categories, agent-facing discovery guidance, `llms.txt`, and the static-host observation/enforcement boundary. `PUBLISHING.md` owns publication state, ordering, pagination, related-post derivation, deletion, and search expectations. `QUALITY_GATES.md` owns release acceptance criteria. `DEVELOPMENT.md` owns the intended command and local/release workflow.
 - `I18N.md` owns supported/default/source languages, locale routes, browser
-  preference behavior, translation grouping, localized UI, and language-scoped
-  search/feed behavior. Read it before changing any language-aware content,
-  route, UI, search, discovery, or managed-page alternate behavior.
-- ADR 0007 owns Korean-default browser-language navigation and optional
-  post-language context metadata/UX. Do not redirect an explicitly requested
-  `/en/` or `/ja/` route, require a post footer, or expose a translation banner,
-  nuance warning, or visible review-status message without an explicit policy
-  change and tests.
+  selection behavior, translation grouping, localized link fallback,
+  localized UI, and language-scoped search/feed behavior. Read it before
+  changing any language-aware content, route, UI, search, discovery, or
+  managed-page alternate behavior.
+- ADR 0008 owns multilingual publication/discovery, manual-only language
+  switching, partial translation publication, and post-link fallback. Do not
+  redirect any requested route based on browser or stored language, require a
+  post footer, or expose a translation banner, nuance warning, or visible
+  review-status message without an explicit policy change and tests.
 - `config/analytics.yaml` owns the optional GA4 activation, scope, consent, and data-minimization policy. Analytics belongs only to the blog web layer, is disabled when its public measurement-ID environment value is absent, and must never become a content-compiler input or recommendation signal.
 - Post sources and the content compiler must not import or depend on the blog web application's components, layout, routing, framework, or CSS.
 - The blog web application must not traverse `docs/`, parse source Markdown, or resolve source assets. It consumes only the versioned artifact contract from `packages/contracts/` and `.artifacts/content/<mode>/`.
@@ -137,8 +138,9 @@
 - `CONTENT_RULES.md` is the single source of truth for blog posts, managed pages, metadata, assets, embeds, paths, and content validation.
 - Before creating, converting, editing, moving, or reviewing any post under `docs/`, read `CONTENT_RULES.md` completely.
 - For every post task, also read `I18N.md` completely. A Korean source post is
-  not production-complete until faithful English and Japanese variants exist
-  in the same translation group, unless the user explicitly requests a draft.
+  production-complete when its own requirements are satisfied; faithful English
+  and Japanese variants are created as drafts and publish independently after
+  review.
 - Before adding, copying, renaming, or referencing any post asset under `assets/content/`, read `CONTENT_RULES.md` completely.
 - Before creating, converting, editing, moving, or reviewing anything under `managed-pages/`, read `CONTENT_RULES.md` completely and then read that page package's `page.yaml` and `DESIGN.md` completely.
 - Apply the current user request first, then this file, then `CONTENT_RULES.md`. If they conflict in a way that changes publishing semantics or could lose content, stop and explain the conflict.
@@ -151,7 +153,8 @@
   - frontmatter fields or allowed values;
   - supported languages, translation grouping, source locale, localized
     metadata, original-language provenance, translation-review status,
-    translated-content disclosure, or browser-language selection;
+    translated-content disclosure, explicit language selection, or localized
+    post-link fallback;
   - filename, category, slug, tag, date, or URL rules;
   - Markdown body structure or supported syntax;
   - image, video, audio, map, download, or embed syntax;
@@ -211,9 +214,10 @@ When the user supplies prose, notes, an article, links, images, video, maps, or 
 10. Replace local absolute paths and temporary attachment paths with canonical `asset:/...` references.
 11. Use built-in local-media syntax only where documented, and use an external-provider directive only when its local plugin is enabled. If a provider plugin is unavailable, use a descriptive normal link or keep the post as a draft. Do not paste arbitrary scripts, raw iframes, tracking snippets, or secrets into a post.
 12. Check for an existing post or asset collision before writing. Do not overwrite published content without explicit authorization.
-13. Ask the owner to review the translated variants. Change translated
-    variants to `translationStatus: "reviewed"` and publish the three-language
-    group only after that explicit approval; otherwise retain `draft: true`.
+13. Ask the owner to review each translated variant. Change an approved
+    translation to `translationStatus: "reviewed"` and publish that variant
+    independently; otherwise retain `draft: true`. A missing or unreviewed
+    translation does not block a valid source or reviewed sibling.
 14. Run the repository's content, translation-group, localized-link, and
    contract-fixture commands when they exist. Until then, perform the manual
    checklists in `CONTENT_RULES.md` and `I18N.md`.

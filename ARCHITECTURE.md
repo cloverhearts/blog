@@ -246,15 +246,17 @@ Owned path: `packages/content-compiler/`
 Responsibilities:
 
 - parse and runtime-validate post Markdown;
-- validate complete en/ko/ja translation groups and emit locale-qualified IDs
-  plus alternate-route records used with `originalLanguage` as the required
-  input for optional post-language context;
+- validate complete and partial en/ko/ja translation groups and emit
+  locale-qualified IDs plus published alternate-route records used with
+  `originalLanguage` for optional original-language context and deterministic
+  active-language/English/Korean navigation targets;
 - validate per-variant translation review status and reject unreviewed AI
   translations from production artifacts;
 - resolve logical `asset:` references;
 - delegate registered external-content directives to `packages/embed-core/`;
 - sanitize and convert Markdown into semantic, unstyled HTML fragments;
-- generate language-scoped summaries, categories, tags, recommendations,
+- generate translation-group summaries, categories, tags, recommendations,
+  localized/fallback navigation targets, language-scoped search eligibility,
   deterministic heading anchors/TOC records, and shared asset records;
 - emit search eligibility and descriptive metadata, but not the final search index;
 - attach the project-config-validated authorship declaration to every post
@@ -290,12 +292,13 @@ Responsibilities:
 - metadata-only post authorship disclosure in the static `<head>`, emitted from
   the validated artifact and excluded from visible body/search text and
   Schema.org rich-result claims;
-- real-link language switching and one loop-free browser-preference navigation
-  from an unprefixed Korean route to an existing static alternate, with Korean
-  remaining the no-JavaScript fallback;
+- real-link language switching with no browser-preference redirect, plus
+  deterministic post-navigation resolution in active-language, English, then
+  Korean order;
 - presentation-neutral post-language context derived from current language,
   original language, and validated alternates; any post-body treatment is
-  optional, exposes no review state, and never redirects an explicit route;
+  optional, exposes no review state, and may link the authored original without
+  redirecting the current route;
 - optional consent-gated aggregate analytics through the reviewed blog-owned
   GA4 adapter;
 - emitting a web manifest and route claims for the generated HTML.

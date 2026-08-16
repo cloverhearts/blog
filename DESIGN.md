@@ -102,16 +102,16 @@ and `UX_FLOW.md` must provide at least:
 - global header, navigation, footer, and skip link;
 - post header, metadata, table of contents, body, and related-post links;
 - one optional compact post-language context region that may link the authored
-  original and an existing browser-preferred sibling;
+  original;
 - category, tag, archive, and pagination/list items;
 - search form, results, empty state, and no-JavaScript state;
 - links, buttons, inputs, code blocks, tables, quotes, notices, and downloads;
 - local media and provider-neutral embed containers;
 - 404 and other system states.
 - a persistent language switcher with real `en`, `ko`, and `ja` links, a clear
-  current-language state, and labels understandable without flags alone.
-- a local browser-language bootstrap whose automatic navigation never obscures
-  the persistent real-link language switcher or creates a redirect loop;
+  current-language state, and labels understandable without flags alone;
+- visibly and programmatically labeled fallback-language post summaries when a
+  collection cannot link to its active-language variant;
 - deterministic `1200 × 630` post-specific social cards for posts without a
   user-approved `socialImage` or cover when deterministic card generation was
   the owner-selected representative-image mode;
@@ -142,10 +142,9 @@ behavior must not cover article content and must not be required to understand
 the hierarchy.
 
 A post may place one compact language-context region after the article body. It
-may identify and link the authored original and offer an existing sibling that
-matches the reader's browser language. It never exposes review status or
-redirects an explicit route. When present, it must not rely on an icon,
-tooltip, or color alone and must remain legible in print.
+may identify and link the authored original. It never exposes review status or
+redirects the current route. When present, it must not rely on an icon, tooltip,
+or color alone and must remain legible in print.
 
 Social cards are presentation assets owned by this design system. The baseline
 uses a plain light canvas, dark text, one neutral border, Pretendard with locale
@@ -203,9 +202,8 @@ concrete breakpoints and component transformations and satisfy
   JavaScript.
 - Small screens retain full post meaning and usable navigation.
 - Language switching remains keyboard/touch accessible and shows the current
-  language without relying on color. Automatic browser-language navigation is
-  limited to an existing alternate from an unprefixed Korean route and cannot
-  loop; explicit `/en/` and `/ja/` routes remain stable.
+  language without relying on color. Browser language never redirects or
+  replaces the requested document; explicit language changes use normal links.
 - Print output removes nonessential navigation and preserves article hierarchy,
   URLs, code, tables, and meaningful media.
 - Light/dark follows the operating-system preference through CSS system colors;

@@ -1,17 +1,15 @@
 import assert from "node:assert/strict";
 import { test } from "vitest";
 
-import { selectInitialLanguage } from "../../apps/blog-web/src/i18n/language-preference.ts";
 import { BLOG_MESSAGES } from "../../apps/blog-web/src/i18n/messages.ts";
 import {
   renderOriginalPostFooter,
-  resolvePostLanguageContext,
   resolveTranslationOrigin,
 } from "../../apps/blog-web/src/i18n/translation-origin.ts";
+import { resolvePublishedTranslationLanguages } from "../../packages/content-compiler/src/translation-publication.ts";
 import {
-  detectBrowserLanguage,
-  resolveLanguagePreference,
   resolveLocalizedRoute,
+  resolvePostNavigationLink,
 } from "../../packages/project-config/src/i18n.ts";
 
 const alternates = [
@@ -20,33 +18,6 @@ const alternates = [
   { language: "ja" as const, route: "/ja/posts/example/" },
 ];
 
-test("uses Korean for unsupported browser languages", () => {
-  assert.equal(detectBrowserLanguage(["fr-FR", "de"]), "ko");
-});
-
-test("matches Korean and Japanese regional browser languages", () => {
-  assert.equal(detectBrowserLanguage(["ko-KR", "en-US"]), "ko");
-  assert.equal(detectBrowserLanguage(["ja-JP", "en-US"]), "ja");
-});
-
-test("explicit and stored preferences override browser detection", () => {
-  assert.equal(
-    resolveLanguagePreference({
-      explicitLanguage: "en",
-      storedLanguage: "ko",
-      browserLanguages: ["ja-JP"],
-    }),
-    "en",
-  );
-  assert.equal(
-    resolveLanguagePreference({
-      storedLanguage: "ko",
-      browserLanguages: ["ja-JP"],
-    }),
-    "ko",
-  );
-});
-
 test("resolves locale-prefixed routes while Korean remains unprefixed", () => {
   assert.equal(resolveLocalizedRoute("ko", "/posts/example/"), "/posts/example/");
   assert.equal(resolveLocalizedRoute("en", "/posts/example/"), "/en/posts/example/");
@@ -54,54 +25,122 @@ test("resolves locale-prefixed routes while Korean remains unprefixed", () => {
   assert.throws(() => resolveLocalizedRoute("ko", "posts/example/"));
 });
 
-test("selects an existing browser-language route for one automatic navigation", () => {
+test("resolves post navigation in the active language before fallbacks", () => {
   assert.deepEqual(
-    selectInitialLanguage({
-      currentLanguage: "ko",
-      alternates,
-      browserLanguages: ["en-US"],
-    }),
-    { selectedLanguage: "en", navigationRoute: "/en/posts/example/" },
+    resolvePostNavigationLink("ja", alternates),
+    {
+      language: "ja",
+      route: "/ja/posts/example/",
+      usedFallback: false,
+    },
   );
   assert.deepEqual(
-    selectInitialLanguage({
-      currentLanguage: "en",
-      alternates,
-      browserLanguages: ["ko-KR"],
-    }),
-    { selectedLanguage: "ko", navigationRoute: null },
-  );
-});
-
-test("does not navigate when a browser-language translation is unavailable", () => {
-  assert.deepEqual(
-    selectInitialLanguage({
-      currentLanguage: "ko",
-      alternates: alternates.filter(({ language }) => language !== "en"),
-      browserLanguages: ["en-US"],
-    }),
-    { selectedLanguage: "en", navigationRoute: null },
+    resolvePostNavigationLink("ko", alternates),
+    {
+      language: "ko",
+      route: "/posts/example/",
+      usedFallback: false,
+    },
   );
 });
 
-test("stores an explicit language choice", () => {
-  const values = new Map<string, string>();
-  const storage = {
-    getItem: (key: string) => values.get(key) ?? null,
-    setItem: (key: string, value: string) => values.set(key, value),
-  };
-
+test("falls back to English, then Korean, and otherwise omits the post link", () => {
   assert.deepEqual(
-    selectInitialLanguage({
-      currentLanguage: "ko",
-      alternates,
-      explicitLanguage: "ja",
-      browserLanguages: ["ko-KR"],
-      storage,
-    }),
-    { selectedLanguage: "ja", navigationRoute: "/ja/posts/example/" },
+    resolvePostNavigationLink(
+      "ja",
+      alternates.filter(({ language }) => language !== "ja"),
+    ),
+    {
+      language: "en",
+      route: "/en/posts/example/",
+      usedFallback: true,
+    },
   );
-  assert.equal(values.get("blog.language.v1"), "ja");
+  assert.deepEqual(
+    resolvePostNavigationLink("ja", [alternates[1]!]),
+    {
+      language: "ko",
+      route: "/posts/example/",
+      usedFallback: true,
+    },
+  );
+  assert.equal(resolvePostNavigationLink("ja", []), null);
+  assert.equal(
+    resolvePostNavigationLink("ko", [alternates[2]!]),
+    null,
+  );
+});
+
+test("publishes reviewed translation variants independently", () => {
+  assert.deepEqual(
+    resolvePublishedTranslationLanguages([
+      {
+        language: "ko",
+        originalLanguage: "ko",
+        translationStatus: "source",
+        draft: false,
+      },
+      {
+        language: "en",
+        originalLanguage: "ko",
+        translationStatus: "reviewed",
+        draft: false,
+      },
+      {
+        language: "ja",
+        originalLanguage: "ko",
+        translationStatus: "ai-draft",
+        draft: true,
+      },
+    ]),
+    ["ko", "en"],
+  );
+  assert.deepEqual(
+    resolvePublishedTranslationLanguages([
+      {
+        language: "ko",
+        originalLanguage: "ko",
+        translationStatus: "source",
+        draft: false,
+      },
+    ]),
+    ["ko"],
+  );
+});
+
+test("rejects publication before the authored original or owner review", () => {
+  assert.throws(() =>
+    resolvePublishedTranslationLanguages([
+      {
+        language: "ko",
+        originalLanguage: "ko",
+        translationStatus: "source",
+        draft: true,
+      },
+      {
+        language: "en",
+        originalLanguage: "ko",
+        translationStatus: "reviewed",
+        draft: false,
+      },
+    ]),
+  );
+  assert.throws(() =>
+    resolvePublishedTranslationLanguages([
+      {
+        language: "ko",
+        originalLanguage: "ko",
+        translationStatus: "source",
+        draft: false,
+      },
+      {
+        language: "en",
+        originalLanguage: "ko",
+        translationStatus: "ai-draft",
+        draft: false,
+      },
+    ]),
+  );
 });
 
 test("provides the same non-empty UI message set for every language", () => {
@@ -128,40 +167,6 @@ test("identifies translated variants and links them to the original", () => {
     originalLanguage: "ko",
     originalRoute: "/posts/example/",
   });
-});
-
-test("derives optional browser-language post metadata without redirecting", () => {
-  assert.deepEqual(
-    resolvePostLanguageContext("en", "ko", "ko", alternates),
-    {
-      currentLanguage: "en",
-      isTranslation: true,
-      originalLanguage: "ko",
-      originalRoute: "/posts/example/",
-      preferredLanguage: "ko",
-      preferredRoute: "/posts/example/",
-    },
-  );
-  assert.deepEqual(
-    resolvePostLanguageContext("ko", "ko", "en", alternates),
-    {
-      currentLanguage: "ko",
-      isTranslation: false,
-      originalLanguage: "ko",
-      originalRoute: "/posts/example/",
-      preferredLanguage: "en",
-      preferredRoute: "/en/posts/example/",
-    },
-  );
-  assert.deepEqual(
-    resolvePostLanguageContext(
-      "ko",
-      "ko",
-      "en",
-      alternates.filter(({ language }) => language !== "en"),
-    ).preferredRoute,
-    null,
-  );
 });
 
 test("rejects translation metadata when the declared original is absent", () => {
