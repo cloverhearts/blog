@@ -1,0 +1,27 @@
+schemaVersion: 1
+id: "__PAGE_ID__"
+route: "/__ROUTE__/"
+kind: "document"
+entry:
+  format: "markdown"
+  path: "content.md"
+status: "draft"
+language: "en"
+# Set the same optional translationKey on explicitly authored en/ko/ja page
+# packages when they are translations of one managed page.
+# translationKey: "__TRANSLATION_KEY__"
+title: "__TITLE__"
+description: "__DESCRIPTION__"
+returnTo: "/"
+robots: "noindex"
+sitemap: false
+security:
+  externalOrigins:
+    frame: []
+    script: []
+    connect: []
+    image: []
+    style: []
+    font: []
+    media: []
+  iframePermissions: []

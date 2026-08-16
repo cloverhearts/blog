@@ -1,0 +1,7 @@
+# Empty mappings are intentional until real categories and tags exist. Category
+# and tag IDs are stable ASCII identifiers; each published identifier must have
+# en/ko/ja display labels.
+schemaVersion: 2
+categories: {}
+tags: {}
+tagAliases: {}

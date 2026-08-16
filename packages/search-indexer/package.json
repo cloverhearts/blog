@@ -1,0 +1,10 @@
+{
+  "name": "@cloverhearts/search-indexer",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@cloverhearts/contracts": "*",
+    "pagefind": "^1.5.2"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "name": "@cloverhearts/blog-web",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@cloverhearts/contracts": "*",
+    "@cloverhearts/project-config": "*",
+    "astro": "^7.2.2",
+    "sharp": "^0.35.3"
+  }
+}

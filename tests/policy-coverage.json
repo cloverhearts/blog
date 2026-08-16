@@ -1,0 +1,186 @@
+{
+  "schemaVersion": 1,
+  "policies": [
+    {
+      "id": "change-to-test-governance",
+      "sources": [
+        {
+          "path": "TESTING.md",
+          "sha256": "24c5ae379e67b90fc93b9a5d1b7cb36e288736a592c71f363b9711db6ab9ac10"
+        },
+        {
+          "path": "AGENTS.md",
+          "sha256": "6fe2909d6ce6f03990d64604479b112aa4c7e966dff10f76605376e099ad2f67"
+        },
+        {
+          "path": "QUALITY_GATES.md",
+          "sha256": "33a5cfa51931a459756562feec457e6df55a225e81f52fd30aed74926ed95fde"
+        },
+        {
+          "path": "DEVELOPMENT.md",
+          "sha256": "4d6f49b1b92d9374c4c447e41d5e96c6f743ba3ba7e6e6c76e43189ab6abb6eb"
+        },
+        {
+          "path": "tests/contracts/policy-governance.test.ts",
+          "sha256": "85a83188eb30e73cf7113f8fb486ff8bb3657fadfe9a5cdf35efccfb60422552"
+        }
+      ],
+      "tests": [
+        {
+          "path": "tests/contracts/policy-governance.test.ts",
+          "cases": [
+            "validates every governed policy source and named test case"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "open-ai-discovery-and-data-use",
+      "sources": [
+        {
+          "path": "config/ai-crawlers.yaml",
+          "sha256": "09f6104cbf4a4ba1b5703961c159f879a88bea5d8be2bc689d63fe48fd1a9e2d"
+        },
+        {
+          "path": "AI_DISCOVERY.md",
+          "sha256": "a39f315d6d736c44caebec82d9e628b60bf2ea4a5814d86e239ee5838f80a52c"
+        },
+        {
+          "path": "packages/site-discovery/src/ai-discovery.ts",
+          "sha256": "227d669bb947d47aad1c5915a2de13d2207ff0f9f4ef5c40d6b2a7c1bbb04797"
+        }
+      ],
+      "tests": [
+        {
+          "path": "tests/contracts/ai-discovery.test.ts",
+          "cases": [
+            "uses the AI-guide discovery artifact schema version",
+            "keeps search, training, dataset, and default crawler access open",
+            "rejects ambiguous, malformed, or insecure crawler configuration",
+            "renders a concise deterministic llms.txt with canonical links",
+            "rejects unsafe or structurally empty llms.txt input"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "human-authorship-disclosure",
+      "sources": [
+        {
+          "path": "config/content-provenance.yaml",
+          "sha256": "f06cf3fdef1f7616c59e293bb400f934d93e8ba77b62520dd3d3b03cc6027018"
+        },
+        {
+          "path": "CONTENT_RULES.md",
+          "sha256": "31c6f24befc9267ef62605b10fa295c5b1a8e679a7869c16e5b9905a2452ee10"
+        },
+        {
+          "path": "packages/project-config/src/content-provenance.ts",
+          "sha256": "2f5d015b5cc5423dfd5a68b05987fd4c873485292ee2ebabf1ba701ae541c5dd"
+        },
+        {
+          "path": "apps/blog-web/src/seo/authorship-disclosure.ts",
+          "sha256": "7e481cb2fa093a8e1a8684fa3de2eae4289000461c1153b4022bf2fdd22da5ad"
+        },
+        {
+          "path": "packages/contracts/src/index.ts",
+          "sha256": "3868c6586fc536690dd5ef145b82c87767d9f5879b6ec5207dde394b4535df75"
+        }
+      ],
+      "tests": [
+        {
+          "path": "tests/contracts/authorship-disclosure.test.ts",
+          "cases": [
+            "creates one owner-declared disclosure for the original work",
+            "renders metadata without hidden body text or structured-data claims",
+            "escapes the declaration before placing it in the static head",
+            "rejects a misleading or expanded AI-assistance declaration"
+          ]
+        },
+        {
+          "path": "tests/contracts/heading-anchors.test.ts",
+          "cases": [
+            "uses authorship-disclosure content artifact schema version 7"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "approved-implementation-stack",
+      "sources": [
+        {
+          "path": "IMPLEMENTATION_SPEC.md",
+          "sha256": "6eacce56da3b0536917431bc6bf4c44ae7557f6b74dd64c7c31337df691fb215"
+        },
+        {
+          "path": "decisions/0004-implementation-stack.md",
+          "sha256": "13de207f753b51e2227c2b47231a1e54f5fd1e3c259e8a9dbdc399c45fcc16bb"
+        },
+        {
+          "path": "package.json",
+          "sha256": "5efafa03aadaf4afc572ec85cd261196d48233ccf01a673aff5e743e2459f574"
+        },
+        {
+          "path": ".nvmrc",
+          "sha256": "7e8a2fa94951112b894a3dbe3d05efef5e9263741fa49125f0a70f40fedab4cc"
+        },
+        {
+          "path": ".node-version",
+          "sha256": "7e8a2fa94951112b894a3dbe3d05efef5e9263741fa49125f0a70f40fedab4cc"
+        }
+      ],
+      "tests": [
+        {
+          "path": "tests/contracts/implementation-stack.test.ts",
+          "cases": [
+            "pins Node 24 LTS and bundled npm for every environment",
+            "uses npm workspaces with one committed lockfile",
+            "locks every approved implementation dependency",
+            "declares every architecture lane as an npm workspace package"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "browser-language-and-original-reference",
+      "sources": [
+        {
+          "path": "I18N.md",
+          "sha256": "8230370b362a3fe0fb6e1994a2329cf790b9e64ae8c8ce4bda1f48bf5be19a4f"
+        },
+        {
+          "path": "decisions/0005-browser-language-and-original-reference.md",
+          "sha256": "0eb55723638f5980693473986192d7baec550e52d12c2f6a4a33fa383f2420b7"
+        },
+        {
+          "path": "config/site.yaml",
+          "sha256": "c33ff90e0b2f8b65300497516d8c88330a9d0090b08792007376ec32c036e67b"
+        },
+        {
+          "path": "apps/blog-web/src/i18n/language-preference.ts",
+          "sha256": "772177c4c5dd21709c0273606ffee1269f6e1e1f7c66a1ec501a7e36a31e51b4"
+        },
+        {
+          "path": "apps/blog-web/src/i18n/translation-origin.ts",
+          "sha256": "2b7626adfac90a38b2100ddb8bd179daaec8140e43db8fc959d680ce2f12db44"
+        },
+        {
+          "path": "apps/blog-web/src/i18n/messages.ts",
+          "sha256": "2bfd56fa5caf683fe6289c11025893696a15b70171afd88f6bade5b8d044546e"
+        }
+      ],
+      "tests": [
+        {
+          "path": "tests/contracts/i18n.test.ts",
+          "cases": [
+            "selects an existing browser-language route for one automatic navigation",
+            "does not navigate when a browser-language translation is unavailable",
+            "stores an explicit language choice",
+            "renders only an original reference after a translated post",
+            "omits the original reference from the source-language post"
+          ]
+        }
+      ]
+    }
+  ]
+}

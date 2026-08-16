@@ -1,0 +1,28 @@
+# Shared route policy. Blog design details do not belong here.
+schemaVersion: 4
+trailingSlash: "always"
+paginationSegment: "page"
+# These are locale-neutral logical routes. The URL resolver leaves English
+# unprefixed and prepends the configured prefix for Korean and Japanese.
+paths:
+  home: "/"
+  posts: "/posts/"
+  categories: "/categories/"
+  tags: "/tags/"
+  archive: "/archive/"
+  search: "/search/"
+  notFound: "/404/"
+  assets: "/_assets/"
+  contentAssets: "/_assets/content/"
+  managedAssets: "/_assets/managed/"
+  rss: "/rss.xml"
+  sitemap: "/sitemap.xml"
+  llms: "/llms.txt"
+reservedPrefixes:
+  - "/_assets/"
+  - "/search/"
+reservedFiles:
+  - "/llms.txt"
+  - "/robots.txt"
+  - "/rss.xml"
+  - "/sitemap.xml"

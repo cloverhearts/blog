@@ -1,0 +1,48 @@
+# Shared site values. Production deployment values are injected and validated
+# by the build rather than hard-coded in a package.
+schemaVersion: 4
+originEnvironmentVariable: "SITE_ORIGIN"
+basePathEnvironmentVariable: "SITE_BASE_PATH"
+identity:
+  name: "CloverHearts Blog"
+  descriptions:
+    en: "A personal blog, portfolio, and showcase of completed work."
+    ko: "개인 블로그, 포트폴리오 및 작업 결과물을 게시합니다."
+    ja: "個人ブログ、ポートフォリオ、制作実績を公開します。"
+  authorName: "CloverHearts"
+languages:
+  default: "en"
+  source: "ko"
+  preferenceStorageKey: "blog.language.v1"
+  browserSelection: "navigate-unprefixed"
+  supported:
+    - id: "en"
+      htmlLang: "en"
+      hreflang: "en"
+      ogLocale: "en_US"
+      routePrefix: ""
+      nativeLabel: "English"
+    - id: "ko"
+      htmlLang: "ko"
+      hreflang: "ko"
+      ogLocale: "ko_KR"
+      routePrefix: "/ko"
+      nativeLabel: "한국어"
+    - id: "ja"
+      htmlLang: "ja"
+      hreflang: "ja"
+      ogLocale: "ja_JP"
+      routePrefix: "/ja"
+      nativeLabel: "日本語"
+timezone: "Asia/Seoul"
+defaultManagedPageReturnTo: "/"
+search:
+  includePosts: true
+  includeManagedPages: false
+listings:
+  pageSize: 20
+relatedPosts:
+  maxItems: 4
+feeds:
+  rss: true
+  sitemap: true

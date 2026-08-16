@@ -1,0 +1,14 @@
+# Shared machine-readable provenance for every normal blog post. The content
+# compiler copies this declaration into each post artifact; authors do not
+# duplicate or override it in frontmatter.
+schemaVersion: 1
+postAuthorship:
+  enabled: true
+  visibility: "metadata-only"
+  statementLanguage: "en"
+  statement: "The original work for this article is a reliable document written by a human. AI was used only in a limited capacity for proofreading to reduce typographical errors, transcription mistakes, and awkward wording."
+  claimSource: "owner"
+  appliesTo: "original-work"
+  primaryCreation: "human"
+  aiAssistance:
+    - "proofreading"

@@ -1,0 +1,33 @@
+# Project-wide maximum policy for static output. Source packages may request a
+# strict subset; they cannot widen these values by themselves.
+schemaVersion: 1
+documents:
+  referrerPolicy: "strict-origin-when-cross-origin"
+  allowInlineScripts: false
+  allowInlineEventHandlers: false
+# Maximum origins available to the normal blog when optional analytics is
+# configured and consent has been granted. Disabled analytics emits none of
+# these origins into the document policy.
+analytics:
+  approvedExternalOrigins:
+    script:
+      - "https://www.googletagmanager.com"
+    connect:
+      - "https://*.google-analytics.com"
+      - "https://*.analytics.google.com"
+      - "https://www.googletagmanager.com"
+    image:
+      - "https://*.google-analytics.com"
+      - "https://www.googletagmanager.com"
+# Direct capabilities requested by managed-page application source. Provider
+# directives are separately governed by config/embeds.yaml and embed-core.
+managedPages:
+  approvedExternalOrigins:
+    frame: []
+    script: []
+    connect: []
+    image: []
+    style: []
+    font: []
+    media: []
+  approvedIframePermissions: []

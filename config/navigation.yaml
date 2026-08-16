@@ -1,0 +1,6 @@
+# Intentional blog navigation only. Every item must provide en/ko/ja labels.
+# Internal href values are locale-neutral logical routes; the renderer applies
+# the active language prefix. Managed pages use explicit locale-specific hrefs.
+schemaVersion: 2
+primary: []
+footer: []

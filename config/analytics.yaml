@@ -1,0 +1,20 @@
+# Optional, privacy-gated analytics for the normal blog application.
+# Set the public build variable named below to a GA4 Measurement ID (G-...).
+# When it is absent or blank, the web build must emit no GA4 loader or requests.
+schemaVersion: 1
+provider: "google-analytics-4"
+measurementIdEnvironmentVariable: "GA4_MEASUREMENT_ID"
+enabledWhenConfigured: true
+scope:
+  blog: true
+  managedPages: false
+consent:
+  mode: "basic"
+  default: "denied"
+  storageKey: "blog.analytics-consent.v1"
+collection:
+  googleSignals: false
+  adPersonalization: false
+  stripUrlQueryAndFragment: true
+  collectRawSearchTerms: false
+  preview: false

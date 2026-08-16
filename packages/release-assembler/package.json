@@ -1,0 +1,11 @@
+{
+  "name": "@cloverhearts/release-assembler",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@cloverhearts/contracts": "*",
+    "@cloverhearts/project-config": "*",
+    "zod": "^4.4.3"
+  }
+}
