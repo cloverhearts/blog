@@ -53,7 +53,7 @@ dist/
 ├── archive/index.html
 ├── archive/page/<n>/index.html
 ├── search/index.html
-├── ko/
+├── en/
 │   ├── index.html
 │   ├── posts/<slug>/index.html
 │   ├── categories/<category>/index.html
@@ -62,7 +62,7 @@ dist/
 │   ├── search/index.html
 │   ├── 404/index.html
 │   └── rss.xml
-├── ja/                          # Same complete route set as ko/
+├── ja/                          # Same complete route set as en/
 ├── <managed-page-route>/index.html
 └── _assets/
     ├── app/
@@ -75,8 +75,8 @@ dist/
 Rules:
 
 - `dist/index.html` is mandatory and its casing is exact.
-- The unprefixed tree is complete English content. `/ko/` and `/ja/` are
-  complete Korean and Japanese trees; they are not client-rendered overlays.
+- The unprefixed tree is complete Korean content. `/en/` and `/ja/` are
+  complete English and Japanese trees; they are not client-rendered overlays.
 - Every public content route is backed by a real HTML file. A post must not
   depend on a JavaScript router or a catch-all SPA fallback.
 - A managed page is copied to the physical path represented by its normalized
@@ -88,15 +88,19 @@ Rules:
 - Pagination page one is represented only by its collection root. Page 2 and
   later use the configured `page/<n>/` directory segment and have their own
   static files and self canonicals.
-- `404.html` is a complete English static document containing navigation back
-  to the blog and must work without JavaScript. Localized `/ko/404/` and
+- `404.html` is a complete Korean static document containing navigation back
+  to the blog and must work without JavaScript. Localized `/en/404/` and
   `/ja/404/` documents are also emitted; optional local navigation may choose
   one based on the requested path or browser language.
 - Files are regular files. Symbolic and hard links are forbidden.
 - Asset filenames are content-addressed where practical. HTML and discovery
   files are not assumed to be immutable.
-- Production output must remain below GitHub Pages' published-site limit. The
-  release verifier fails before upload at 1 GiB and reports the largest files.
+- GitHub Pages' published-site ceiling is 1 GB, its deployment timeout is ten
+  minutes, and its soft bandwidth limit is 100 GB per month. GitHub Pro does
+  not raise these Pages service ceilings. It permits Pages from a private
+  repository and includes 3,000 Actions minutes plus 1 GB Actions artifact
+  storage per month. The project budgets in `config/performance-budgets.yaml`
+  deliberately leave operational headroom.
 - Large videos, archives, and other binary results should use separately
   configured object storage rather than forcing the Pages artifact toward its
   limit.
@@ -133,16 +137,20 @@ fetches must all pass through the same resolver.
 
 ## Custom domain and Route 53
 
-- The custom domain is configured in the repository's **Settings → Pages**.
-- Route 53 holds the corresponding apex `A`/`AAAA` records or subdomain `CNAME`
-  record.
+- The canonical production origin is `https://blog.cloverhearts.com` with an
+  empty base path.
+- Configure `blog.cloverhearts.com` first in the repository's
+  **Settings → Pages**, then create a Route 53 `CNAME` record named `blog` that
+  targets `cloverhearts.github.io` (without the repository name).
 - The domain is verified with GitHub before DNS cutover.
 - HTTPS enforcement is enabled after GitHub provisions the certificate.
 - A custom Actions workflow does not use a repository `CNAME` file. Domain
   configuration is an environment/repository setting, not generated site
   content.
-- The canonical production origin is supplied as `SITE_ORIGIN`; it is not
-  hard-coded in a package.
+- The production workflow supplies `SITE_ORIGIN=https://blog.cloverhearts.com`
+  and `SITE_BASE_PATH=`. Configuration validation rejects a production value
+  that differs from `config/site.yaml`; packages still consume the validated
+  value rather than embedding the origin in components.
 - After HTTPS is active, a Google Search Console Domain property is verified
   through a Route 53 DNS TXT record and the generated `/sitemap.xml` is
   submitted. Search Console ownership and reports are external operational
@@ -185,7 +193,38 @@ permissions:
 
 Pull requests run the build and verifier but never receive production deploy
 permissions and never deploy to Pages. Production deployments are serialized
-with a workflow concurrency group.
+with a workflow concurrency group. The custom workflow is not subject to GitHub
+Pages' soft limit of ten Pages builds per hour, but redundant pushes should
+still be cancelled through the workflow concurrency group.
+
+## Enforced performance and capacity budgets
+
+`config/performance-budgets.yaml` is the machine-readable source. All values are
+failure thresholds, not warning-only goals:
+
+- source repository and published `dist/`: 512 MiB each;
+- deployment: 8 minutes, leaving two minutes below the Pages timeout;
+- published routes: 10,000;
+- largest published file: 25 MiB; larger video/archive artifacts move to
+  separately approved object storage;
+- monthly bandwidth operational warning: 75 GiB, below the 100 GB Pages soft
+  limit;
+- monthly Actions warning: 2,400 minutes, 80% of the GitHub Pro allowance;
+- retained Actions artifacts: 512 MiB across this project, leaving half of the
+  Pro storage allowance for overlap and other workflows;
+- per normal route: HTML 256 KiB raw, CSS 32 KiB gzip, initial JavaScript 32 KiB
+  gzip, initial font transfer 256 KiB, and total initial transfer 1 MiB,
+  excluding lazy content media;
+- search-route script allowance: 128 KiB gzip, excluding the query-dependent
+  language index;
+- source image: 20 MiB and 24 megapixels; rendered image: 512 KiB;
+- all published font assets: 4 MiB.
+
+The verifier reports actual and limit values for every failure. WOFF2 is already
+compressed, so font budgets use transferred file bytes rather than applying a
+second gzip estimate. Pagefind indexes, lazy images, downloads, and external
+embed targets count toward release capacity but not an article's initial-route
+transfer unless that route requests them immediately.
 
 ## GitHub Pages compatibility verification
 
@@ -203,7 +242,8 @@ producer output and fails when any of the following is true:
 - a source map, source Markdown file, preview artifact, draft, local filesystem
   path, secret, or build cache is present;
 - a symbolic/hard link or case-conflicting filename exists;
-- the release exceeds the configured file-count or 1 GiB size guard;
+- the release exceeds any configured route, file, transfer, image, font,
+  deployment-time, or 512 MiB release budget;
 - an HTML document requires JavaScript to expose its primary post content;
 - a localized route is missing its initial-HTML language switcher, matching
   document language, self canonical, or reciprocal alternate links;

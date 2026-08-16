@@ -1,7 +1,8 @@
 # ADR 0005: Browser language selection and post original reference
 
-- Status: accepted
+- Status: superseded
 - Date: 2026-08-16
+- Superseded by: ADR 0007
 
 ## Context
 

@@ -17,6 +17,91 @@ unless it changes shared content behavior, routes, schemas, or project rules.
 - Compatibility / follow-up: <migration, known limits, or none>
 ```
 
+## 2026-08-16T23:13:00+09:00 — Korean-default routing and Vitest handoff
+
+- Change type: Localization decision, route policy, optional post UX metadata,
+  test-runner migration, architecture/SEO/deployment guides, ADR, tests, and
+  handoff documentation.
+- Reason: Make Korean the blog's unprefixed default, publish English and
+  Japanese under explicit language paths, preserve intentionally requested
+  language routes, provide metadata for an optional browser-language post
+  affordance, and remove ambiguity about the approved test runner.
+- Scope: `config/site.yaml` and logical route guidance; project/browser language
+  resolvers; post original/preferred-language context; Korean, English, and
+  Japanese UI messages; content, I18N, UX, design, SEO, AI discovery, GitHub
+  Pages, architecture, development, testing, agent, README, managed-page
+  template, and quality contracts; ADR 0007; policy traceability; all executable
+  contract tests and root test scripts.
+- Result: Korean now owns `/` and every unprefixed blog route, English owns
+  `/en/`, and Japanese retains `/ja/`. Unsupported/no-JavaScript fallback is
+  Korean. Automatic browser selection can navigate once only from an
+  unprefixed Korean route; explicit language routes remain stable. Existing
+  `originalLanguage` and validated alternate data now produce an optional
+  `PostLanguageContext` with an original route and available browser-preferred
+  sibling, without exposing review state or requiring visible post chrome. The
+  content artifact remains schema version 7. All unit/contract and policy tests
+  now run exclusively with Vitest; the Open Design workflow and approved
+  classless baseline remain otherwise unchanged.
+- Validation: Vitest `4.1.10` passed all 55 tests across 9 files with zero
+  failures, including Korean fallback/prefix routing, explicit-route stability,
+  missing-alternate behavior, optional post-language context, locale message
+  parity, the managed-page template default, and Vitest script enforcement. The
+  dedicated policy-governance run passed 1 of 1 case. Strict TypeScript checking
+  passed. Parsed 12 YAML and 13 JSON files, checked links and balanced fences
+  across 44 Markdown files, and passed the Git whitespace check.
+- Compatibility / follow-up: ADR 0007 supersedes ADR 0005 and the locale-default
+  clause of ADR 0006. No published post routes exist, so no redirect migration
+  is required; any externally published route from the former planned model
+  would need an explicit compatibility entry. Full Astro route generation,
+  rendered optional language-context UX, release assembly, and deployed Pages
+  checks remain later implementation work and were not reported as passed.
+
+## 2026-08-16T22:34:08+09:00 — Production domain and classless UX baseline
+
+- Change type: Architecture decision, production configuration, UX, design,
+  font dependency, navigation, capacity policy, provisional implementation,
+  tests, and guides.
+- Reason: Resolve the remaining launch-critical origin, initial presentation,
+  primary UX review languages, and GitHub Pages/GitHub Pro performance and
+  capacity decisions without delaying semantic user-flow implementation for a
+  branded visual system.
+- Scope: `blog.cloverhearts.com` production origin, Route 53/Pages subdomain
+  contract, Korean/English UX priority with retained Japanese support,
+  `UX_FLOW.md`, root classless design contract, semantic Astro shell, classless
+  CSS, Pretendard package/provenance, localized primary navigation and skip
+  label, performance-budget configuration/validator, author asset limits,
+  implementation/development/deployment/SEO/agent guides, ADR 0006, policy
+  traceability, and contract tests.
+- Result: Fixed the canonical production origin at
+  `https://blog.cloverhearts.com` with an empty base path and documented a Route
+  53 `blog` CNAME to `cloverhearts.github.io` after Pages registration. Added a
+  no-component-class semantic shell and CSS baseline using system colors,
+  fluid reading widths, visible focus, print behavior, and locally bundled
+  Pretendard Variable `1.3.9` dynamic subsets. Defined static home/discovery/
+  reading/search/recovery/managed-page flows and real Posts, Categories, Tags,
+  Archive, and Search links. Added conservative Pages/Pro failure budgets,
+  including a 512 MiB release, 8-minute deployment, 10,000 routes, 1 MiB normal
+  initial transfer, image/font limits, 75 GiB bandwidth warning, 2,400 Actions
+  minutes warning, and 512 MiB Actions artifact storage.
+- Validation: With Node.js `24.19.0` and npm `11.17.0`, strict TypeScript
+  checking and all 52 contract/policy tests passed with zero failures, skips, or
+  cancellations, including 11 new stack/site-baseline cases. The Astro compiler
+  accepted `BlogShell.astro`; the installed Pretendard dynamic WOFF2 subset fit
+  the 4 MiB font budget. npm installed/audited 321 packages with zero reported
+  vulnerabilities and reported no unreviewed install scripts; the optional-free
+  dependency tree was valid. Parsed eleven project YAML files plus the Actions
+  workflow and four JSON files, checked all 43 Markdown files for balanced
+  fences and local links, and passed the Git whitespace check. Reviewed current
+  official GitHub Pages limits, GitHub Pro Actions allowances, custom-subdomain
+  guidance, and Pretendard license/distribution guidance.
+- Compatibility / follow-up: `config/site.yaml` advances from schema version 4
+  to 5; the future runtime Zod schema must accept `production` and
+  `primaryExperience`. Japanese content/routes remain required and no post
+  frontmatter or content-artifact schema changes. GitHub Pages settings, Route
+  53 DNS, certificate activation, complete Astro routes, full build, budget
+  measurement, and deployed-environment checks were not performed and remain
+  later implementation/operations work.
+
 ## 2026-08-16T21:49:38+09:00 — Approved npm implementation baseline
 
 - Change type: Architecture, runtime, package management, localization,

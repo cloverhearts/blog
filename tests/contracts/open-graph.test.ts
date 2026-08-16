@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import test from "node:test";
+import { test } from "vitest";
 
 import {
   OPEN_GRAPH_PREFIX,
@@ -11,7 +11,7 @@ import {
 const input = {
   title: "C++ 프로그래밍에 대해서",
   description: "좋은 C++ 프로그램을 설계하기 위한 기본 원칙입니다.",
-  canonicalUrl: "https://example.com/ko/posts/cpp-programming/",
+  canonicalUrl: "https://example.com/posts/cpp-programming/",
   siteName: "CloverHearts Blog",
   locale: "ko_KR",
   alternateLocales: ["en_US", "ko_KR", "ja_JP", "en_US"],

@@ -85,6 +85,7 @@ apps/
 
 config/
 ├── site.yaml                    # Origin key, locale, timezone, global policies
+├── performance-budgets.yaml     # Pages capacity and route/media/font budgets
 ├── routes.yaml                  # Prefixes, system routes, reserved namespaces
 ├── taxonomy.yaml                # Category/tag labels and aliases
 ├── navigation.yaml              # Intentional blog and managed-page links
@@ -96,6 +97,7 @@ config/
 └── analytics.yaml               # Optional GA4 activation, consent, and collection policy
 
 DESIGN.md                        # Open Design contract for normal blog only
+UX_FLOW.md                       # Semantic navigation and interaction contract
 I18N.md                          # Language, translation, and locale-route contract
 
 packages/
@@ -245,7 +247,8 @@ Responsibilities:
 
 - parse and runtime-validate post Markdown;
 - validate complete en/ko/ja translation groups and emit locale-qualified IDs
-  plus alternate-route records;
+  plus alternate-route records used with `originalLanguage` as the required
+  input for optional post-language context;
 - validate per-variant translation review status and reject unreviewed AI
   translations from production artifacts;
 - resolve logical `asset:` references;
@@ -288,8 +291,11 @@ Responsibilities:
   the validated artifact and excluded from visible body/search text and
   Schema.org rich-result claims;
 - real-link language switching and one loop-free browser-preference navigation
-  from an unprefixed route to an existing static alternate, with English
+  from an unprefixed Korean route to an existing static alternate, with Korean
   remaining the no-JavaScript fallback;
+- presentation-neutral post-language context derived from current language,
+  original language, and validated alternates; any post-body treatment is
+  optional, exposes no review state, and never redirects an explicit route;
 - optional consent-gated aggregate analytics through the reviewed blog-owned
   GA4 adapter;
 - emitting a web manifest and route claims for the generated HTML.
@@ -414,7 +420,9 @@ Contract rules:
 - JSON Schema may be generated from the runtime schemas for editor and non-TypeScript tooling support.
 - A breaking change updates producers, consumers, fixtures, migration notes, `CONTENT_RULES.md`, and this document together.
 
-The current TypeScript interfaces are a provisional contract sketch until the runtime schema dependency is selected. They must not be treated as runtime validation.
+The current TypeScript interfaces are a provisional contract sketch until the
+Phase 1 Zod runtime schemas are implemented. They must not be treated as runtime
+validation.
 
 ## Deterministic artifacts and provenance
 
@@ -531,7 +539,7 @@ contract.
     ├── llms.txt
     ├── sitemap.xml
     ├── rss.xml
-    ├── ko/rss.xml
+    ├── en/rss.xml
     └── ja/rss.xml
 ```
 

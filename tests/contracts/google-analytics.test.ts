@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import test from "node:test";
+import { test } from "vitest";
 
 import { createGoogleAnalytics } from "../../apps/blog-web/src/analytics/google-analytics.ts";
 import { resolveGa4AnalyticsConfig } from "../../packages/project-config/src/analytics.ts";

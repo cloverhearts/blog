@@ -8,7 +8,9 @@ export {
 } from "./language-preference.ts";
 export {
   renderOriginalPostFooter,
+  resolvePostLanguageContext,
   resolveTranslationOrigin,
+  type PostLanguageContext,
   type TranslationAlternate,
   type TranslationOrigin,
 } from "./translation-origin.ts";

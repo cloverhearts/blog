@@ -21,7 +21,7 @@ Outputs:
     ├── llms.txt
     ├── sitemap.xml
     ├── rss.xml
-    ├── ko/rss.xml
+    ├── en/rss.xml
     └── ja/rss.xml
 ```
 
@@ -34,7 +34,7 @@ Responsibilities:
 - emit sitemap `lastmod` only from authored `updatedAt`/`createdAt` values,
   never from incidental build time, and omit empty taxonomy or alternate-sort
   URLs;
-- generate post-only English, Korean, and Japanese RSS feeds from matching
+- generate post-only Korean, English, and Japanese RSS feeds from matching
   validated post metadata and canonical web routes;
 - include every eligible localized canonical in the sitemap while leaving
   alternate annotations authoritative in HTML;

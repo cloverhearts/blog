@@ -1,8 +1,8 @@
 /**
  * Provisional compile-time model for the first artifact contract.
  *
- * These interfaces must be replaced by types inferred from runtime schemas
- * when the schema library is selected. See ARCHITECTURE.md and
+ * These interfaces must be replaced by types inferred from Zod runtime schemas
+ * during Phase 1. See ARCHITECTURE.md and
  * DEVELOPMENT_PLAN.md; TypeScript interfaces alone are not runtime validation.
  */
 

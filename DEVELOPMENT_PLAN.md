@@ -11,7 +11,9 @@ Pagefind extended, Sharp, Vitest, Playwright, and axe-core are accepted in ADR
 - Production host: GitHub Pages.
 - Publishing source: a custom GitHub Actions workflow, never branch-based `/docs` publishing.
 - Deployment unit: the verified root-level `dist/` directory only.
-- Domain model: a Route 53-managed custom domain with an empty production base path.
+- Domain model: `https://blog.cloverhearts.com`, configured as a GitHub Pages
+  custom subdomain through a Route 53 `CNAME`, with an empty production base
+  path.
 - Portability model: every public URL also validates against a repository base path such as `/blog`.
 - Runtime model: no server dependency; primary post content is present in static HTML.
 - Design authoring: root `DESIGN.md` for the normal blog and page-local `DESIGN.md` for managed pages, compatible with the Open Design package convention.
@@ -21,8 +23,8 @@ Pagefind extended, Sharp, Vitest, Playwright, and axe-core are accepted in ADR
 - Analytics: optional blog-only GA4 using `GA4_MEASUREMENT_ID`; blank disables
   it, basic consent mode prevents pre-consent requests, and managed pages are
   excluded by default.
-- Localization: English is the unprefixed default/fallback, Korean is the
-  authoring source at `/ko/`, Japanese is at `/ja/`, and every blog route is a
+- Localization: Korean is the unprefixed default/fallback and authoring source,
+  English is at `/en/`, Japanese is at `/ja/`, and every blog route is a
   complete static HTML document.
 - Comments: excluded from the initial release. No comment provider, public
   write API, account flow, moderation queue, comment database, or
@@ -31,19 +33,29 @@ Pagefind extended, Sharp, Vitest, Playwright, and axe-core are accepted in ADR
   or updates tests in the same task; high-impact policies are hash- and
   case-mapped through `tests/policy-coverage.json`.
 - Browser language: an unprefixed route may navigate once to an existing
-  browser-preferred static alternate; prefixed routes are respected and English
+  browser-preferred static alternate; prefixed routes are respected and Korean
   remains the no-JavaScript fallback.
-- Translation presentation: only translated variants render a post-footer
-  original-language/original-link reference; review state is artifact metadata,
-  not visible post chrome.
+- Post-language context: artifacts always provide current/original language and
+  validated alternates. A bottom-of-post UX may optionally link the original
+  and a different existing browser-preferred sibling; it never exposes review
+  state or redirects an explicitly requested language route.
+- Initial visual system: semantic classless CSS, system colors, automatic
+  light/dark behavior, Pretendard Variable for Korean/English, resilient
+  fallbacks, and `UX_FLOW.md` as the interaction contract. Branded styling is
+  intentionally deferred.
+- UX review priority: Korean and English first; Japanese remains a complete
+  supported locale with required structural/accessibility verification.
+- Capacity: the failure budgets in `config/performance-budgets.yaml`, including
+  a 512 MiB release, 8-minute deployment, 10,000 routes, and per-route/media/
+  font thresholds.
 
 ## Decision gates
 
-Before media-heavy production content is accepted, decide concrete per-file,
-pixel, route, and release byte limits. The implementation stack and local
-plugin workspace convention are otherwise resolved by ADR 0004. Search still
-must pass the English, Korean, Japanese, mixed-script, and `C++` acceptance
-fixtures before Phase 4 exits.
+The implementation stack, local plugin workspace convention, production
+origin, classless UX baseline, primary review languages, font, and concrete
+performance/capacity budgets are resolved. Search still must pass the English,
+Korean, Japanese, mixed-script, and `C++` acceptance fixtures before Phase 4
+exits. A later branded design remains optional and cannot delay semantic UX.
 
 ## Phase 1 — executable contracts and shared configuration
 
@@ -65,6 +77,8 @@ fixtures before Phase 4 exits.
 - Validate `config/embeds.yaml` without loading provider code during configuration checks.
 - Generate optional JSON Schema files for editors and non-TypeScript agents.
 - Add valid and invalid contract/config fixtures, including a synthetic test-only embed plugin.
+- Keep all focused unit and cross-boundary contract suites on Vitest; do not
+  introduce or retain a second `node:test` runner.
 - Keep `test:policy` included in `test:contracts` and the quality workflow as
   runtime schemas and packages replace the provisional source.
 
@@ -81,7 +95,8 @@ Exit criteria:
 - Validate complete en/ko/ja translation groups, invariant metadata, and
   locale-qualified identity before production output.
 - Require one consistent `originalLanguage`, verify that its variant exists,
-  and expose original-language metadata to downstream renderers.
+  and expose original-language plus complete alternate-route metadata to
+  downstream renderers for optional language-context UX.
 - Validate `translationStatus`: the original is `source`, unreviewed AI
   translations are `ai-draft`, and production accepts only owner-approved
   `reviewed` translated variants.
@@ -115,6 +130,10 @@ Exit criteria:
 ## Phase 3 — static blog renderer
 
 - Initialize Astro static output inside `apps/blog-web/` only.
+- Import the approved classless stylesheet once in the shared document shell;
+  do not add a component utility framework or external font request.
+- Implement the semantic page frame and route flows from `UX_FLOW.md` before
+  decorative refinement.
 - Render complete English, Korean, and Japanese home, post, category, tag,
   archive, search, and error routes.
 - Render first and later global/category/tag/archive list pages at stable
@@ -127,10 +146,11 @@ Exit criteria:
 - Ensure primary post content and navigation links exist in initial HTML.
 - Emit real language-switcher links, localized framework copy, self canonicals,
   reciprocal `hreflang` alternates, and one loop-free browser-language
-  navigation from an unprefixed route to an existing alternate.
-- Render one original-language/original-link reference after translated article
-  bodies, omit it on source variants, expose no visible review-state banner, and
-  retain matching structured-data relationships.
+  navigation from an unprefixed Korean route to an existing alternate.
+- Provide a presentation-neutral post-language context resolver. An optional
+  post-body treatment may identify/link the original and offer an existing
+  browser-preferred sibling, but explicit route visits remain stable and no
+  review-state banner is exposed.
 - Generate a complete localized `article` Open Graph set for every post from
   the owner-approved representative-image mode. Render a deterministic local
   `1200 × 630` post card only when that mode was selected, then emit
@@ -162,8 +182,8 @@ Exit criteria:
 - analytics-disabled and consent-denied builds retain identical content and
   navigation behavior; analytics events omit raw searches, identifiers, URL
   queries, and fragments.
-- JavaScript-disabled and unsupported-language visits receive complete English
-  content; supported Korean/Japanese browsers may navigate once to an existing
+- JavaScript-disabled and unsupported-language visits receive complete Korean
+  content; supported English/Japanese browsers may navigate once to an existing
   static alternate without a content fetch or redirect loop.
 
 ## Phase 4 — final-HTML search pipeline
@@ -226,7 +246,7 @@ Exit criteria:
 - managed pages are absent from RSS regardless of sitemap policy;
 - stale or mixed discovery inputs fail validation;
 - custom-domain and `/blog` builds emit correct absolute discovery URLs.
-- localized HTML alternates are reciprocal, `x-default` points to English, and
+- localized HTML alternates are reciprocal, `x-default` points to Korean, and
   every localized route/feed is present exactly once.
 - `robots.txt` matches the validated registry and `llms.txt` contains only
   canonical, public, HTTPS links with no drafts, source paths, or timestamps.
@@ -287,8 +307,8 @@ Exit criteria:
 The following remain intentionally undecided until their decision gate:
 
 - the first real provider plugins, including whether Google Maps or Naver Maps requires build-time network access or progressive client enhancement;
-- the exact custom domain and canonical origin value;
-- the owner-approved visual direction and completed tokens in the root `DESIGN.md`.
+- any future branded palette, identity imagery, or richer component styling
+  beyond the approved classless baseline;
 - any future comment system; it requires a new privacy, abuse-prevention,
   moderation, retention/deletion, cost, accessibility, and architecture review
   rather than an implementation hidden inside the blog renderer.

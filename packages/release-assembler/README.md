@@ -7,7 +7,10 @@ It owns runtime input validation, build-mode/schema/provenance compatibility che
 For GitHub Pages, it also exposes a read-only `verify:pages` check over `dist/`.
 That check enforces the required root files, directory-style routes, custom
 origin/base-path URL resolution, absence of source or preview data, regular-file
-artifact rules, and the 1 GiB release guard described in
-`GITHUB_PAGES.md`. It reports producer errors but never repairs output.
+artifact rules, and the Pages host ceiling described in `GITHUB_PAGES.md`. The
+current project guard is the stricter 512 MiB value plus
+the route, file, transfer, image, font, and deployment budgets in
+`config/performance-budgets.yaml`. It reports producer errors but never repairs
+output.
 
 It must not accept preview artifacts, parse Markdown, derive or merge discovery metadata, render blog layouts, change managed-page design, or compensate for invalid producer artifacts.

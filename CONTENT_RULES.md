@@ -214,13 +214,17 @@ New AI translations remain `ai-draft` and keep all three group files
 `draft: true` until the owner reviews the translations and approves publication.
 
 `translationStatus` is internal publication provenance, not reader-facing post
-chrome. A translated post exposes only one derived original-work reference
-after the article body: the original language and a normal link to the original
-static variant. The source-language post omits this footer. Authors do not add a
-translation banner, nuance warning, review message, or handwritten original URL
-to frontmatter or body Markdown.
+chrome. Every post artifact exposes its current language, `originalLanguage`,
+and validated language alternates as derived metadata. A renderer may use these
+fields for optional language context after the article body: the original
+language/link and, when different and available, a link to the same post in the
+reader's resolved browser language. This UX is not required post chrome and
+must never expose review state or redirect an explicitly requested language
+route. Authors do not add a translation banner, nuance warning, review message,
+browser preference, or handwritten original URL to frontmatter or body
+Markdown.
 
-Korean is the configured authoring source and English is the public default.
+Korean is the configured authoring source and unprefixed public default.
 When a Korean source is created or materially revised, create/update English
 and Japanese variants in the same task. Preserve facts, code, identifiers,
 URLs, citations, asset references, and explicit heading IDs. When ambiguity
@@ -353,6 +357,12 @@ Rules:
 - Do not manually create hashed build filenames. The content build owns hashing, responsive variants, optimization, deduplication, and output URLs.
 - Generated asset records use stable asset IDs and artifact-relative paths. Deployment-specific public URLs are resolved later from shared route configuration and must not be authored in Markdown.
 - Preserve original image files. Lossy conversion and responsive derivatives belong to the build pipeline.
+- A source image must not exceed 20 MiB or 24 megapixels. A rendered image must
+  not exceed 512 KiB; the build fails rather than silently reducing dimensions
+  or quality below the approved output policy.
+- No published asset may exceed 25 MiB. Larger video, archive, dataset, or
+  download files require separately approved object storage and remain normal
+  HTTPS links from the static page.
 - The build emits intrinsic dimensions and responsive `srcset`/`sizes`
   candidates for content images. Renderers use eager/high-priority loading only
   for the primary above-the-fold image and native lazy loading for eligible
@@ -507,7 +517,8 @@ The content compiler derives:
   `1:1`, `4:3`, and `16:9` Article image derivatives, and tags remain blog
   web-build responsibilities;
 - translation-group alternates, route claims, and language-scoped search
-  eligibility metadata.
+  eligibility metadata; together with `originalLanguage`, these alternates are
+  the complete presentation-neutral input for optional post-language context.
 - the validated shared original-work authorship/AI-assistance declaration for
   every post variant.
 
@@ -539,10 +550,12 @@ The content compiler writes its values to `.artifacts/content/<mode>/` using the
 
 Cross-lane values come from runtime-validated files under `config/`:
 
-- `site.yaml`: localized site identity descriptions, origin and base-path
-  environment keys, supported,
-  source and default languages, language route prefixes and preference key,
-  timezone, and global discovery policies;
+- `site.yaml`: localized site identity descriptions, the production origin,
+  origin/base-path environment keys, supported/source/default and primary UX
+  review languages, language route prefixes and preference key, timezone, and
+  global discovery policies;
+- `performance-budgets.yaml`: GitHub Pages capacity, route, initial-transfer,
+  image, font, deployment-time, and bandwidth-warning limits;
 - `routes.yaml`: normalized route prefixes, system routes, and reserved namespaces;
 - `taxonomy.yaml`: stable category/tag IDs, their required localized labels, and
   tag aliases;
@@ -675,9 +688,10 @@ Until an automated `content:check` command exists, verify all of the following b
   `socialImage` or `cover` record exists when applicable.
 - The original variant is `translationStatus: source`; every translated variant
   is `ai-draft` or `reviewed`, and no `ai-draft` variant is published.
-- A translated variant produces exactly one post-footer original-work reference
-  with the original language and validated original route; a source variant
-  produces none, and review state is not rendered as post chrome.
+- Every variant carries a validated original route and complete language
+  alternates. If optional post-language context is rendered, its original and
+  browser-preferred links resolve to those alternates and review state is not
+  rendered as post chrome.
 - Category, filename, filename date, slug, and `createdAt` are internally consistent.
 - The target post and asset paths do not overwrite existing content unintentionally.
 - There is no body-level `#` heading.
@@ -816,7 +830,7 @@ Rules:
 ```yaml
 schemaVersion: 1
 id: "profile-ko"
-route: "/ko/profile/"
+route: "/profile/"
 kind: "document"
 entry:
   format: "markdown"
@@ -826,7 +840,7 @@ language: "ko"
 translationKey: "profile"
 title: "CloverHearts 프로필"
 description: "경력, 기술, 프로젝트 경험을 정리한 프로필입니다."
-returnTo: "/ko/"
+returnTo: "/"
 robots: "index"
 sitemap: true
 security:
@@ -1029,6 +1043,8 @@ Rules:
 - Page assets use the same provenance, license, secret, remote-download, hashing, optimization, and accessibility policies as post assets.
 - Build output should collect managed-page assets under the managed namespace configured in `config/routes.yaml`, using stable asset IDs and artifact-relative paths before release URL resolution.
 - A page-local font must include a valid license and fallback stack; do not copy an installed system font from a local machine.
+- All blog and managed-page font files combined must remain within the 4 MiB
+  published-font budget in `config/performance-budgets.yaml`.
 - Downloadable resumes or PDFs are explicit managed assets and must have human-readable link text and a declared file size when practical.
 
 ## 22. Discovery and linking
@@ -1146,7 +1162,8 @@ The contract test suite must include valid and invalid posts, malicious markup,
 missing and escaping assets, all three translation variants, missing/mismatched
 translation groups, valid/invalid translation statuses, attempted publication
 of an AI-draft translation, locale routing, browser-preference navigation,
-redirect-loop prevention, post-footer original references,
+redirect-loop prevention, original-route resolution, optional browser-language
+post-context metadata,
 localized taxonomy,
 English/Korean/Japanese search separation, Korean/Latin/`C++` heading anchors,
 generated-ID collisions, explicit anchors, skipped heading levels, unresolved

@@ -16,3 +16,8 @@ export {
   type LanguagePreferenceInput,
   type SupportedLanguage,
 } from "./i18n.ts";
+export {
+  GITHUB_PAGES_PRO_LIMITS,
+  validatePerformanceBudgets,
+  type PerformanceBudgets,
+} from "./performance-budgets.ts";

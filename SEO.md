@@ -10,12 +10,14 @@ files.
 ## Canonical URL policy
 
 - Every indexable HTML document emits exactly one absolute HTTPS canonical URL.
+- The production canonical origin is `https://blog.cloverhearts.com`; production
+  output uses no base path.
 - Absolute URLs use the validated `SITE_ORIGIN` and `SITE_BASE_PATH` resolver.
 - Directory routes follow the trailing-slash policy in `config/routes.yaml`.
 - Query parameters, fragments, preview routes, aliases, and redirect pages are
   never canonical.
 - Each English, Korean, and Japanese page canonicalizes to its own localized
-  URL. Localized pages never canonicalize to the English variant.
+  URL. A localized page never canonicalizes to another language variant.
 - Each pagination page has a unique stable URL and canonicalizes to itself.
   Page 2 and later never canonicalize to the first listing page, and
   `/page/1/` is not emitted as a duplicate route.
@@ -122,8 +124,8 @@ they must not introduce a second authoring source.
 
 ## Multilingual discovery
 
-- English is unprefixed and is also the `hreflang="x-default"` target. Korean
-  uses `/ko/` and Japanese uses `/ja/`.
+- Korean is unprefixed and is also the `hreflang="x-default"` target. English
+  uses `/en/` and Japanese uses `/ja/`.
 - Each normal blog translation declares itself and every other published
   variant. Alternate relationships are reciprocal and use fully qualified
   canonical URLs.
@@ -131,9 +133,9 @@ they must not introduce a second authoring source.
   translated text is never hidden in one combined document.
 - All variants are reachable through normal `<a>` links. Browser detection is
   progressive enhancement that may perform one same-site navigation from an
-  unprefixed route to an existing alternate; it never swaps article content in
-  place and must respect prefixed and explicit/persisted selection as specified
-  in `I18N.md`.
+  unprefixed Korean route to an existing alternate; it never swaps article
+  content in place and must respect prefixed and explicit/persisted selection
+  as specified in `I18N.md`.
 - HTML links are the authoritative `hreflang` implementation. The sitemap lists
   each canonical localized route but does not duplicate alternate annotations.
 - Structured data uses the visible page language and localized canonical while
@@ -172,7 +174,7 @@ assets. A managed page does not inherit post metadata or taxonomy.
 - `llms.txt` with a concise AI-oriented site guide, canonical language homes,
   sitemap/feed links, intentional navigation, eligible managed pages, and
   interpretation/citation guidance;
-- `/rss.xml`, `/ko/rss.xml`, and `/ja/rss.xml` from same-language published
+- `/rss.xml`, `/en/rss.xml`, and `/ja/rss.xml` from same-language published
   posts only.
 
 AI search, user-directed retrieval, training/model-development, and public

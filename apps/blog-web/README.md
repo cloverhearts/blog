@@ -10,6 +10,12 @@ tokens and assets are implemented inside this application. A change to blog
 layout, typography, components, responsive behavior, motion, or visual assets
 must update `DESIGN.md` in the same task.
 
+`src/styles/classless.css` is the approved initial implementation. It styles
+semantic elements directly, imports the pinned local Pretendard variable
+dynamic-subset package, and uses system colors/fallbacks. `UX_FLOW.md` owns page
+and navigation order; branded classes or a component framework must not replace
+that static flow without a later approved design change.
+
 Allowed inputs:
 
 - interfaces from `packages/contracts/`;
@@ -34,14 +40,14 @@ text and taxonomy/navigation labels. On an unprefixed route,
 `src/i18n/language-preference.ts` may select one existing preferred-language
 alternate for a same-site `location.replace` navigation. It cannot translate,
 fetch, or replace page content in place, and prefixed routes are respected.
-Every page includes real alternate links and English remains the unprefixed
+Every page includes real alternate links and Korean remains the unprefixed
 no-JavaScript fallback.
 
 `src/i18n/translation-origin.ts` compares the current artifact language with
-required `originalLanguage` and resolves the original from validated
-alternates. A translated post template renders only the localized original
-language and normal original link after the article body; it never accepts a
-handwritten original URL or exposes review state as post chrome.
+required `originalLanguage`, resolves the original from validated alternates,
+and can derive an existing browser-preferred sibling. This is
+presentation-neutral metadata for optional post-body language context; it never
+accepts a handwritten URL, exposes review state, or redirects an explicit route.
 
 This application emits final static blog HTML to `.artifacts/web/<mode>/`. Search indexing happens afterward in `packages/search-indexer/` so indexed text matches the delivered HTML.
 

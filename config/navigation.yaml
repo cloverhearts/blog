@@ -2,5 +2,35 @@
 # Internal href values are locale-neutral logical routes; the renderer applies
 # the active language prefix. Managed pages use explicit locale-specific hrefs.
 schemaVersion: 2
-primary: []
+primary:
+  - labels:
+      en: "Posts"
+      ko: "포스트"
+      ja: "記事"
+    type: "internal"
+    href: "/posts/"
+  - labels:
+      en: "Categories"
+      ko: "카테고리"
+      ja: "カテゴリー"
+    type: "internal"
+    href: "/categories/"
+  - labels:
+      en: "Tags"
+      ko: "태그"
+      ja: "タグ"
+    type: "internal"
+    href: "/tags/"
+  - labels:
+      en: "Archive"
+      ko: "보관함"
+      ja: "アーカイブ"
+    type: "internal"
+    href: "/archive/"
+  - labels:
+      en: "Search"
+      ko: "검색"
+      ja: "検索"
+    type: "internal"
+    href: "/search/"
 footer: []

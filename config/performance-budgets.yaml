@@ -1,0 +1,34 @@
+# Conservative project budgets below GitHub Pages' service ceilings. Values
+# use binary units where the key says MiB/KiB and are enforced as failures.
+schemaVersion: 1
+basis:
+  hosting: "github-pages"
+  accountPlan: "github-pro"
+  officialLimits:
+    publishedSiteMiB: 1024
+    deploymentMinutes: 10
+    softBandwidthGiBPerMonth: 100
+    actionsMinutesPerMonth: 3000
+    actionsStorageMiB: 1024
+budgets:
+  sourceRepositoryMiB: 512
+  publishedSiteMiB: 512
+  deploymentMinutes: 8
+  routeCount: 10000
+  largestPublishedFileMiB: 25
+  monthlyBandwidthWarningGiB: 75
+  monthlyActionsMinutesWarning: 2400
+  actionsArtifactStorageMiB: 512
+  page:
+    htmlKiB: 256
+    stylesheetGzipKiB: 32
+    initialScriptGzipKiB: 32
+    searchScriptGzipKiB: 128
+    initialFontKiB: 256
+    initialTransferKiB: 1024
+  images:
+    sourceFileMiB: 20
+    sourceMegapixels: 24
+    renderedFileKiB: 512
+  fonts:
+    publishedAssetsMiB: 4

@@ -12,6 +12,8 @@
 - Use the approved Node.js/npm/Astro/Zod/unified/Pagefind/Sharp test stack in
   `IMPLEMENTATION_SPEC.md` and ADR 0004. Replacing a selected tool requires an
   explicit user decision and a superseding ADR.
+- Vitest is the sole focused unit and contract test runner. Do not add or retain
+  a parallel `node:test`, Jest, Mocha, or other unit-test command.
 - Keep the root `README.md` English-first. English is the authoritative text;
   place the Korean companion translation immediately after the corresponding
   English section and update both languages in the same change.
@@ -75,14 +77,18 @@
 - `ARCHITECTURE.md` is authoritative for dependency direction, ownership, intermediate artifacts, and release assembly. Read it before changing repository structure, build boundaries, artifact contracts, or cross-package imports.
 - `GITHUB_PAGES.md` is authoritative for the production hosting boundary, `dist/` shape, base-path portability, Pages verification, and deployment workflow. Read it before changing release layout, public URL resolution, deployment automation, DNS assumptions, or static-host security behavior.
 - The root `DESIGN.md` is the Open Design-compatible source of truth for the normal blog's visual system. Read it completely before changing blog layout, visual tokens, typography, components, responsive behavior, motion, or presentation assets.
+- `UX_FLOW.md` is authoritative for the normal blog's semantic page frame,
+  discovery, reading, search, recovery, localization, and managed-page
+  transition flows. Read it before changing navigation or interaction order.
 - A managed page never inherits the root `DESIGN.md`. Its local `managed-pages/<page-id>/DESIGN.md` is authoritative for that page.
 - `SEO.md` owns canonical, robots, social metadata, structured data, sitemap, RSS, and discovery presentation rules. `AI_DISCOVERY.md` owns AI crawler categories, agent-facing discovery guidance, `llms.txt`, and the static-host observation/enforcement boundary. `PUBLISHING.md` owns publication state, ordering, pagination, related-post derivation, deletion, and search expectations. `QUALITY_GATES.md` owns release acceptance criteria. `DEVELOPMENT.md` owns the intended command and local/release workflow.
 - `I18N.md` owns supported/default/source languages, locale routes, browser
   preference behavior, translation grouping, localized UI, and language-scoped
   search/feed behavior. Read it before changing any language-aware content,
   route, UI, search, discovery, or managed-page alternate behavior.
-- ADR 0005 owns automatic browser-language navigation and the minimal
-  post-footer original-work reference. Do not reintroduce a translation banner,
+- ADR 0007 owns Korean-default browser-language navigation and optional
+  post-language context metadata/UX. Do not redirect an explicitly requested
+  `/en/` or `/ja/` route, require a post footer, or expose a translation banner,
   nuance warning, or visible review-status message without an explicit policy
   change and tests.
 - `config/analytics.yaml` owns the optional GA4 activation, scope, consent, and data-minimization policy. Analytics belongs only to the blog web layer, is disabled when its public measurement-ID environment value is absent, and must never become a content-compiler input or recommendation signal.
@@ -122,6 +128,9 @@
 - Preview and production artifacts use different paths and manifest types. Never copy, merge, or release a preview artifact into `dist/`.
 - Integrity-bearing manifests must not include an uncontrolled wall-clock timestamp. Use the documented diagnostic report or explicit reproducible timestamp input.
 - `config/embeds.yaml` is the only plugin registry and provider-capability policy. `config/security.yaml` is the maximum static-document and direct managed-page external-origin policy. Adding a provider or external capability requires an explicit local implementation, policy entry, content-rule update, fixtures, and security review.
+- `config/performance-budgets.yaml` owns repository, release, route, page,
+  script, font, image, deployment-time, and bandwidth-warning budgets. Budget
+  violations fail CI; do not weaken them silently to make a build pass.
 
 ## Authoritative content contract
 

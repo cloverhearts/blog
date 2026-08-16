@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import test from "node:test";
+import { test } from "vitest";
 
 import { renderAuthorshipDisclosureMeta } from "../../apps/blog-web/src/seo/authorship-disclosure.ts";
 import { resolvePostAuthorshipDisclosure } from "../../packages/project-config/src/content-provenance.ts";

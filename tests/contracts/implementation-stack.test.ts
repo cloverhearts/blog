@@ -1,8 +1,8 @@
 import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
-import test from "node:test";
 import { fileURLToPath } from "node:url";
+import { test } from "vitest";
 
 const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 
@@ -11,6 +11,7 @@ interface RootPackage {
   readonly packageManager: string;
   readonly engines: Readonly<Record<string, string>>;
   readonly workspaces: readonly string[];
+  readonly scripts: Readonly<Record<string, string>>;
 }
 
 interface LockPackage {
@@ -63,6 +64,7 @@ test("locks every approved implementation dependency", () => {
     "remark-directive",
     "rehype-sanitize",
     "pagefind",
+    "pretendard",
     "sharp",
     "vitest",
     "@playwright/test",
@@ -71,6 +73,17 @@ test("locks every approved implementation dependency", () => {
     const locked = packageLock.packages[`node_modules/${dependency}`];
     assert.ok(locked?.version, `Missing locked dependency: ${dependency}`);
   }
+});
+
+test("runs contract and policy suites with Vitest", () => {
+  const packageJson = JSON.parse(read("package.json")) as RootPackage;
+  assert.equal(packageJson.scripts.test, "npm run test:contracts");
+  assert.equal(packageJson.scripts["test:contracts"], "vitest run tests/contracts");
+  assert.equal(
+    packageJson.scripts["test:policy"],
+    "vitest run tests/contracts/policy-governance.test.ts",
+  );
+  assert.doesNotMatch(packageJson.scripts["test:contracts"], /node --test/u);
 });
 
 test("declares every architecture lane as an npm workspace package", () => {
@@ -87,4 +100,13 @@ test("declares every architecture lane as an npm workspace package", () => {
   ]) {
     assert.equal(existsSync(resolve(repositoryRoot, path)), true, path);
   }
+});
+
+test("records the approved production and classless UX baseline", () => {
+  const specification = read("IMPLEMENTATION_SPEC.md");
+  assert.match(specification, /https:\/\/blog\.cloverhearts\.com/u);
+  assert.match(specification, /semantic classless CSS/u);
+  assert.match(specification, /Pretendard Variable/u);
+  assert.match(specification, /`UX_FLOW\.md`/u);
+  assert.match(specification, /`config\/performance-budgets\.yaml`/u);
 });

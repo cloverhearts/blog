@@ -1,0 +1,85 @@
+---
+import "../styles/classless.css";
+
+interface NavigationLink {
+  readonly href: string;
+  readonly label: string;
+  readonly hreflang?: "en" | "ko" | "ja";
+  readonly current?: boolean;
+}
+
+interface Props {
+  readonly language: "en" | "ko" | "ja";
+  readonly title: string;
+  readonly description: string;
+  readonly siteName: string;
+  readonly homeHref: string;
+  readonly skipLabel: string;
+  readonly primaryNavigationLabel: string;
+  readonly languageNavigationLabel: string;
+  readonly primaryNavigation: readonly NavigationLink[];
+  readonly languageNavigation: readonly NavigationLink[];
+}
+
+const {
+  language,
+  title,
+  description,
+  siteName,
+  homeHref,
+  skipLabel,
+  primaryNavigationLabel,
+  languageNavigationLabel,
+  primaryNavigation,
+  languageNavigation,
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang={language}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+    <slot name="head" />
+  </head>
+  <body>
+    <a data-skip-link href="#main">{skipLabel}</a>
+    <header>
+      <a href={homeHref}>{siteName}</a>
+      <nav aria-label={primaryNavigationLabel}>
+        <ul>
+          {primaryNavigation.map((item) => (
+            <li>
+              <a href={item.href} aria-current={item.current ? "page" : undefined}>
+                {item.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+      <nav aria-label={languageNavigationLabel}>
+        <ul>
+          {languageNavigation.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                hreflang={item.hreflang}
+                aria-current={item.current ? "page" : undefined}
+              >
+                {item.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </header>
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <footer>
+      <slot name="footer" />
+    </footer>
+  </body>
+</html>

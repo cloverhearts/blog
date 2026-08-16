@@ -8,7 +8,7 @@ export const SUPPORTED_LANGUAGES = [
   "ja",
 ] as const satisfies readonly SupportedLanguage[];
 
-export const DEFAULT_LANGUAGE: SupportedLanguage = "en";
+export const DEFAULT_LANGUAGE: SupportedLanguage = "ko";
 
 const LANGUAGE_SET = new Set<string>(SUPPORTED_LANGUAGES);
 
@@ -36,7 +36,7 @@ export interface LanguagePreferenceInput {
   readonly browserLanguages?: readonly string[];
 }
 
-/** Explicit choice wins, then stored choice, then browser language, then English. */
+/** Explicit choice wins, then stored choice, then browser language, then Korean. */
 export function resolveLanguagePreference({
   explicitLanguage,
   storedLanguage,

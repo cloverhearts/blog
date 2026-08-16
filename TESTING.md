@@ -84,6 +84,9 @@ for the actual behavioral tests.
 
 ## Fixtures and ownership
 
+- Vitest is the sole unit and contract test runner. Playwright owns rendered
+  browser checks and may integrate axe-core; do not duplicate focused suites in
+  `node:test` or another runner.
 - Cross-boundary and policy conformance tests live under `tests/contracts/`.
 - Valid, invalid, malicious, multilingual, base-path, no-JavaScript, and
   compatibility sources live under `tests/fixtures/` when reusable input is

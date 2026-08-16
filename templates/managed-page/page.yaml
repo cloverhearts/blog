@@ -6,7 +6,7 @@ entry:
   format: "markdown"
   path: "content.md"
 status: "draft"
-language: "en"
+language: "ko"
 # Set the same optional translationKey on explicitly authored en/ko/ja page
 # packages when they are translations of one managed page.
 # translationKey: "__TRANSLATION_KEY__"

@@ -15,7 +15,7 @@ Use `content.md` for a normal document example. A presentation normally changes
 the entry path to `slides.md`. An application normally changes `entry.format`
 to `typescript` and the path to `src/main.ts`.
 
-The template defaults to a standalone English page. For explicit translations,
+The template defaults to a standalone Korean page. For explicit translations,
 create one package per language, give each package its own route and
 `DESIGN.md`, and set the same optional `translationKey` in every `page.yaml`.
 Managed pages are not machine-translated by the build.

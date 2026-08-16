@@ -1,0 +1,179 @@
+@import "pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css";
+
+:root {
+  color-scheme: light dark;
+  font-family: "Pretendard Variable", Pretendard, -apple-system,
+    BlinkMacSystemFont, system-ui, sans-serif;
+  font-synthesis: none;
+  line-height: 1.65;
+  text-rendering: optimizeLegibility;
+  --page-width: 72rem;
+  --reading-width: 48rem;
+  --space: clamp(1rem, 2vw, 1.5rem);
+  --border: color-mix(in srgb, CanvasText 22%, Canvas);
+}
+
+:lang(ja) {
+  font-family: "Hiragino Sans", "Yu Gothic UI", "Noto Sans JP",
+    "Pretendard Variable", sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-padding-block-start: 5rem;
+}
+
+body {
+  margin: 0;
+  color: CanvasText;
+  background: Canvas;
+}
+
+body > header,
+body > main,
+body > footer {
+  width: min(100% - 2 * var(--space), var(--page-width));
+  margin-inline: auto;
+}
+
+body > header,
+body > footer {
+  padding-block: var(--space);
+}
+
+body > header {
+  border-block-end: 1px solid var(--border);
+}
+
+body > footer {
+  margin-block-start: calc(2 * var(--space));
+  border-block-start: 1px solid var(--border);
+}
+
+main {
+  padding-block: calc(1.5 * var(--space));
+}
+
+article {
+  max-width: var(--reading-width);
+}
+
+nav ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  padding: 0;
+  list-style: none;
+}
+
+a {
+  color: LinkText;
+  text-underline-offset: 0.16em;
+}
+
+a:visited {
+  color: VisitedText;
+}
+
+:focus-visible {
+  outline: 0.2rem solid Highlight;
+  outline-offset: 0.2rem;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  line-height: 1.25;
+  text-wrap: balance;
+}
+
+h2,
+h3,
+h4,
+h5,
+h6 {
+  scroll-margin-block-start: 5rem;
+}
+
+img,
+picture,
+video,
+iframe {
+  display: block;
+  max-width: 100%;
+}
+
+img,
+video {
+  height: auto;
+}
+
+pre,
+table {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+pre,
+code,
+kbd,
+samp {
+  font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
+}
+
+pre,
+blockquote,
+aside {
+  padding: var(--space);
+  border: 1px solid var(--border);
+}
+
+input,
+button,
+select,
+textarea {
+  min-height: 2.75rem;
+  font: inherit;
+}
+
+[data-skip-link] {
+  position: absolute;
+  inset-block-start: 0.5rem;
+  inset-inline-start: 0.5rem;
+  z-index: 10;
+  padding: 0.75rem 1rem;
+  color: Canvas;
+  background: CanvasText;
+  transform: translateY(-150%);
+}
+
+[data-skip-link]:focus {
+  transform: translateY(0);
+}
+
+@media print {
+  nav,
+  [data-analytics-consent] {
+    display: none;
+  }
+
+  body > header,
+  body > main,
+  body > footer,
+  article {
+    width: 100%;
+    max-width: none;
+  }
+
+  a::after {
+    content: " (" attr(href) ")";
+  }
+}

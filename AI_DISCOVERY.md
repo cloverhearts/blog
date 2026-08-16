@@ -86,10 +86,12 @@ inputs produce byte-identical output.
 
 - Canonical generated HTML is the authoritative publication, not repository
   source Markdown or an AI-produced summary.
-- English is the unprefixed default route. Korean is normally the authored
-  source language, and Japanese and English may be translations.
-- Agents should inspect visible original-language and translation-review
-  metadata and retain the original canonical link when citing a translation.
+- Korean is the unprefixed default and normal authored source language. English
+  uses `/en/`, Japanese uses `/ja/`, and either may represent a translated or
+  independently authored original variant.
+- Agents should inspect machine-readable `originalLanguage` and validated
+  alternate metadata, retain the original canonical link when citing a
+  translation, and never infer owner review from optional visible language UX.
 - Public, indexable content may be analyzed, summarized, embedded in public
   datasets, and used for model development, subject to applicable copyright and
   license terms.

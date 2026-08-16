@@ -5,16 +5,18 @@
 The repository contains architecture, source contracts, and an approved npm
 workspace implementation profile. Node.js 24.19.0 LTS with npm 11.17.0 is
 pinned; Astro, Zod 4, unified/remark/rehype, Pagefind, Sharp, Vitest,
-Playwright, and axe-core are selected in ADR 0004. Only the test scripts already
+Playwright, and axe-core are selected in ADR 0004. Vitest is the sole focused
+unit/contract runner. Only the test scripts already
 present in `package.json` are executable; the remaining commands below are the
 required implementation surface, not a claim that every build exists.
 
 ## Required environment inputs
 
-- `SITE_ORIGIN`: absolute HTTPS origin without path, query, fragment, or trailing
-  slash; required for production.
-- `SITE_BASE_PATH`: empty for the custom domain or a normalized path such as
-  `/blog`; required explicitly so root-path assumptions are visible.
+- `SITE_ORIGIN`: `https://blog.cloverhearts.com` in production. Preview and
+  portability checks may supply another absolute HTTPS origin, but a production
+  value must match `config/site.yaml`.
+- `SITE_BASE_PATH`: empty in production; a normalized path such as `/blog` is
+  used only by the isolated portability build.
 - `SOURCE_DATE_EPOCH`: optional explicit timestamp input for human diagnostic
   reports when a reproducible timestamp is required.
 - `GA4_MEASUREMENT_ID`: optional public GA4 Measurement ID in `G-...` form.
@@ -78,7 +80,9 @@ being described as passed.
 - Preview checks cover English, Korean, and Japanese routes plus explicit,
   stored, browser-derived, unsupported, and no-storage language selection;
   automatic navigation is limited to one existing alternate from an unprefixed
-  route and cannot loop.
+  Korean route and cannot loop. Explicit `/en/` and `/ja/` visits remain on the
+  requested document; optional post-language context may offer another static
+  sibling without redirecting.
 - Local and preview builds do not collect analytics even when a developer has a
   Measurement ID in their shell; the production web build is the only eligible
   mode and still waits for explicit reader consent.
@@ -88,13 +92,16 @@ being described as passed.
 For the normal blog:
 
 1. read the root `DESIGN.md` and `AGENTS.md`;
-2. use the repository root as the Open Design project;
-3. stage generated exports under `design/open-design/`;
-4. review visual direction, provenance, license, fonts, imagery, and protected
+2. preserve the approved semantic classless baseline and `UX_FLOW.md` before
+   proposing a branded visual layer;
+3. use the repository root as the Open Design project;
+4. stage generated exports under `design/open-design/`;
+5. review visual direction, provenance, license, fonts, imagery, and protected
    decisions;
-5. update the root `DESIGN.md` and promote approved implementation tokens/assets
+6. update the root `DESIGN.md` and promote approved implementation tokens/assets
    into `apps/blog-web/`;
-6. run representative quality checks.
+7. run representative quality checks in Korean and English first, then verify
+   Japanese structural and overflow behavior.
 
 For a managed page:
 

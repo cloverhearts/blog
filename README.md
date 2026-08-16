@@ -39,11 +39,21 @@ can be added later through isolated build-time provider plugins.
 
 Production hosting is GitHub Pages through a custom GitHub Actions workflow.
 Only the verified `dist/` release is published; `docs/` remains an unpublished
-build input rather than a Pages source directory.
+build input rather than a Pages source directory. The canonical production
+origin is `https://blog.cloverhearts.com`.
 
 > 운영 호스팅은 사용자 정의 GitHub Actions 워크플로를 통한 GitHub Pages를
 > 사용합니다. 검증된 `dist/` 릴리스만 게시하며, `docs/`는 Pages 게시
-> 디렉터리가 아니라 게시되지 않는 빌드 입력으로 유지합니다.
+> 디렉터리가 아니라 게시되지 않는 빌드 입력으로 유지합니다. 운영 canonical
+> 주소는 `https://blog.cloverhearts.com`입니다.
+
+Korean is the blog's unprefixed default and no-JavaScript fallback. English is
+published under `/en/` and Japanese under `/ja/`; browser-language navigation
+may select an existing static alternate only from an unprefixed Korean route.
+
+> 블로그의 무접두 기본 언어와 JavaScript 미지원 시 대체 언어는 한국어입니다.
+> 영어는 `/en/`, 일본어는 `/ja/`에 게시하며, 브라우저 언어에 따른 이동은
+> 무접두 한국어 경로에서 기존 정적 번역본으로 이동할 때만 적용합니다.
 
 Public comments are intentionally excluded from the initial release. The site
 does not require a comment provider, write API, account system, moderation
@@ -66,12 +76,18 @@ post metadata and the approved design system.
 > 결정론적으로 만들 수 있으므로 원본 이미지는 선택 사항입니다.
 
 The root [DESIGN.md](./DESIGN.md) is the Open Design-compatible visual contract
-for the normal blog. Every standalone managed page owns a separate uppercase
-`DESIGN.md` and does not inherit the blog design.
+for the normal blog. The first implementation uses semantic classless CSS,
+locally bundled Pretendard Variable, and the flow in [UX_FLOW.md](./UX_FLOW.md)
+before branded styling. Korean and English are the primary UX review languages;
+Japanese remains fully supported. Every standalone managed page owns a separate
+uppercase `DESIGN.md` and does not inherit the blog design.
 
 > 루트 [DESIGN.md](./DESIGN.md)는 일반 블로그에 적용되는 Open Design 호환
-> 시각 계약입니다. 각 독립형 관리 페이지는 별도의 대문자 `DESIGN.md`를
-> 소유하며 블로그 디자인을 상속하지 않습니다.
+> 시각 계약입니다. 첫 구현은 브랜드 디자인보다 [UX_FLOW.md](./UX_FLOW.md)의
+> 흐름, 시맨틱 classless CSS, 로컬 Pretendard Variable을 우선합니다. UX의
+> 우선 검토 언어는 한국어와 영어이며 일본어 지원은 유지합니다. 각 독립형
+> 관리 페이지는 별도의 대문자 `DESIGN.md`를 소유하며 블로그 디자인을
+> 상속하지 않습니다.
 
 ## Project documentation / 프로젝트 문서
 
@@ -79,7 +95,8 @@ See [ARCHITECTURE.md](./ARCHITECTURE.md) for dependency boundaries,
 [GITHUB_PAGES.md](./GITHUB_PAGES.md) for the deployment contract,
 [IMPLEMENTATION_SPEC.md](./IMPLEMENTATION_SPEC.md) for the approved coding
 stack and handoff profile, [DEVELOPMENT_PLAN.md](./DEVELOPMENT_PLAN.md) for
-implementation phases, [CONTENT_RULES.md](./CONTENT_RULES.md) for authoring
+implementation phases, [UX_FLOW.md](./UX_FLOW.md) for interaction and
+information flow, [CONTENT_RULES.md](./CONTENT_RULES.md) for authoring
 rules, and
 [I18N.md](./I18N.md) for English/Korean/Japanese translation and routing.
 Operational details are in [DEVELOPMENT.md](./DEVELOPMENT.md), discovery rules in
@@ -92,7 +109,8 @@ in [History.md](./History.md).
 > 의존성 경계는 [ARCHITECTURE.md](./ARCHITECTURE.md), 배포 계약은
 > [GITHUB_PAGES.md](./GITHUB_PAGES.md), 승인된 구현 스택 및 인계 기준은
 > [IMPLEMENTATION_SPEC.md](./IMPLEMENTATION_SPEC.md), 구현 단계는
-> [DEVELOPMENT_PLAN.md](./DEVELOPMENT_PLAN.md), 작성 규칙은
+> [DEVELOPMENT_PLAN.md](./DEVELOPMENT_PLAN.md), 상호작용과 정보 흐름은
+> [UX_FLOW.md](./UX_FLOW.md), 작성 규칙은
 > [CONTENT_RULES.md](./CONTENT_RULES.md), 영어·한국어·일본어 번역과 라우팅은
 > [I18N.md](./I18N.md)를 참고합니다. 운영 절차는
 > [DEVELOPMENT.md](./DEVELOPMENT.md), 검색 엔진 발견 규칙은
@@ -130,14 +148,16 @@ control, or a substitute for canonical HTML and page-level metadata.
 Each post artifact also carries one English, owner-declared provenance statement
 for the original work. The static page emits it as custom document-head metadata
 only: the original work is human-authored, and AI assistance on that work was
-limited to proofreading. Translation provenance remains separate and visible
-through the existing language/review metadata.
+limited to proofreading. Translation provenance remains separate in
+`originalLanguage`, internal review status, and validated alternate metadata;
+review status is not reader-facing post chrome.
 
 > 각 포스트 산출물에는 원저작물에 대한 영문 저자 선언 메타데이터가 하나씩
 > 포함됩니다. 정적 페이지는 이를 문서 head의 사용자 정의 메타데이터로만
 > 내보냅니다. 원저작물은 사람이 작성했고 AI는 교정에만 제한적으로
-> 사용되었다는 선언이며, 번역 과정은 기존 언어·검토 메타데이터를 통해
-> 별도로 투명하게 관리합니다.
+> 사용되었다는 선언이며, 번역 과정은 원문 언어, 내부 검토 상태, 검증된
+> 대체 언어 경로 메타데이터로 별도 관리합니다. 검토 상태는 독자에게 보이는
+> 포스트 UI로 노출하지 않습니다.
 
 Behavior and policy changes must include their tests in the same task.
 [TESTING.md](./TESTING.md) defines positive/negative/boundary/regression

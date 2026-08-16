@@ -7,17 +7,21 @@ The mandatory change-to-test workflow is defined in `TESTING.md`.
 case names, and `policy-governance.test.ts` rejects missing paths, stale source
 hashes, duplicate entries, or mappings to nonexistent test cases.
 
+All focused contract and policy suites run with Vitest. Playwright and axe-core
+are reserved for the later rendered-page conformance lane; `node:test` is not a
+parallel project runner.
+
 Planned checks include producer output validation, consumer rejection of malformed or unsupported artifacts, preview/production isolation, provenance compatibility, route and asset collisions, managed entry/design/security conformance, public-route-to-file mapping, embed registry/security/fallback conformance with a synthetic test plugin, heading-anchor determinism, TOC hierarchy and body-HTML parity, fragment-link integrity, final-HTML search coverage, sitemap/robots/RSS discovery coverage, no-JavaScript readability, and golden deterministic artifacts.
 
 Multilingual conformance additionally covers complete/mismatched translation
-groups, English-default and locale-prefixed route resolution, explicit/stored/
+groups, Korean-default and English/Japanese-prefixed route resolution, explicit/stored/
 browser/fallback preference order, one automatic navigation from an unprefixed
 route, redirect-loop prevention, localized UI message completeness,
 reciprocal alternates, language-isolated taxonomy/search/RSS data, and shared
 asset behavior. It also verifies original-language consistency, translation
 review status, production rejection of `ai-draft`, translated vs. original
-classification, and the single post-footer original reference with no visible
-translation-review banner.
+classification, validated original/preferred alternate metadata for optional
+post-language context, and no visible translation-review banner.
 
 Open Graph conformance covers required core ordering, localized locale and
 alternate values, article dates/category/tags, post-specific image structured
@@ -35,6 +39,12 @@ Post authorship conformance covers the exact English owner statement,
 original-work scope, human primary creation, proofreading-only AI assistance,
 safe HTML-attribute escaping, custom head metadata, and rejection of hidden
 body or unsupported structured-data representations.
+
+Site-baseline conformance covers the production origin, Korean/English UX
+review priority with retained Japanese support, localized static primary
+navigation, GitHub Pages/Pro capacity headroom, invalid budget rejection,
+classless semantic shell/CSS behavior, Pretendard subset size, and static
+fallbacks for every primary UX flow.
 
 The current executable scaffolding covers language detection/route selection,
 UI-message parity, GA4 disabled/pending consent,

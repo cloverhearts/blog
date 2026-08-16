@@ -20,9 +20,17 @@ contract win.
   handlers and `rehype-sanitize`.
 - Search: Pagefind extended release, executed after final blog HTML exists.
 - Images: Sharp, local and deterministic.
-- Tests: Vitest, Playwright, axe-core, plus release-level static validation.
+- Tests: Vitest is the only unit/contract runner; Playwright and axe-core own
+  rendered-browser and accessibility checks, plus release-level static
+  validation.
 - Hosting: verified `dist/` uploaded to GitHub Pages by a custom GitHub Actions
   workflow using `npm ci`.
+- Production origin: `https://blog.cloverhearts.com` with an empty base path.
+- Initial presentation: semantic classless CSS and the `UX_FLOW.md` interaction
+  contract, using locally bundled Pretendard Variable for the Korean/English
+  primary review pair while retaining Japanese support.
+- Capacity: enforce `config/performance-budgets.yaml`; do not size the project
+  to GitHub Pages' service ceilings.
 
 The full rationale and replacement rules are in
 `decisions/0004-implementation-stack.md`.
@@ -39,21 +47,24 @@ The full rationale and replacement rules are in
 6. Release assembly validates and copies production artifacts; it does not
    render or repair them.
 7. Published article content, navigation, TOC, taxonomy links, related posts,
-   and original-work references exist in initial HTML.
+   and static language alternate links exist in initial HTML.
 
 ## Language behavior
 
-- English: `/` and other unprefixed routes; default and no-JavaScript fallback.
-- Korean: `/ko/`.
+- Korean: `/` and other unprefixed routes; default and no-JavaScript fallback.
+- English: `/en/`.
 - Japanese: `/ja/`.
 - An unprefixed route may navigate once to an existing browser-preferred static
   alternate through local progressive enhancement. Prefixed and explicitly
   selected routes are respected.
-- A translated post renders only an original-language/original-link reference
-  after the article body. Translation review state remains artifact metadata,
-  not reader-facing post chrome.
+- Every post artifact carries its current language, original language, and
+  validated alternates. A post UX may optionally use them after the body to
+  link the original and an existing browser-preferred sibling; review state
+  remains artifact metadata and explicit locale routes never auto-redirect.
 
-See `decisions/0005-browser-language-and-original-reference.md` and `I18N.md`.
+See ADR 0007 and `I18N.md`.
+See ADR 0006, `DESIGN.md`, `UX_FLOW.md`, and
+`config/performance-budgets.yaml` for the production/UX baseline.
 
 ## Implementation order
 
@@ -61,7 +72,8 @@ See `decisions/0005-browser-language-and-original-reference.md` and `I18N.md`.
    and route collision checks.
 2. Implement deterministic content compilation, translation-group validation,
    assets, headings/TOC, and the provider-neutral embed boundary.
-3. Implement Astro static routes and approved Open Design output.
+3. Implement Astro static routes, the semantic `UX_FLOW.md` shell, and the
+   approved classless baseline before optional Open Design refinement.
 4. Index final HTML with Pagefind and build managed pages independently.
 5. Generate discovery files, assemble `dist/`, run conformance twice for the
    custom-domain root and `/blog` base path, then add deployment automation.

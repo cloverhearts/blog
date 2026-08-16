@@ -13,4 +13,9 @@ Accepted records:
 - `0002-open-design-contract.md`
 - `0003-comments-deferred.md`
 - `0004-implementation-stack.md`
-- `0005-browser-language-and-original-reference.md`
+- `0006-production-ux-and-capacity-baseline.md`
+- `0007-korean-default-language-context.md`
+
+Superseded records:
+
+- `0005-browser-language-and-original-reference.md` — superseded by ADR 0007

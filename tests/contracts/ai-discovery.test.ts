@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import test from "node:test";
+import { test } from "vitest";
 
 import {
   renderLlmsTxt,
@@ -98,14 +98,14 @@ test("renders a concise deterministic llms.txt with canonical links", () => {
         heading: "Languages",
         links: [
           {
-            label: "English",
+            label: "한국어",
             url: "https://example.com/",
             description: "Default and fallback language.",
           },
           {
-            label: "한국어",
-            url: "https://example.com/ko/",
-            description: "Usual source language for posts.",
+            label: "English",
+            url: "https://example.com/en/",
+            description: "English language route.",
           },
         ],
       },
@@ -127,7 +127,8 @@ test("renders a concise deterministic llms.txt with canonical links", () => {
   const second = renderLlmsTxt(input);
   assert.equal(first, second);
   assert.match(first, /^# CloverHearts Blog\n\n> A personal blog/u);
-  assert.match(first, /\[한국어\]\(https:\/\/example\.com\/ko\/\)/u);
+  assert.match(first, /\[한국어\]\(https:\/\/example\.com\/\)/u);
+  assert.match(first, /\[English\]\(https:\/\/example\.com\/en\/\)/u);
   assert.match(first, /## Machine use/u);
   assert.match(first, /Model development: allowed/u);
   assert.match(first, /Public dataset inclusion: allowed/u);

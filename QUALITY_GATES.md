@@ -30,10 +30,10 @@ merely because it compiles or looks correct in one browser.
 - Category, tag, archive, and post lists expose normal links without JavaScript.
 - English, Korean, and Japanese routes each contain complete same-language
   content/navigation in initial HTML; language switching uses normal links.
-- Every translated post exposes exactly one localized original-work reference
-  after the article body, containing only the original language and a resolvable
-  original-post link. Source-language posts omit the redundant footer, and no
-  post chrome exposes translation review state.
+- Every post artifact exposes a resolvable original route and validated language
+  alternates. Optional post-body language context may link the original and an
+  existing browser-preferred sibling, but no post chrome exposes translation
+  review state and its absence is not a release failure.
 - Every post carries one English owner-declared original-work authorship record
   in document-head metadata, without a matching visually hidden body element.
 - Search explains its client-side requirement and offers normal taxonomy/archive
@@ -54,7 +54,7 @@ merely because it compiles or looks correct in one browser.
   sticky UI.
 - The language switcher announces its purpose/current language, uses text rather
   than flags alone, and remains usable with keyboard, touch, and JavaScript off.
-- Browser-language navigation occurs at most once from an unprefixed route to
+- Browser-language navigation occurs at most once from an unprefixed Korean route to
   an existing static alternate, never loops, and never removes the persistent
   language links.
 - Content remains usable at 200% zoom and does not require horizontal scrolling
@@ -80,8 +80,12 @@ merely because it compiles or looks correct in one browser.
   LCP at or below 2.5 seconds, INP at or below 200 milliseconds, and CLS at or
   below 0.1. Before field data exists, equivalent Lighthouse/PageSpeed lab
   checks and explicit regression budgets act as launch proxies.
-- Concrete byte, image, font, and route-count budgets are fixed during framework
-  selection and enforced in CI; they may not remain warning-only before launch.
+- `config/performance-budgets.yaml` fixes byte, image, font, route-count,
+  deployment-time, and bandwidth-warning budgets. CI treats violations as
+  failures: 512 MiB release/repository, 10,000 routes, 25 MiB largest file,
+  8-minute deployment, 1 MiB normal-route initial transfer, 24-megapixel/
+  20 MiB source images, 512 KiB rendered images, 4 MiB published fonts,
+  2,400 monthly Actions minutes, and 512 MiB retained Actions artifacts.
 
 ## Security and privacy
 
@@ -113,12 +117,12 @@ merely because it compiles or looks correct in one browser.
 - A route change has an explicit compatibility entry and never silently breaks a
   published URL.
 - Each localized page has the correct `lang`, a self canonical, reciprocal
-  `hreflang` alternates, and English `x-default`; translation groups cannot be
+  `hreflang` alternates, and Korean `x-default`; translation groups cannot be
   partially published.
 - Post artifacts and structured data agree on `originalLanguage`; translated
   variants are owner-reviewed before publication, `BlogPosting` records point
-  `translationOfWork` to the original canonical, and visible post chrome is
-  limited to the required post-footer original reference.
+  `translationOfWork` to the original canonical. Any optional language-context
+  chrome uses validated alternates and exposes no review state.
 - Authorship disclosure metadata exactly matches the validated owner statement,
   applies only to the original work, declares human primary creation and
   proofreading-only AI assistance, and is absent from JSON-LD, descriptions,
@@ -150,9 +154,9 @@ merely because it compiles or looks correct in one browser.
   byte-identical integrity-bearing artifacts.
 - Generated social-card bytes and content-addressed paths are identical across
   clean builds with the same content, design, fonts, and configuration.
-- The final Pages artifact contains regular files only, stays below the 1 GiB
-  guard, and contains no source Markdown, source map, cache, or intermediate
-  artifact.
+- The final Pages artifact contains regular files only, stays below the 512 MiB
+  project guard, and contains no source Markdown, source map, cache, or
+  intermediate artifact.
 
 ## Representative release matrix
 

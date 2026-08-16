@@ -2,7 +2,7 @@
 
 ## Status and scope
 
-- Status: draft; visual direction has not yet been selected by the owner.
+- Status: approved classless baseline; branded visual direction is deferred.
 - Scope: the normal blog experience rendered by `apps/blog-web/`.
 - Excluded scope: every package under `managed-pages/`; each managed page owns
   its own local `DESIGN.md` and does not inherit this file.
@@ -17,56 +17,68 @@ CLI, MCP server, account, or network connection.
 
 ## 1. Visual theme and atmosphere
 
-The final visual direction is pending owner approval. Until it is selected:
+The initial design is a restrained, classless reading interface. Semantic HTML
+receives useful defaults without a component-class visual system. Until a later
+owner-approved brand direction replaces it:
 
 - optimize first for calm, long-form reading in English, Korean, and Japanese;
 - keep post content visually primary over navigation and decoration;
 - do not introduce a generic AI-product aesthetic, decorative gradients,
   glassmorphism, excessive cards, or invented brand motifs;
 - keep the blog visually coherent while allowing managed pages to be completely
-  independent experiences.
+  independent experiences;
+- use native system colors, visible underlines, borders, whitespace, and type
+  hierarchy instead of decorative surfaces or brand imagery.
 
 ## 2. Color palette and semantic roles
 
-The palette is not selected yet. Open Design must record approved colors here
-with semantic roles rather than component-specific names.
-
-Required roles before implementation:
+The classless baseline follows the browser/operating-system light or dark
+preference through `color-scheme: light dark` and CSS system colors. It defines
+no independent brand palette. A later palette must retain these semantic roles.
 
 | Role | Value | Purpose |
 | --- | --- | --- |
-| `canvas` | pending | Page background |
-| `surface` | pending | Raised or grouped content |
-| `text` | pending | Primary reading text |
-| `text-muted` | pending | Secondary information |
-| `border` | pending | Dividers and control boundaries |
-| `accent` | pending | Links and primary actions |
-| `focus` | pending | Keyboard focus indicator |
-| `code-canvas` | pending | Code block background |
-| `danger` | pending | Destructive or invalid state |
+| `canvas` | `Canvas` | Page background |
+| `surface` | `Canvas` | Grouped content without elevation |
+| `text` | `CanvasText` | Primary reading text |
+| `text-muted` | `GrayText` | Secondary information |
+| `border` | `color-mix(CanvasText 22%, Canvas)` | Dividers and controls |
+| `accent` | `LinkText` | Links and primary actions |
+| `focus` | `Highlight` | Keyboard focus indicator |
+| `code-canvas` | `Canvas` + border | Code block background |
+| `danger` | system error semantics | Destructive or invalid state |
 
 Every approved combination must meet the accessibility target in
 `QUALITY_GATES.md`. Do not use color as the only carrier of meaning.
 
 ## 3. Typography rules
 
-Typography is not selected yet. Open Design must define:
+- Korean and English are the primary typography and UX review languages.
+- `Pretendard Variable` is the normal blog's primary UI/body family, supplied
+  by the pinned `pretendard` npm package and bundled by the web build. Production
+  HTML does not load a font stylesheet from a public CDN.
+- Use the variable dynamic subset so a document requests only the glyph slices
+  it uses. The initial route font transfer must meet
+  `config/performance-budgets.yaml`.
+- The fallback order is Pretendard, Apple/system UI sans-serif, then generic
+  `sans-serif`. Japanese remains supported and receives Japanese system-font
+  fallbacks before Pretendard where available.
+- Display, body, and UI use the same family in this baseline. Code uses the
+  platform monospace stack.
+- Body line height is `1.65`, heading line height is `1.25`, and the reading
+  measure is at most `48rem`. Browser defaults provide the remaining type scale.
 
-- Korean, Japanese, and Latin body font stacks;
-- display, body, UI, and monospace roles;
-- locally hosted or system-font fallback behavior;
-- font weights actually loaded by the site;
-- fluid or stepped type sizes for headings and body text;
-- line height, measure, letter spacing, and code typography;
-- failure behavior when a web font cannot load.
-
-Post body text must remain readable with all custom fonts blocked. Licensed
-font files belong under `apps/blog-web/assets/`, not in `docs/`.
+Post body text remains readable with all custom fonts blocked. Pretendard is
+distributed under the SIL Open Font License; its exact package version is
+locked. Any copied font file and license would belong under the blog web layer,
+never `docs/`.
 
 ## 4. Spacing and layout principles
 
-Open Design must define the spacing scale, content width, grid, gutters,
-breakpoints, and vertical rhythm before broad UI implementation.
+The baseline uses a fluid `1rem`–`1.5rem` page gutter, a `72rem` page frame,
+and a `48rem` reading measure. Navigation wraps naturally without a hamburger
+dependency. It introduces no grid or ornamental spacing scale; a future Open
+Design pass may refine these values without changing `UX_FLOW.md`.
 
 Invariant layout requirements:
 
@@ -81,12 +93,16 @@ Invariant layout requirements:
 
 ## 5. Components and interaction states
 
-The approved system must specify at least:
+The baseline styles semantic elements directly from
+`apps/blog-web/src/styles/classless.css`; data attributes are reserved for
+state/accessibility hooks such as the skip link and analytics consent. It does
+not create card, stack, grid, or utility class vocabularies. The rendered HTML
+and `UX_FLOW.md` must provide at least:
 
 - global header, navigation, footer, and skip link;
 - post header, metadata, table of contents, body, and related-post links;
-- one compact post-footer original-work reference on translated variants,
-  containing only the original language and original-post link;
+- one optional compact post-language context region that may link the authored
+  original and an existing browser-preferred sibling;
 - category, tag, archive, and pagination/list items;
 - search form, results, empty state, and no-JavaScript state;
 - links, buttons, inputs, code blocks, tables, quotes, notices, and downloads;
@@ -125,19 +141,20 @@ container while retaining heading IDs and direct fragment navigation. Sticky
 behavior must not cover article content and must not be required to understand
 the hierarchy.
 
-A translated post places one compact original-work reference after the article
-body. It contains only the original language and a real link to the original;
-the post header contains no translation banner or review-status message. The
-footer reference must not rely on an icon, tooltip, JavaScript, or color alone,
-and it must remain legible in print. The source-language post omits it.
+A post may place one compact language-context region after the article body. It
+may identify and link the authored original and offer an existing sibling that
+matches the reader's browser language. It never exposes review status or
+redirects an explicit route. When present, it must not rely on an icon,
+tooltip, or color alone and must remain legible in print.
 
-Social cards are presentation assets owned by this design system. Open Design
-must define their background, typography, spacing, safe area, site identity,
-category treatment, title wrapping/truncation, and English/Korean/Japanese font
-fallbacks before the generated-card renderer ships. Cards must remain legible
-at small preview sizes, avoid body excerpts and decorative clutter, and never
-invent a logo, portrait, or illustration. Identical validated inputs must
-produce identical pixels.
+Social cards are presentation assets owned by this design system. The baseline
+uses a plain light canvas, dark text, one neutral border, Pretendard with locale
+fallbacks, a small site/category line, and the localized post title inside a
+fixed safe area. It contains no body excerpt, logo, portrait, illustration,
+gradient, or decorative texture. The renderer wraps without splitting a word
+when possible and truncates only after the tested locale-specific line limit.
+Open Design may later refine these values with approval. Cards remain legible
+at small preview sizes, and identical validated inputs produce identical pixels.
 
 Representative-image selection itself is editorial and follows
 `CONTENT_RULES.md`; this design contract only controls rendering after owner
@@ -148,7 +165,9 @@ rather than applying a misleading crop.
 
 ## 6. Depth, elevation, and motion
 
-No elevation or motion style is approved yet. When selected:
+The baseline uses no elevation, shadow, overlay, decorative animation, or
+autoplay motion. Borders and document flow communicate grouping. If a later
+visual direction introduces motion:
 
 - use the smallest surface hierarchy that communicates structure;
 - define shadows, borders, overlays, and sticky layers as tokens;
@@ -163,7 +182,7 @@ No elevation or motion style is approved yet. When selected:
 - UI labels do not exaggerate, advertise, or invent authority.
 - Post prose remains owned by Markdown content and is not rewritten by the
   presentation layer.
-- English is the default and no-JavaScript fallback language. Korean and
+- Korean is the default and no-JavaScript fallback language. English and
   Japanese are equal first-class static experiences. Latin code, paths, and
   identifiers must remain legible within Korean and Japanese text.
 - Navigation, pagination, search, taxonomy, consent, error, and accessibility
@@ -173,8 +192,10 @@ No elevation or motion style is approved yet. When selected:
 
 ## 8. Responsive, accessibility, and print behavior
 
-Open Design must define concrete breakpoints and component transformations. The
-implementation must also satisfy `QUALITY_GATES.md`.
+The classless baseline is fluid and needs no layout breakpoint: navigation
+wraps and document widths use `min()`/`clamp()`. A richer design must define
+concrete breakpoints and component transformations and satisfy
+`QUALITY_GATES.md`.
 
 - The site works with keyboard, touch, zoom, and screen readers.
 - Focus is visible and reading order matches DOM order.
@@ -183,11 +204,12 @@ implementation must also satisfy `QUALITY_GATES.md`.
 - Small screens retain full post meaning and usable navigation.
 - Language switching remains keyboard/touch accessible and shows the current
   language without relying on color. Automatic browser-language navigation is
-  limited to an existing alternate from an unprefixed route and cannot loop.
+  limited to an existing alternate from an unprefixed Korean route and cannot
+  loop; explicit `/en/` and `/ja/` routes remain stable.
 - Print output removes nonessential navigation and preserves article hierarchy,
   URLs, code, tables, and meaningful media.
-- Dark mode is implemented only after both palettes and media behavior are
-  explicitly approved here.
+- Light/dark follows the operating-system preference through CSS system colors;
+  a branded palette or manual theme control requires later approval.
 
 ## 9. Do, do not, and protected decisions
 
@@ -215,8 +237,12 @@ Protected decisions requiring owner approval:
 - primary palette and accent;
 - font families and externally hosted fonts;
 - logo, wordmark, portrait, or signature brand imagery;
-- default light/dark behavior;
+- any override of the approved operating-system light/dark behavior;
 - major home-page composition and navigation model.
+
+The current classless values are an approved temporary baseline, not approval
+for an agent to invent branded replacements. `UX_FLOW.md` owns the current
+home, discovery, reading, search, recovery, and managed-page transition flow.
 
 ## 10. Open Design handoff and agent prompt guide
 
@@ -240,6 +266,11 @@ its local `DESIGN.md`; never use this root file as an implicit fallback.
 
 ## Provenance and licenses
 
-No external design system, font, icon library, or brand asset has been adopted
-yet. Record each adopted source, version or commit, license, local asset path,
-and material modification here before use.
+- Pretendard `1.3.9`, by Kil Hyung-jin and contributors, is consumed from the
+  pinned npm package under the SIL Open Font License 1.1. The web build imports
+  `dist/web/variable/pretendardvariable-dynamic-subset.css`; no font files are
+  modified and no CDN is contacted at runtime.
+
+No external design system, icon library, or brand asset has been adopted yet.
+Record each future source, version or commit, license, local asset path, and
+material modification here before use.

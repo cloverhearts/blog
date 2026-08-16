@@ -22,9 +22,11 @@ export interface BlogMessages {
   readonly readMore: string;
   readonly relatedPosts: string;
   readonly readOriginal: string;
+  readonly readPreferredLanguage: string;
   readonly revokeAnalytics: string;
   readonly search: string;
   readonly searchEmpty: string;
+  readonly skipToContent: string;
   readonly tags: string;
   readonly tableOfContents: string;
 }
@@ -52,9 +54,11 @@ export const BLOG_MESSAGES: Readonly<Record<SupportedLanguage, BlogMessages>> = 
     readMore: "Read more",
     relatedPosts: "Related posts",
     readOriginal: "Read the original",
+    readPreferredLanguage: "Read this post in your browser language",
     revokeAnalytics: "Revoke analytics consent",
     search: "Search",
     searchEmpty: "No matching posts were found.",
+    skipToContent: "Skip to main content",
     tags: "Tags",
     tableOfContents: "Table of contents",
   },
@@ -80,9 +84,11 @@ export const BLOG_MESSAGES: Readonly<Record<SupportedLanguage, BlogMessages>> = 
     readMore: "더 읽기",
     relatedPosts: "연관 포스트",
     readOriginal: "원문 읽기",
+    readPreferredLanguage: "브라우저 언어로 이 글 읽기",
     revokeAnalytics: "분석 동의 철회",
     search: "검색",
     searchEmpty: "일치하는 포스트가 없습니다.",
+    skipToContent: "본문으로 건너뛰기",
     tags: "태그",
     tableOfContents: "목차",
   },
@@ -108,9 +114,11 @@ export const BLOG_MESSAGES: Readonly<Record<SupportedLanguage, BlogMessages>> = 
     readMore: "続きを読む",
     relatedPosts: "関連記事",
     readOriginal: "原文を読む",
+    readPreferredLanguage: "ブラウザーの言語でこの記事を読む",
     revokeAnalytics: "アクセス解析の同意を取り消す",
     search: "検索",
     searchEmpty: "一致する記事が見つかりません。",
+    skipToContent: "本文へ移動",
     tags: "タグ",
     tableOfContents: "目次",
   },
