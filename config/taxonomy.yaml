@@ -1,7 +1,119 @@
-# Empty mappings are intentional until real categories and tags exist. Category
-# and tag IDs are stable ASCII identifiers; each published identifier must have
-# en/ko/ja display labels.
 schemaVersion: 2
-categories: {}
-tags: {}
+categories:
+  research-lab:
+    labels:
+      en: "Research Lab"
+      ko: "연구소"
+      ja: "研究所"
+  developer-life:
+    labels:
+      en: "Developer Life"
+      ko: "개발자 생활"
+      ja: "開発者の日常"
+  life-notes:
+    labels:
+      en: "Life Notes"
+      ko: "삶의 기록"
+      ja: "暮らしの記録"
+  family-life:
+    labels:
+      en: "Family Life"
+      ko: "가족과 일상"
+      ja: "家族との日常"
+  everyday-lab:
+    labels:
+      en: "Everyday Lab"
+      ko: "생활 실험실"
+      ja: "暮らしの実験室"
+tags:
+  ai:
+    labels:
+      en: "AI"
+      ko: "AI"
+      ja: "AI"
+  research:
+    labels:
+      en: "Research"
+      ko: "연구"
+      ja: "研究"
+  knowledge-management:
+    labels:
+      en: "Knowledge Management"
+      ko: "지식 관리"
+      ja: "ナレッジ管理"
+  user-interface:
+    labels:
+      en: "User Interface"
+      ko: "사용자 인터페이스"
+      ja: "ユーザーインターフェース"
+  ai-skills:
+    labels:
+      en: "AI Skills"
+      ko: "AI Skills"
+      ja: "AI Skills"
+  sdk:
+    labels:
+      en: "SDK"
+      ko: "SDK"
+      ja: "SDK"
+  documentation:
+    labels:
+      en: "Documentation"
+      ko: "문서화"
+      ja: "ドキュメント"
+  web-platform:
+    labels:
+      en: "Web Platform"
+      ko: "웹 플랫폼"
+      ja: "ウェブプラットフォーム"
+  software-development:
+    labels:
+      en: "Software Development"
+      ko: "소프트웨어 개발"
+      ja: "ソフトウェア開発"
+  developer-career:
+    labels:
+      en: "Developer Career"
+      ko: "개발자 커리어"
+      ja: "開発者キャリア"
+  organizational-change:
+    labels:
+      en: "Organizational Change"
+      ko: "조직 변화"
+      ja: "組織変革"
+  reflection:
+    labels:
+      en: "Reflection"
+      ko: "사색"
+      ja: "考察"
+  communication:
+    labels:
+      en: "Communication"
+      ko: "소통"
+      ja: "コミュニケーション"
+  personal-records:
+    labels:
+      en: "Personal Records"
+      ko: "개인 기록"
+      ja: "個人の記録"
+  family:
+    labels:
+      en: "Family"
+      ko: "가족"
+      ja: "家族"
+  parenting:
+    labels:
+      en: "Parenting"
+      ko: "육아"
+      ja: "子育て"
+  cooking:
+    labels:
+      en: "Cooking"
+      ko: "요리"
+      ja: "料理"
+  experiment:
+    labels:
+      en: "Experiment"
+      ko: "실험"
+      ja: "実験"
 tagAliases: {}

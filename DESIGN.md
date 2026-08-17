@@ -36,17 +36,17 @@ The classless baseline follows the browser/operating-system light or dark
 preference through `color-scheme: light dark` and CSS system colors. It defines
 no independent brand palette. A later palette must retain these semantic roles.
 
-| Role | Value | Purpose |
-| --- | --- | --- |
-| `canvas` | `Canvas` | Page background |
-| `surface` | `Canvas` | Grouped content without elevation |
-| `text` | `CanvasText` | Primary reading text |
-| `text-muted` | `GrayText` | Secondary information |
-| `border` | `color-mix(CanvasText 22%, Canvas)` | Dividers and controls |
-| `accent` | `LinkText` | Links and primary actions |
-| `focus` | `Highlight` | Keyboard focus indicator |
-| `code-canvas` | `Canvas` + border | Code block background |
-| `danger` | system error semantics | Destructive or invalid state |
+| Role          | Value                               | Purpose                           |
+| ------------- | ----------------------------------- | --------------------------------- |
+| `canvas`      | `Canvas`                            | Page background                   |
+| `surface`     | `Canvas`                            | Grouped content without elevation |
+| `text`        | `CanvasText`                        | Primary reading text              |
+| `text-muted`  | `GrayText`                          | Secondary information             |
+| `border`      | `color-mix(CanvasText 22%, Canvas)` | Dividers and controls             |
+| `accent`      | `LinkText`                          | Links and primary actions         |
+| `focus`       | `Highlight`                         | Keyboard focus indicator          |
+| `code-canvas` | `Canvas` + border                   | Code block background             |
+| `danger`      | system error semantics              | Destructive or invalid state      |
 
 Every approved combination must meet the accessibility target in
 `QUALITY_GATES.md`. Do not use color as the only carrier of meaning.
@@ -99,11 +99,16 @@ state/accessibility hooks such as the skip link and analytics consent. It does
 not create card, stack, grid, or utility class vocabularies. The rendered HTML
 and `UX_FLOW.md` must provide at least:
 
-- global header, navigation, footer, and skip link;
+- global header, skip link, and primary navigation of Posts, Categories,
+  Tags, and Search;
+- a footer secondary Archive link that is not duplicated in the header;
 - post header, metadata, table of contents, body, and related-post links;
 - one optional compact post-language context region that may link the authored
   original;
-- category, tag, archive, and pagination/list items;
+- category, tag, archive, and pagination/list items with the localized
+  `description` and a 16:9 thumbnail (explicit override or representative
+  fallback), using empty image `alt` when the adjacent title shares the
+  same link;
 - search form, results, empty state, and no-JavaScript state;
 - links, buttons, inputs, code blocks, tables, quotes, notices, and downloads;
 - local media and provider-neutral embed containers;

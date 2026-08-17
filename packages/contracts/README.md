@@ -16,6 +16,10 @@ It must remain:
 
 Every producer must validate immediately before writing and every consumer must validate immediately after reading. The contracts also distinguish preview from production, use artifact-relative asset paths, describe provider-neutral external embeds and their security requirements, and carry deterministic provenance for stale/mixed input detection.
 
+Optional `thumbnail` records and the 150-character `description` bound are
+additive on content schema version 7. Compatibility `excerpt` remains but is
+not a collection summary.
+
 Post artifacts expose one ordered `HeadingArtifact[]` as the
 presentation-neutral table-of-contents source. Every item carries its generated
 heading `id`, same-document `anchor`, visible text, depth, and optional parent

@@ -17,6 +17,50 @@ const assetRefSchema = z
   })
   .strict();
 
+const THUMBNAIL_RASTER = /\.(png|jpe?g|webp)$/iu;
+
+export function unicodeLength(value: string): number {
+  return [...value].length;
+}
+
+export function normalizePostDescription(value: string, title: string, sourcePath: string): string {
+  const description = value.trim();
+  if (description.length === 0) {
+    throw new Error(`${sourcePath}: description must be a non-empty summary`);
+  }
+  if (unicodeLength(description) > 150) {
+    throw new Error(`${sourcePath}: description must be at most 150 Unicode characters`);
+  }
+  if (/https?:\/\//iu.test(description)) {
+    throw new Error(`${sourcePath}: description must not contain a URL`);
+  }
+  if (/[\u005b\u005d`*#]/u.test(description) || description.includes("](")) {
+    throw new Error(`${sourcePath}: description must not contain Markdown`);
+  }
+  if (/\b(TODO|TBD|FIXME|placeholder|lorem ipsum)\b/iu.test(description)) {
+    throw new Error(`${sourcePath}: description must not contain placeholder text`);
+  }
+  if (description === title.trim()) {
+    throw new Error(`${sourcePath}: description must not repeat the title`);
+  }
+  return description;
+}
+
+export function assertThumbnailSource(src: string, alt: string, sourcePath: string): void {
+  if (alt.trim().length === 0) {
+    throw new Error(`${sourcePath}: thumbnail.alt must be a non-empty localized description`);
+  }
+  if (!src.startsWith("asset:/")) {
+    throw new Error(`${sourcePath}: thumbnail.src must be a managed asset: reference`);
+  }
+  if (/^https?:\/\//iu.test(src) || src.startsWith("file:")) {
+    throw new Error(`${sourcePath}: thumbnail.src must not be a remote or machine path`);
+  }
+  if (!THUMBNAIL_RASTER.test(src) || /\.(svg|gif|mp4|webm|avif)$/iu.test(src)) {
+    throw new Error(`${sourcePath}: thumbnail.src must be a static raster PNG, JPEG, or WebP file`);
+  }
+}
+
 export const postFrontmatterSchema = z
   .object({
     title: z.string().min(1),
@@ -32,6 +76,7 @@ export const postFrontmatterSchema = z
     draft: z.boolean(),
     cover: assetRefSchema.optional(),
     socialImage: assetRefSchema.optional(),
+    thumbnail: assetRefSchema.optional(),
     related: z.array(kebabSchema).optional(),
   })
   .strict();
@@ -59,5 +104,15 @@ export function parsePostFrontmatter(value: unknown, sourcePath: string): PostFr
   if (data.updatedAt && Date.parse(data.updatedAt) < Date.parse(data.createdAt)) {
     throw new Error(`${sourcePath}: updatedAt must not precede createdAt`);
   }
-  return data;
+  const description = normalizePostDescription(data.description, data.title, sourcePath);
+  if (data.thumbnail) {
+    assertThumbnailSource(data.thumbnail.src, data.thumbnail.alt, sourcePath);
+  }
+  return {
+    ...data,
+    description,
+    ...(data.thumbnail
+      ? { thumbnail: { src: data.thumbnail.src, alt: data.thumbnail.alt.trim() } }
+      : {}),
+  };
 }

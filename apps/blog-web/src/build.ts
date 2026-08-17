@@ -30,8 +30,14 @@ import {
 import { rewriteArtifactUrls, withBasePath } from "./lib/html.ts";
 import { pageRoute, paginate } from "./lib/pagination.ts";
 import { renderDocument, type DocumentLink } from "./lib/render-document.ts";
-import { createSocialCardSet } from "./lib/social-cards.ts";
+import { createSocialCardSet, type SocialCardSet } from "./lib/social-cards.ts";
+import { createListThumbnail, resolveContentAssetFile, type ListThumbnail } from "./lib/thumbnails.ts";
 import { blogPostingJsonLd, breadcrumbJsonLd, websiteJsonLd } from "./lib/structured-data.ts";
+
+interface PostPresentation {
+  readonly cards: SocialCardSet;
+  readonly thumbnail: ListThumbnail;
+}
 
 const LANGUAGES = ["ko", "en", "ja"] as const satisfies readonly SupportedLanguage[];
 
@@ -48,7 +54,13 @@ export async function buildWeb(options: BuildWebOptions): Promise<WebManifestArt
   const outputDirectory =
     options.outputDirectory ?? resolve(options.config.repositoryRoot, `.artifacts/web/${options.mode}`);
   const siteDirectory = resolve(outputDirectory, "site");
-  rmSync(siteDirectory, { recursive: true, force: true });
+  try {
+    rmSync(siteDirectory, { recursive: true, force: true, maxRetries: 5, retryDelay: 20 });
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code !== "ENOENT") {
+      throw error;
+    }
+  }
   mkdirSync(siteDirectory, { recursive: true });
 
   const rawManifest = JSON.parse(readFileSync(resolve(contentDirectory, "manifest.json"), "utf8")) as unknown;
@@ -67,6 +79,34 @@ export async function buildWeb(options: BuildWebOptions): Promise<WebManifestArt
   copyContentAssets(contentDirectory, siteDirectory, options.config);
   writeFavicon(siteDirectory);
   writeWebManifest(options.config, siteDirectory);
+
+  const presentation = new Map<string, PostPresentation>();
+  for (const post of posts) {
+    const representativePath = resolveContentAssetFile(
+      contentDirectory,
+      content.assets,
+      post.representativeImage === "cover" ? post.cover?.assetId : post.socialImage?.assetId,
+    );
+    const cards = await createSocialCardSet({
+      post,
+      config: options.config,
+      contentAssetPath: representativePath,
+      outputDirectory: siteDirectory,
+      categoryLabel:
+        options.config.taxonomy.categories[post.category]?.labels
+          ? localizedText(options.config.taxonomy.categories[post.category]!.labels, post.language)
+          : post.category,
+    });
+    const thumbnail = await createListThumbnail({
+      post,
+      config: options.config,
+      cards,
+      outputDirectory: siteDirectory,
+      explicitAssetPath: resolveContentAssetFile(contentDirectory, content.assets, post.thumbnail?.assetId),
+      representativeLocalPath: cards.localSixteenByNine,
+    });
+    presentation.set(post.id, { cards, thumbnail });
+  }
 
   const files = new Set<string>();
   const routes: RouteClaimArtifact[] = [];
@@ -98,7 +138,7 @@ export async function buildWeb(options: BuildWebOptions): Promise<WebManifestArt
     const home = options.config.localizeRoute(language, options.config.routes.paths.home);
     emit(
       home,
-      renderHome(options.config, language, posts),
+      renderHome(options.config, language, posts, presentation),
       "blog",
       `home:${language}`,
     );
@@ -114,19 +154,23 @@ export async function buildWeb(options: BuildWebOptions): Promise<WebManifestArt
       "system",
       `not-found:${language}`,
     );
-    emitCollection(options, language, posts, "posts", (post) => post, emit);
-    emitTaxonomy(options, language, posts, "categories", (post) => [post.category], emit);
-    emitTaxonomy(options, language, posts, "tags", (post) => [...post.tags], emit);
-    emitCollection(options, language, posts, "archive", (post) => post, emit);
+    emitCollection(options, language, posts, "posts", emit, presentation);
+    emitTaxonomy(options, language, posts, "categories", (post) => [post.category], emit, presentation);
+    emitTaxonomy(options, language, posts, "tags", (post) => [...post.tags], emit, presentation);
+    emitCollection(options, language, posts, "archive", emit, presentation);
   }
 
   for (const post of posts) {
-    const html = await renderPostPage({
+    const prepared = presentation.get(post.id);
+    if (!prepared) {
+      throw new Error(`Missing presentation for ${post.id}`);
+    }
+    const html = renderPostPage({
       config: options.config,
       post,
       posts,
-      contentDirectory,
-      siteDirectory,
+      cards: prepared.cards,
+      presentation,
     });
     emit(post.route, html, "post", post.id);
   }
@@ -174,8 +218,8 @@ function emitCollection(
   language: SupportedLanguage,
   posts: readonly PreviewPostArtifact[],
   kind: "posts" | "archive",
-  _select: (post: PreviewPostArtifact) => PreviewPostArtifact,
   emit: (route: string, html: string, ownerKind: RouteClaimArtifact["ownerKind"], ownerId: string) => void,
+  presentation: ReadonlyMap<string, PostPresentation>,
 ): void {
   const listed = listPostsForLanguage(language, posts);
   const pages = paginate(listed, options.config.site.listings.pageSize);
@@ -188,7 +232,7 @@ function emitCollection(
     const route = pageRoute(base, pageNumber, options.config.routes.paginationSegment);
     emit(
       route,
-      renderListPage(options.config, language, kind, pageItems, pageNumber, pages.length, base),
+      renderListPage(options.config, language, kind, pageItems, pageNumber, pages.length, base, presentation),
       "blog",
       `${kind}:${language}:${pageNumber}`,
     );
@@ -202,6 +246,7 @@ function emitTaxonomy(
   kind: "categories" | "tags",
   selectIds: (post: PreviewPostArtifact) => readonly string[],
   emit: (route: string, html: string, ownerKind: RouteClaimArtifact["ownerKind"], ownerId: string) => void,
+  presentation: ReadonlyMap<string, PostPresentation>,
 ): void {
   const indexRoute = options.config.localizeRoute(
     language,
@@ -228,7 +273,7 @@ function emitTaxonomy(
       const pageNumber = index + 1;
       emit(
         pageRoute(base, pageNumber, options.config.routes.paginationSegment),
-        renderListPage(options.config, language, kind, pageItems, pageNumber, pages.length, base, id),
+        renderListPage(options.config, language, kind, pageItems, pageNumber, pages.length, base, presentation, id),
         "blog",
         `${kind}:${language}:${id}:${pageNumber}`,
       );
@@ -266,6 +311,7 @@ function renderHome(
   config: ProjectConfig,
   language: SupportedLanguage,
   posts: readonly PreviewPostArtifact[],
+  presentation: ReadonlyMap<string, PostPresentation>,
 ): string {
   const messages = blogMessages(language);
   const listed = listPostsForLanguage(language, posts).slice(0, config.site.listings.pageSize);
@@ -275,29 +321,67 @@ function renderHome(
     robots: "index,follow",
     canonical: config.localizeRoute(language, "/"),
     jsonLd: [websiteJsonLd(config)],
-    body: `<h1>${escape(config.site.identity.name)}</h1><p>${escape(localizedText(config.site.identity.descriptions, language))}</p>${renderPostList(config, language, listed)}<p><a href="${withBasePath(config.resolved.basePath, config.localizeRoute(language, config.routes.paths.posts))}">${escape(messages.posts)}</a></p>`,
+    body: `<h1>${escape(config.site.identity.name)}</h1><p>${escape(localizedText(config.site.identity.descriptions, language))}</p>${renderPostList(config, language, listed, presentation, true)}<p><a href="${withBasePath(config.resolved.basePath, config.localizeRoute(language, config.routes.paths.posts))}">${escape(messages.posts)}</a></p>`,
   });
 }
 
 function renderSearch(config: ProjectConfig, language: SupportedLanguage): string {
   const messages = blogMessages(language);
+  const searchRoute = withBasePath(
+    config.resolved.basePath,
+    config.localizeRoute(language, config.routes.paths.search),
+  );
+  const browseLinks = `<p><a href="${withBasePath(config.resolved.basePath, config.localizeRoute(language, config.routes.paths.categories))}">${escape(messages.categories)}</a> · <a href="${withBasePath(config.resolved.basePath, config.localizeRoute(language, config.routes.paths.tags))}">${escape(messages.tags)}</a> · <a href="${withBasePath(config.resolved.basePath, config.localizeRoute(language, config.routes.paths.archive))}">${escape(messages.archive)}</a></p>`;
+  const indexBase = `${config.resolved.basePath.replace(/\/$/u, "")}/_assets/search/${language}/`;
+  const scriptSrc = withBasePath(config.resolved.basePath, "/_assets/app/search.js");
   return renderShell(config, language, {
     title: `${messages.search} · ${config.site.identity.name}`,
     description: messages.noJavaScriptSearch,
     robots: "noindex,follow",
     canonical: config.localizeRoute(language, config.routes.paths.search),
-    body: `<h1>${escape(messages.search)}</h1><p>${escape(messages.noJavaScriptSearch)}</p><p><a href="${withBasePath(config.resolved.basePath, config.localizeRoute(language, config.routes.paths.categories))}">${escape(messages.categories)}</a> · <a href="${withBasePath(config.resolved.basePath, config.localizeRoute(language, config.routes.paths.tags))}">${escape(messages.tags)}</a> · <a href="${withBasePath(config.resolved.basePath, config.localizeRoute(language, config.routes.paths.archive))}">${escape(messages.archive)}</a></p><div id="search" data-pagefind-search></div>`,
+    body: `<section data-site-search data-search-index="${escape(indexBase)}" data-search-base="${escape(config.resolved.basePath)}" data-search-count="${escape(messages.searchResultCount)}" data-search-language="${language}">
+  <h1>${escape(messages.search)}</h1>
+  <noscript>
+    <p>${escape(messages.noJavaScriptSearch)}</p>
+    ${browseLinks}
+  </noscript>
+  <form role="search" method="get" action="${escape(searchRoute)}">
+    <label for="site-search-query">${escape(messages.search)}</label>
+    <input id="site-search-query" name="q" type="search" autocomplete="off" enterkeyhint="search" inputmode="search">
+    <button type="submit">${escape(messages.search)}</button>
+  </form>
+  <p data-search-status aria-live="polite"></p>
+  <ol data-search-results></ol>
+  <p data-search-empty hidden>${escape(messages.searchEmpty)}</p>
+  ${browseLinks}
+</section>
+<script type="module" src="${escape(scriptSrc)}"></script>`,
   });
 }
 
 function renderNotFound(config: ProjectConfig, language: SupportedLanguage): string {
   const messages = blogMessages(language);
+  const recovery = (
+    [
+      ["/", messages.home],
+      [config.routes.paths.posts, messages.posts],
+      [config.routes.paths.categories, messages.categories],
+      [config.routes.paths.tags, messages.tags],
+      [config.routes.paths.archive, messages.archive],
+      [config.routes.paths.search, messages.search],
+    ] as const
+  )
+    .map(
+      ([route, label]) =>
+        `<a href="${withBasePath(config.resolved.basePath, config.localizeRoute(language, route))}">${escape(label)}</a>`,
+    )
+    .join(" · ");
   return renderShell(config, language, {
     title: `${messages.notFoundTitle} · ${config.site.identity.name}`,
     description: messages.notFoundDescription,
     robots: "noindex,follow",
     canonical: config.localizeRoute(language, config.routes.paths.notFound),
-    body: `<h1>${escape(messages.notFoundTitle)}</h1><p>${escape(messages.notFoundDescription)}</p><p><a href="${withBasePath(config.resolved.basePath, config.localizeRoute(language, "/"))}">${escape(messages.backHome)}</a></p>`,
+    body: `<h1>${escape(messages.notFoundTitle)}</h1><p>${escape(messages.notFoundDescription)}</p><p>${recovery}</p>`,
   });
 }
 
@@ -309,6 +393,7 @@ function renderListPage(
   pageNumber: number,
   pageCount: number,
   collectionRoute: string,
+  presentation: ReadonlyMap<string, PostPresentation>,
   id?: string,
 ): string {
   const messages = blogMessages(language);
@@ -326,7 +411,7 @@ function renderListPage(
     description: heading,
     robots: "index,follow",
     canonical: pageRoute(collectionRoute, pageNumber, config.routes.paginationSegment),
-    body: `<h1>${escape(heading)}</h1>${renderPostList(config, language, posts)}${pager}`,
+    body: `<h1>${escape(heading)}</h1>${renderPostList(config, language, posts, presentation, pageNumber === 1)}${pager}`,
   });
 }
 
@@ -362,16 +447,24 @@ function renderPostList(
   config: ProjectConfig,
   language: SupportedLanguage,
   posts: readonly PreviewPostArtifact[],
+  presentation: ReadonlyMap<string, PostPresentation>,
+  eagerFirst: boolean,
 ): string {
   const messages = blogMessages(language);
   if (posts.length === 0) {
     return `<p>${escape(messages.searchEmpty)}</p>`;
   }
-  return `<ul>${posts
-    .map((post) => {
+  return `<ul data-post-list>${posts
+    .map((post, index) => {
       const fallback = post.language !== language;
       const label = fallback ? ` <small>${escape(messages.fallbackLanguage)}: ${post.language}</small>` : "";
-      return `<li><a href="${withBasePath(config.resolved.basePath, post.route)}"${fallback ? ` hreflang="${post.language}"` : ""}>${escape(post.title)}</a>${label}<p>${escape(post.excerpt)}</p></li>`;
+      const href = withBasePath(config.resolved.basePath, post.route);
+      const thumbnail = presentation.get(post.id)?.thumbnail;
+      const loading = eagerFirst && index === 0 ? "eager" : "lazy";
+      const image = thumbnail
+        ? `<img src="${escape(thumbnail.src)}" srcset="${escape(thumbnail.srcset)}" sizes="(max-width: 40rem) 100vw, 20rem" width="${thumbnail.width}" height="${thumbnail.height}" alt="" loading="${loading}" decoding="async" data-post-thumbnail="${thumbnail.source}">`
+        : "";
+      return `<li><a href="${href}"${fallback ? ` hreflang="${post.language}"` : ""}>${image}<span>${escape(post.title)}</span></a>${label}<p>${escape(post.description)}</p></li>`;
     })
     .join("")}</ul>`;
 }
@@ -396,27 +489,19 @@ function renderPager(
   return `<nav aria-label="${escape(messages.posts)}"><p>${previous} ${pageNumber} / ${pageCount} ${next}</p></nav>`;
 }
 
-async function renderPostPage(input: {
+function renderPostPage(input: {
   readonly config: ProjectConfig;
   readonly post: PreviewPostArtifact;
   readonly posts: readonly PreviewPostArtifact[];
-  readonly contentDirectory: string;
-  readonly siteDirectory: string;
-}): Promise<string> {
-  const { config, post } = input;
+  readonly cards: SocialCardSet;
+  readonly presentation: ReadonlyMap<string, PostPresentation>;
+}): string {
+  const { config, post, cards } = input;
   const messages = blogMessages(post.language);
   const categoryLabels = config.taxonomy.categories[post.category]?.labels;
   const categoryLabel = categoryLabels ? localizedText(categoryLabels, post.language) : post.category;
-  const sourceAsset = resolveRepresentativeAsset(post, input.contentDirectory, input.posts);
-  const cards = await createSocialCardSet({
-    post,
-    config,
-    contentAssetPath: sourceAsset,
-    outputDirectory: input.siteDirectory,
-    categoryLabel,
-  });
   const origin = resolveTranslationOrigin(post.language, post.originalLanguage, post.alternates);
-  const related = (input.posts.find(() => false), renderRelated(config, post, input.posts));
+  const related = renderRelated(config, post, input.posts, input.presentation);
   const toc = renderToc(post, messages.tableOfContents);
   const bodyHtml = rewriteArtifactUrls(
     post.bodyHtml,
@@ -445,7 +530,7 @@ async function renderPostPage(input: {
     description: post.description,
     robots: "index,follow",
     canonical: post.route,
-    pagefindBody: true,
+    pagefindBody: false,
     ogPrefix: OPEN_GRAPH_PREFIX,
     head: `${og}\n${renderAuthorshipDisclosureMeta(post.authorshipDisclosure)}`,
     jsonLd: [
@@ -468,7 +553,19 @@ async function renderPostPage(input: {
       hreflang: alternate.language,
       current: alternate.language === post.language,
     })),
-    body: `<article><h1>${escape(post.title)}</h1><p>${escape(post.description)}</p>${toc}<div>${bodyHtml}</div>${renderOriginalPostFooter(post.language, origin)}${related}</article>`,
+    body: `<article data-pagefind-body>
+  <header>
+    <h1 data-pagefind-meta="title" data-pagefind-weight="10">${escape(post.title)}</h1>
+    <p>${escape(post.description)}</p>
+    <p><a href="${withBasePath(config.resolved.basePath, config.localizeRoute(post.language, `${config.routes.paths.categories}${post.category}/`))}" data-pagefind-filter="category" data-pagefind-weight="8">${escape(categoryLabel)}</a></p>
+    <ul>${post.tags.map((tag) => `<li data-pagefind-filter="tag" data-pagefind-weight="8">${escape(tag)}</li>`).join("")}</ul>
+    <time datetime="${escape(post.createdAt)}">${escape(post.createdAt)}</time>
+  </header>
+  ${toc}
+  <div>${bodyHtml}</div>
+  ${renderOriginalPostFooter(post.language, origin)}
+  ${related}
+</article>`,
   });
 }
 
@@ -476,21 +573,19 @@ function renderRelated(
   config: ProjectConfig,
   post: PreviewPostArtifact,
   posts: readonly PreviewPostArtifact[],
+  presentation: ReadonlyMap<string, PostPresentation>,
 ): string {
   const messages = blogMessages(post.language);
-  // related IDs are filled later from the manifest; fall back to same-category posts.
   const related = posts
     .filter((candidate) => candidate.category === post.category && candidate.id !== post.id)
     .slice(0, config.site.relatedPosts.maxItems);
   if (related.length === 0) return "";
-  return `<aside><h2>${escape(messages.relatedPosts)}</h2><ul>${related
-    .map((item) => `<li><a href="${withBasePath(config.resolved.basePath, item.route)}">${escape(item.title)}</a></li>`)
-    .join("")}</ul></aside>`;
+  return `<aside data-search-ignore><h2>${escape(messages.relatedPosts)}</h2>${renderPostList(config, post.language, related, presentation, false)}</aside>`;
 }
 
 function renderToc(post: PreviewPostArtifact, label: string): string {
   if (post.headings.length === 0) return "";
-  return `<nav aria-label="${escape(label)}"><ol>${post.headings
+  return `<nav data-post-toc data-pagefind-ignore aria-label="${escape(label)}"><ol>${post.headings
     .map((heading: { readonly anchor: string; readonly text: string }) => `<li><a href="${heading.anchor}">${escape(heading.text)}</a></li>`)
     .join("")}</ol></nav>`;
 }
@@ -542,11 +637,30 @@ function renderShell(
       })),
     head: input.head ?? "",
     body: input.body,
-    footer: `${consent}<p>${escape(config.site.identity.name)}</p>`,
+    footer: `${renderFooterNavigation(config, language)}${consent}<p>${escape(config.site.identity.name)}</p>`,
     ...(input.ogPrefix ? { ogPrefix: input.ogPrefix } : {}),
     ...(input.jsonLd ? { jsonLd: input.jsonLd } : {}),
     ...(input.pagefindBody ? { pagefindBody: true } : {}),
   });
+}
+
+function renderFooterNavigation(
+  config: ProjectConfig,
+  language: SupportedLanguage,
+): string {
+  if (config.navigation.footer.length === 0) {
+    return "";
+  }
+  const items = config.navigation.footer
+    .map((item) => {
+      const href = withBasePath(
+        config.resolved.basePath,
+        item.type === "internal" ? config.localizeRoute(language, item.href) : item.href,
+      );
+      return `<li><a href="${href}">${escape(localizedText(item.labels, language))}</a></li>`;
+    })
+    .join("");
+  return `<nav aria-label="${escape(blogMessages(language).archive)}"><ul>${items}</ul></nav>`;
 }
 
 function languageMeta(config: ProjectConfig, language: SupportedLanguage) {
@@ -613,6 +727,10 @@ function copyAppAssets(config: ProjectConfig, siteDirectory: string): void {
     "node_modules/pretendard/dist/web/variable",
   );
   cpSync(fontSource, resolve(siteDirectory, "_assets/app/fonts"), { recursive: true });
+  writeFileSync(
+    resolve(siteDirectory, "_assets/app/search.js"),
+    readFileSync(resolve(here, "search/client.js")),
+  );
 }
 
 function copyContentAssets(
@@ -652,17 +770,6 @@ function writeWebManifest(config: ProjectConfig, siteDirectory: string): void {
       2,
     )}\n`,
   );
-}
-
-function resolveRepresentativeAsset(
-  post: PreviewPostArtifact,
-  contentDirectory: string,
-  _posts: readonly PreviewPostArtifact[],
-): string | undefined {
-  const assetId = post.representativeImage === "cover" ? post.cover?.assetId : post.socialImage?.assetId;
-  if (!assetId) return undefined;
-  void contentDirectory;
-  return undefined;
 }
 
 function escape(value: string): string {

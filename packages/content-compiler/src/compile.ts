@@ -100,6 +100,7 @@ export async function compileContent(options: CompileContentOptions): Promise<Co
     const postId = `${post.language}:${post.frontmatter.translationKey}`;
     const compiled = await compileMarkdown({
       body: post.body,
+      description: post.frontmatter.description,
       sourcePath: post.sourcePath,
       postId,
       language: post.language,
@@ -116,6 +117,16 @@ export async function compileContent(options: CompileContentOptions): Promise<Co
       ? rememberImage(
           post.frontmatter.socialImage.src,
           post.frontmatter.socialImage.alt,
+          assetsRoot,
+          config,
+          assetCache,
+          assetBag,
+        )
+      : undefined;
+    const thumbnail = post.frontmatter.thumbnail
+      ? rememberImage(
+          post.frontmatter.thumbnail.src,
+          post.frontmatter.thumbnail.alt,
           assetsRoot,
           config,
           assetCache,
@@ -141,11 +152,12 @@ export async function compileContent(options: CompileContentOptions): Promise<Co
       tags: post.frontmatter.tags,
       createdAt: post.frontmatter.createdAt,
       ...(post.frontmatter.updatedAt ? { updatedAt: post.frontmatter.updatedAt } : {}),
-      excerpt: compiled.excerpt || post.frontmatter.description,
+      excerpt: compiled.excerpt,
       readingMinutes: compiled.readingMinutes,
       representativeImage: post.frontmatter.representativeImage,
       ...(cover ? { cover } : {}),
       ...(socialImage ? { socialImage } : {}),
+      ...(thumbnail ? { thumbnail } : {}),
       alternates: [],
       status: post.frontmatter.draft ? "draft" : "published",
       bodyHtml: compiled.bodyHtml,
@@ -205,7 +217,9 @@ export async function compileContent(options: CompileContentOptions): Promise<Co
     description: post.description,
     category: post.category,
     tags: post.tags,
-    eligible: post.status === "published" && config.site.search.includePosts,
+    eligible:
+      config.site.search.includePosts &&
+      (mode === "preview" || post.status === "published"),
   }));
   const routes: RouteClaimArtifact[] = summaries.map((post) => ({
     route: post.route,

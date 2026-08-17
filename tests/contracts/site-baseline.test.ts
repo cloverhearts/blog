@@ -24,6 +24,7 @@ function readYaml<T>(path: string): T {
 interface SiteConfiguration {
   readonly schemaVersion: number;
   readonly production: { readonly origin: string; readonly basePath: string };
+  readonly listings: { readonly pageSize: number };
   readonly languages: {
     readonly default: string;
     readonly source: string;
@@ -52,6 +53,11 @@ interface NavigationConfiguration {
     readonly type: string;
     readonly labels: Readonly<Record<string, string>>;
   }>;
+  readonly footer: ReadonlyArray<{
+    readonly href: string;
+    readonly type: string;
+    readonly labels: Readonly<Record<string, string>>;
+  }>;
 }
 
 test("pins production origin, Korean defaults, manual language selection, and fallback order", () => {
@@ -66,6 +72,7 @@ test("pins production origin, Korean defaults, manual language selection, and fa
   assert.deepEqual(site.languages.primaryExperience, ["ko", "en"]);
   assert.equal(site.languages.browserSelection, "manual-only");
   assert.deepEqual(site.languages.postNavigationFallback, ["en", "ko"]);
+  assert.equal(site.listings.pageSize, 10);
 });
 
 test("keeps Japanese supported outside the primary design review pair", () => {
@@ -98,9 +105,13 @@ test("defines primary exploration as localized static links", () => {
   const navigation = readYaml<NavigationConfiguration>("config/navigation.yaml");
   assert.deepEqual(
     navigation.primary.map(({ href }) => href),
-    ["/posts/", "/categories/", "/tags/", "/archive/", "/search/"],
+    ["/posts/", "/categories/", "/tags/", "/search/"],
   );
-  for (const item of navigation.primary) {
+  assert.deepEqual(
+    navigation.footer.map(({ href }) => href),
+    ["/archive/"],
+  );
+  for (const item of [...navigation.primary, ...navigation.footer]) {
     assert.equal(item.type, "internal");
     assert.deepEqual(Object.keys(item.labels), ["en", "ko", "ja"]);
     assert.equal(Object.values(item.labels).every(Boolean), true);

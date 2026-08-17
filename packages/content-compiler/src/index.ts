@@ -1,6 +1,12 @@
 export { compileContent, type CompileContentOptions, type CompiledContent } from "./compile.ts";
 export { discoverPosts } from "./discover.ts";
-export { parsePostFrontmatter } from "./frontmatter.ts";
+export {
+  assertThumbnailSource,
+  normalizePostDescription,
+  parsePostFrontmatter,
+  unicodeLength,
+} from "./frontmatter.ts";
+export { excerptFrom } from "./markdown.ts";
 export {
   buildHeadingArtifacts,
   createGeneratedHeadingId,

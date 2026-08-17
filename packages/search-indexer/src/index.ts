@@ -49,7 +49,15 @@ export async function buildSearch(options: {
     const languageDocs = eligible.filter((document) => document.language === language);
     const created = await createIndex({
       forceLanguage: language,
-      includeCharacters: "+#.",
+      includeCharacters: "+#.<>$_",
+      excludeSelectors: [
+        "body > header",
+        "body > footer",
+        "[data-skip-link]",
+        "[data-post-toc]",
+        "[data-search-ignore]",
+        "[data-post-original-reference]",
+      ],
       keepIndexUrl: false,
       writePlayground: false,
     });

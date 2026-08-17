@@ -14,7 +14,7 @@
         },
         {
           "path": "QUALITY_GATES.md",
-          "sha256": "c929d634de4974ade30241053727f095bc8714e3f01b3f1eead28328b23cd25c"
+          "sha256": "cd9ae722bbd18caa8d848d9d95d9bb0235e232784929b5008b9fa952e248d5c6"
         },
         {
           "path": "DEVELOPMENT.md",
@@ -84,7 +84,7 @@
         },
         {
           "path": "CONTENT_RULES.md",
-          "sha256": "646bc9846ea48702ddc911c594e734a211241845e5eaddd0a4f195fcea2ae211"
+          "sha256": "a213a31c5a329da629505daffc511915d2f4424fee50f4442907ab518274b8d1"
         },
         {
           "path": "packages/project-config/src/content-provenance.ts",
@@ -134,7 +134,7 @@
       "sources": [
         {
           "path": "IMPLEMENTATION_SPEC.md",
-          "sha256": "54a5977c2acc8b1e1153bc8b2df99d6a672851c88a445992b0799e80fe5aed53"
+          "sha256": "ed70ffbd86b20fa8904395aed67be3e133190fdefd57b77341c5914ee4e00583"
         },
         {
           "path": "decisions/0004-implementation-stack.md",
@@ -173,7 +173,7 @@
       "sources": [
         {
           "path": "I18N.md",
-          "sha256": "bae657552cbdca326e8a2077f10bd62ec81e9385a339700a9c91b80b235e6a40"
+          "sha256": "e160e6610588a361ab2a259424d193ffa760516739beead07b2a334c966db53a"
         },
         {
           "path": "decisions/0008-multilingual-publication-and-link-fallback.md",
@@ -181,7 +181,7 @@
         },
         {
           "path": "config/site.yaml",
-          "sha256": "3652e0210c9797d72b4f9f77bdc5248708df55d96d5006fea0d99f58bfca3b77"
+          "sha256": "6835d4777e73e6ad386cd29c361e6da1cd66ecfa4c2352637ed7dfb539af7a58"
         },
         {
           "path": "packages/project-config/src/i18n.ts",
@@ -197,7 +197,7 @@
         },
         {
           "path": "apps/blog-web/src/i18n/messages.ts",
-          "sha256": "73d9fdaab08c818ae9746b22f09ca0f58af2d9cfa3a8d50bdb7d65b645058635"
+          "sha256": "105372953fe8a2190fedffd755a2b8fbd66b051aa08f79f214d8dd43b238fe98"
         }
       ],
       "tests": [
@@ -243,11 +243,11 @@
         },
         {
           "path": "DESIGN.md",
-          "sha256": "82f1a42dee6426bc8270fcaa7d752180293419f1249bee284e5f86595ac22525"
+          "sha256": "f0ded176aa25839a23c3d912e5bdad888ed34ecdc8058764fb293b81dadf0946"
         },
         {
           "path": "UX_FLOW.md",
-          "sha256": "2124597535f6393b7f5dbf1ad04dacf9f9f8ba06c73e10c168686fd9c608313d"
+          "sha256": "c44acb4ac4cb1503951fd3b7ff6160e747f19545bbb3096a3b6990bc0c8e9e2f"
         },
         {
           "path": "GITHUB_PAGES.md",
@@ -259,7 +259,7 @@
         },
         {
           "path": "config/navigation.yaml",
-          "sha256": "ac43991c48f368a76747fdd9b59b1af81daeb7feda5feb84c658a9e4d4862f23"
+          "sha256": "0f300daf8b12f6a5194365ed82b65b5f931de1c9830a6e0a8255336e3fb47fa8"
         },
         {
           "path": "packages/project-config/src/performance-budgets.ts",
@@ -267,7 +267,7 @@
         },
         {
           "path": "apps/blog-web/src/styles/classless.css",
-          "sha256": "af3862186b836b94f6c0d1ffa0dedf439266323e696c13c5ec3a14b949c34e89"
+          "sha256": "f807274e6dc9f851d37da2985f1ba0788ed635ae7d176004d735c32f0bd73645"
         },
         {
           "path": "apps/blog-web/src/layouts/BlogShell.astro",
@@ -284,6 +284,22 @@
             "ships semantic classless CSS with resilient Pretendard fallbacks",
             "keeps the Pretendard dynamic subset within the font budget",
             "defines a static recovery path for every primary UX flow"
+          ]
+        },
+        {
+          "path": "tests/contracts/pagination-navigation.test.ts",
+          "cases": [
+            "moves Archive to the footer while keeping localized archive routes"
+          ]
+        },
+        {
+          "path": "tests/contracts/search.test.ts",
+          "cases": [
+            "does not search until the reader enters a query",
+            "resolves only the active-language Pagefind index",
+            "renders keyboard-reachable local result links without a server request",
+            "indexes published language-isolated HTML and keeps C++ tokens searchable",
+            "production search eligibility excludes drafts"
           ]
         },
         {
@@ -305,6 +321,39 @@
           "path": "tests/contracts/pipeline.test.ts",
           "cases": [
             "builds an empty production site with required Pages files"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "localized-summary-and-thumbnail",
+      "sources": [
+        {
+          "path": "PUBLISHING.md",
+          "sha256": "81ad90098e65e5e5f838559e03dc6a6863daaa5ea4fa95a07afc3dff59669681"
+        },
+        {
+          "path": "SEO.md",
+          "sha256": "0c214a426e069ca6e5936502d957731cd34cb1d68d263ece893902478ae42f6a"
+        }
+      ],
+      "tests": [
+        {
+          "path": "tests/contracts/post-summary.test.ts",
+          "cases": [
+            "accepts a localized description of exactly 150 Unicode characters",
+            "rejects a description of 151 Unicode characters",
+            "trims surrounding whitespace before measuring a description",
+            "rejects empty, Markdown, URL, placeholder, and title-copy descriptions",
+            "compatibility excerpt skips a leading image and falls back to description",
+            "rejects missing alt, remote, and non-raster thumbnail sources",
+            "collections, RSS, and metadata use description while thumbnails stay off Open Graph"
+          ]
+        },
+        {
+          "path": "tests/contracts/pagination-navigation.test.ts",
+          "cases": [
+            "paginates home and collections by ten logical post groups"
           ]
         }
       ]

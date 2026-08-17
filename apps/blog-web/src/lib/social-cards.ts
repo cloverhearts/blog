@@ -13,6 +13,7 @@ export interface SocialCardSet {
     readonly fourByThree: string;
     readonly sixteenByNine: string;
   };
+  readonly localSixteenByNine: string;
 }
 
 export async function createSocialCardSet(input: {
@@ -83,6 +84,7 @@ export async function createSocialCardSet(input: {
       fourByThree: input.config.resolvePublicUrl(`/${files.fourByThree}`),
       sixteenByNine: input.config.resolvePublicUrl(`/${files.sixteenByNine}`),
     },
+    localSixteenByNine: resolve(input.outputDirectory, files.sixteenByNine),
   };
 }
 

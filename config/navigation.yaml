@@ -22,15 +22,15 @@ primary:
     type: "internal"
     href: "/tags/"
   - labels:
-      en: "Archive"
-      ko: "보관함"
-      ja: "アーカイブ"
-    type: "internal"
-    href: "/archive/"
-  - labels:
       en: "Search"
       ko: "검색"
       ja: "検索"
     type: "internal"
     href: "/search/"
-footer: []
+footer:
+  - labels:
+      en: "Archive"
+      ko: "보관함"
+      ja: "アーカイブ"
+    type: "internal"
+    href: "/archive/"

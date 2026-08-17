@@ -18,12 +18,13 @@ Every normal blog document uses the same semantic order in its initial HTML:
 
 1. skip link to `main`;
 2. site header containing a home link;
-3. primary navigation: Posts, Categories, Tags, Archive, Search;
+3. primary navigation: Posts, Categories, Tags, Search;
 4. language navigation with real links and a programmatically identified
    current language;
 5. one `main` landmark containing the route-specific task;
-6. site footer containing secondary intentional links and analytics controls
-   only when analytics is configured.
+6. site footer containing one localized Archive link as a secondary
+   chronological index, plus analytics controls only when analytics is
+   configured.
 
 The header does not require a hamburger menu for the baseline. Links wrap on
 small screens. A later compact navigation control may enhance the same links,
@@ -43,8 +44,9 @@ but the links remain present and usable when JavaScript or CSS is unavailable.
 
 The home page answers three questions without interaction: what this site is,
 what was published recently, and how to browse all work. It exposes recent
-posts plus direct links to Posts, Categories, Tags, Archive, Search, and any
-owner-selected managed page such as a profile.
+posts plus direct links to Posts, Categories, Tags, Search, and any
+owner-selected managed page such as a profile. Archive remains a secondary
+chronological index, reachable from the footer and from search/404 recovery.
 
 Collection pages follow one pattern:
 
@@ -52,7 +54,9 @@ Collection pages follow one pattern:
 - item count when known;
 - chronological post list with title, description, publication date, category,
   and tags;
-- normal previous/next pagination links, with page one at the collection root;
+- normal previous/next pagination links, with page one at the collection root
+  and later pages under `/page/<n>/` using the shared `listings.pageSize` of
+  10 logical post groups;
 - empty states that link back to broader discovery surfaces.
 
 Each logical post appears at most once in a collection. Its link and summary

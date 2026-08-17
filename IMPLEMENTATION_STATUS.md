@@ -28,20 +28,20 @@ English, and Japanese system routes, discovery files, and Pages verification.
 First reviewed posts, real provider plugins, and live custom-domain operations
 remain follow-up work.
 
-| Lane                 | Status         | Present now                                                                                                                    | Still required                                                                     |
-| -------------------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------- |
-| Root tooling         | Implemented    | npm workspaces, lockfile, Node/npm pins, TypeScript, Vitest, documented command surface, quality and Pages workflows           | Live custom-domain/Search Console operational checks                               |
-| Artifact contracts   | Implemented    | Zod 4 schemas, inferred types, parse helpers, generated JSON Schema                                                            | None for the current schema versions                                               |
-| Shared configuration | Implemented    | Zod-backed loader for every `config/*.yaml` file, URL resolver, route registry, GA4/provenance/budget validation               | None for the current configuration set                                             |
-| Content compiler     | Implemented    | Discovery, frontmatter, sanitization, assets, headings/TOC, translation groups, related posts, preview/production artifacts    | First reviewed production posts under `docs/`                                      |
-| Embed core           | Implemented    | Runtime schemas, explicit registry, sanitizer, deterministic execution, synthetic test plugin                                  | First reviewed real provider plugin                                                |
-| Blog web             | Implemented    | Static renderer, localized routes, classless shell, TOC, Open Graph, authorship meta, social-card derivatives, GA4-off default | Branded design remains deferred; Playwright visual checks against a populated site |
-| Search               | Implemented    | Pagefind per-language indexes tied to the web artifact hash                                                                    | Acceptance fixtures against published multilingual posts                           |
-| Managed pages        | Implemented    | `page.yaml` loader, document/presentation/application adapters, return control, preview/production manifests                   | First real managed-page package                                                    |
-| Site discovery       | Implemented    | Config/artifact ingestion, sitemap, robots, llms.txt, per-language RSS, discovery manifest                                     | None until indexable managed pages exist                                           |
-| Release assembly     | Implemented    | Production-only merge, collision checks, `dist/`, `verify:pages`, release manifest and diagnostic report                       | Isolated `/blog` portability build in CI after Pages environment exists            |
-| Content/plugins      | Specified only | Empty language and asset directories; no production post, managed page, or provider plugin                                     | First reviewed content groups and separately approved providers                    |
-| Delivery             | Partial        | Quality workflow plus Pages upload/deploy workflow                                                                             | Custom-domain DNS, HTTPS enforcement, Search Console, rollback drill               |
+| Lane                 | Status      | Present now                                                                                                                                                            | Still required                                                                                                         |
+| -------------------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| Root tooling         | Implemented | npm workspaces, lockfile, Node/npm pins, TypeScript, Vitest, documented command surface, quality and Pages workflows                                                   | Live custom-domain/Search Console operational checks                                                                   |
+| Artifact contracts   | Implemented | Zod 4 schemas, inferred types, parse helpers, generated JSON Schema, 150-character descriptions, optional thumbnail records                                            | Schema-8 removal of compatibility `excerpt` remains a later explicit migration                                         |
+| Shared configuration | Implemented | Zod-backed loader for every `config/*.yaml` file, URL resolver, route registry, GA4/provenance/budget validation                                                       | None for the current configuration set                                                                                 |
+| Content compiler     | Implemented | Discovery, frontmatter, sanitization, assets, headings/TOC, translation groups, related posts, 150-character descriptions, compatibility excerpts, optional thumbnails | First reviewed production posts                                                                                        |
+| Embed core           | Implemented | Runtime schemas, explicit registry, sanitizer, deterministic execution, synthetic test plugin                                                                          | First reviewed real provider plugin                                                                                    |
+| Blog web             | Implemented | Static renderer, localized routes, classless shell, TOC, Open Graph, description summaries, 16:9 list thumbnails, GA4-off default                                      | Populated-site Playwright visual checks; branded design remains deferred                                               |
+| Search               | Implemented | Pagefind per-language indexes, labeled search form, no-JS fallback, and language-isolated client enhancement                                                           | Field ranking checks against a larger published corpus                                                                 |
+| Managed pages        | Implemented | `page.yaml` loader, document/presentation/application adapters, return control, preview/production manifests                                                           | First real managed-page package                                                                                        |
+| Site discovery       | Implemented | Config/artifact ingestion, sitemap, robots, llms.txt, per-language RSS, discovery manifest                                                                             | None until indexable managed pages exist                                                                               |
+| Release assembly     | Implemented | Production-only merge, collision checks, `dist/`, `verify:pages`, release manifest and diagnostic report                                                               | Isolated `/blog` portability build in CI after Pages environment exists                                                |
+| Content/plugins      | Partial     | Twenty temporary draft groups across English, Korean, and Japanese for development-preview testing; no production post, managed page, or provider plugin               | Owner review or later removal of temporary groups; first reviewed production content and separately approved providers |
+| Delivery             | Partial     | Quality workflow plus Pages upload/deploy workflow                                                                                                                     | Custom-domain DNS, HTTPS enforcement, Search Console, rollback drill                                                   |
 
 ## Commands that exist now
 
@@ -93,16 +93,50 @@ the content compiler never imports blog presentation.
 
 The executable phases are present. Remaining work is content and operations:
 
-1. Add the first reviewed Korean source post and independently reviewed
+1. Completed: collection, RSS, and metadata summaries use the trimmed
+   150-character localized `description`; Pagefind excerpts stay independent;
+   compatibility excerpts skip leading non-prose Markdown.
+2. Completed: optional managed `thumbnail` overrides list images; otherwise
+   the web build derives a responsive `16:9` thumbnail from the representative
+   image without changing Open Graph or Article image approval.
+3. Completed: Archive is a localized footer/recovery link, not a primary-header
+   item. Archive routes and discovery remain.
+4. Completed: shared `listings.pageSize` is 10 for home and pageable
+   collections, with `10 / 10 / 1` boundary coverage.
+5. Add the first reviewed Korean source post and independently reviewed
    translations when the owner supplies them.
-2. Add a managed-page package only when a standalone profile or application is
+6. Add a managed-page package only when a standalone profile or application is
    requested.
-3. Add a real embed provider only after an explicit local plugin review.
-4. Complete custom-domain, HTTPS, Search Console, and rollback operations after
+7. Add a real embed provider only after an explicit local plugin review.
+8. Complete custom-domain, HTTPS, Search Console, and rollback operations after
    the first Pages deployment.
 
 Each later change must still satisfy the exit criteria in `DEVELOPMENT.md`,
 `DEVELOPMENT_PLAN.md`, and `QUALITY_GATES.md`.
+
+## Approved specification gap: localized post summaries
+
+This gap is **implemented**. Collection, RSS, and metadata summaries use each
+variant's trimmed, maximum 150-character `description`. Compatibility
+`excerpt` skips leading non-prose Markdown and is not shown on lists.
+
+## Approved specification gap: post thumbnails
+
+This gap is **implemented**. An optional `thumbnail` override is accepted;
+otherwise the web build derives a 16:9 list thumbnail from the representative
+image. Open Graph and Article images remain independent of that list asset.
+
+## Approved specification gap: Archive navigation prominence
+
+This gap is **implemented**. Primary header navigation is Posts, Categories,
+Tags, and Search. Archive remains at `/archive/`, `/en/archive/`, and
+`/ja/archive/` and is linked once from the footer plus search/404 recovery.
+
+## Approved specification gap: ten-item pagination
+
+This gap is **implemented**. `config/site.yaml` `listings.pageSize` is 10, and
+home plus Posts/category/tag/Archive collections consume that shared value.
+Page 1 stays at the collection root; later pages use `/page/<n>/`.
 
 ## High-risk rules the implementation must not reinterpret
 

@@ -32,14 +32,18 @@
 - Post lists sort by `createdAt` descending.
 - Equal timestamps use normalized slug ascending as a deterministic tie-break.
 - `updatedAt` does not move a post to the top of chronological lists.
+- Home, post, category, tag, archive, pagination, related, and fallback
+  summaries display the selected variant's localized `description`, never the
+  compatibility `excerpt` or a Pagefind query snippet.
 - Category, tag, and archive counts include published production posts only.
 - Lists, counts, pagination, archives, and related posts represent each
   translation group at most once. A link uses the active-language variant when
   published, otherwise English, otherwise Korean. If none is available, the
   group is omitted. A fallback entry uses the target variant's real localized
   summary and carries a visible and machine-readable language label.
-- Pagination size comes from `config/site.yaml`; changing it never requires post
-  edits.
+- Pagination size comes from `config/site.yaml` `listings.pageSize`, currently
+  10 logical post groups. Changing it never requires post edits. A translation
+  group occupies one list position after locale fallback.
 - The route segment comes from `config/routes.yaml`. Page one uses the
   collection root only; `/page/1/` is never emitted. Later pages use stable
   directory URLs such as `/posts/page/2/`, `/categories/<id>/page/2/`,

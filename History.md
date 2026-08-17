@@ -4,6 +4,374 @@ This file records non-routine changes to the blog project. Entries are ordered
 newest first and use the `Asia/Seoul` timezone. Routine post authoring is omitted
 unless it changes shared content behavior, routes, schemas, or project rules.
 
+## 2026-08-17T14:18:01+09:00 — Ten-item pagination and secondary Archive navigation
+
+- Change type: Configuration, presentation, UX/design/publishing contracts,
+  tests, and implementation-status update.
+- Reason: Apply the approved targets that reduce collection pages to 10
+  logical post groups and move Archive out of the persistent primary header.
+- Scope: `config/site.yaml` page size; `config/navigation.yaml` primary/footer
+  membership; footer renderer and 404 recovery links; `UX_FLOW.md`,
+  `DESIGN.md`, `PUBLISHING.md`, `CONTENT_RULES.md` examples; pagination and
+  navigation contract tests; policy coverage.
+- Result: Home and Posts/category/tag/Archive collections use the shared
+  `listings.pageSize` of 10. Page 1 stays at the collection root; later pages
+  remain `/page/<n>/`. Primary navigation is Posts, Categories, Tags, Search.
+  Archive remains at `/archive/`, `/en/archive/`, and `/ja/archive/` and is
+  linked once from the footer plus search/404 recovery. RSS, sitemap, post
+  routes, and related-post limits are unchanged.
+- Validation: `npm run typecheck` passed. Vitest passed 79 of 79 cases across
+  18 files, including `defines primary exploration as localized static links`,
+  `moves Archive to the footer while keeping localized archive routes`,
+  `paginates home and collections by ten logical post groups`, the 21-group
+  `10 / 10 / 1` Posts/Archive/category/tag boundary, `/page/1/` exclusion,
+  self-canonical and previous/next links, Korean/English/Japanese Archive
+  footer placement, English/Japanese fallback counting, `/blog` base-path
+  footer links, and `validates every governed policy source and named test
+case`. Playwright rendered-browser visual checks were not run.
+- Compatibility / follow-up: Archive routes were moved in navigation, not
+  deleted. Temporary preview groups will paginate to two pages per complete
+  locale collection. No Git commit or push was performed in this change.
+
+## 2026-08-17T13:53:28+09:00 — Ten-item pagination target specification
+
+- Change type: Pagination target, developer handoff, implementation-status
+  update, compatibility plan, and regression-test plan.
+- Reason: A 20-item collection page is denser than desired for routine
+  browsing. The approved target reduces each page to 10 logical post groups so
+  lists are easier to scan while retaining the existing static pagination
+  model.
+- Scope: `IMPLEMENTATION_SPEC.md` and `IMPLEMENTATION_STATUS.md`. The target
+  covers home recent posts and Posts, category, tag, and Archive collections in
+  Korean, English, and Japanese; translation fallback and group counting; page
+  roots and numbered routes; canonical and previous/next links; deterministic
+  ordering; base-path portability; configuration ownership; fixtures, tests,
+  policy traceability, and implementation reporting.
+- Result: The approved shared `listings.pageSize` target is now 10 instead of 20. Page 1 remains the collection root and later pages remain under
+  `/page/<n>/`; translation variants count as one logical group. With the
+  current 20 temporary logical groups, complete Posts and Archive collections
+  will form two 10-entry pages per locale after implementation. The target does
+  not change post URLs, result totals, ordering rules, search, RSS, sitemap,
+  related-post eligibility, or archive route ownership.
+- Validation: Inspected the current `config/site.yaml` value, project-config
+  schema, renderer consumers, `PUBLISHING.md` pagination ownership,
+  `UX_FLOW.md` route/interaction rules, existing contract-test coverage, and
+  `tests/policy-coverage.json` mappings before editing. Documentation
+  whitespace, target/status consistency, referenced-file existence, and
+  heading/timestamp order checks were run after editing. No runtime
+  configuration, governed publishing/UX source, renderer, fixture, policy
+  hash, or executable test was changed, so current output still uses 20.
+- Compatibility / follow-up: The implementing AI must change
+  `config/site.yaml`, authoritative publishing/UX documents, deterministic
+  21-group boundary fixtures, collection and route assertions, and affected
+  policy hashes together; then run the full relevant tests and preview build.
+  This is a target-specification change only and is not complete after a local
+  template slice. No Git commit, push, deployment, or post-content change was
+  performed.
+
+## 2026-08-17T13:25:35+09:00 — Archive removed from approved primary-navigation target
+
+- Change type: Information-architecture target, navigation handoff,
+  implementation-status update, and compatibility plan.
+- Reason: Posts and Archive currently appear as similarly prominent menu
+  choices even though Archive is a chronological retrieval index rather than a
+  second general post feed. Reduce persistent header duplication while keeping
+  chronological browsing available.
+- Scope: `IMPLEMENTATION_SPEC.md` and `IMPLEMENTATION_STATUS.md`. The target
+  defines the exact primary-header order, localized secondary footer placement,
+  unchanged Korean/English/Japanese archive routes, search and 404 recovery
+  links, no-JavaScript behavior, responsive/accessibility expectations,
+  configuration migration, contract/browser tests, policy traceability, and
+  implementation reporting.
+- Result: The approved primary navigation becomes Posts, Categories, Tags, and
+  Search. Archive/보관함/アーカイブ remains a complete static chronological
+  index at `/archive/`, `/en/archive/`, and `/ja/archive/`, but moves to one
+  localized secondary footer link. Search no-JavaScript and 404 recovery may
+  retain contextual Archive links. The handoff explicitly forbids treating
+  mobile-menu hiding as removal, deleting or redirecting archive routes, or
+  changing their SEO/discovery behavior. It requires the implementing AI to
+  update `config/navigation.yaml`, `UX_FLOW.md`, `DESIGN.md`, renderer output,
+  the existing primary-exploration test, localized/base-path route assertions,
+  policy hashes, status, and history together.
+- Validation: Read `UX_FLOW.md` completely and inspected the current
+  `config/navigation.yaml`, header rendering input, archive route emitters,
+  localized archive messages, search no-JavaScript fallback, policy-coverage
+  mapping, and `defines primary exploration as localized static links` test.
+  Documentation whitespace, heading order, referenced-file existence, and
+  target/status consistency checks were run after editing. No navigation
+  configuration, renderer, route, governed UX/design source, policy hash, or
+  executable test was changed, so current runtime behavior remains unchanged.
+- Compatibility / follow-up: The implementing AI must move, not duplicate, the
+  Archive item from primary navigation to the footer; preserve all archive
+  routes and discovery; and prove the header/footer behavior in English,
+  Korean, Japanese, root, and non-empty base-path output. This is a
+  target-specification change only and remains incomplete until code,
+  configuration, authoritative UX/design documents, tests, and policy coverage
+  land together. No Git commit, push, deployment, or archive-content change was
+  performed.
+
+## 2026-08-17T12:10:00+09:00 — Localized description summaries and list thumbnails
+
+- Change type: Content contract, artifact validation, presentation, tests, and
+  status update.
+- Reason: Implement the approved description-summary and automatic thumbnail
+  targets so collection links show the authored localized description and a
+  16:9 thumbnail without changing Open Graph or representative-image approval.
+- Scope: Frontmatter and Zod validation; compatibility excerpt derivation;
+  optional thumbnail asset records; list/home/related rendering; RSS and
+  metadata consumers; `CONTENT_RULES.md`, `I18N.md`, `PUBLISHING.md`, `SEO.md`,
+  `DESIGN.md`, `QUALITY_GATES.md`, implementation status/spec; policy coverage.
+- Result: `description` is trimmed and capped at 150 Unicode characters and is
+  the only collection/RSS/metadata summary. Compatibility `excerpt` skips
+  leading non-prose blocks and falls back to `description`. Optional
+  `thumbnail.src`/`alt` overrides list images; otherwise the representative
+  16:9 derivative is used. Thumbnails do not mutate Open Graph or
+  `BlogPosting.image`. Temporary posts needed no description-length migration.
+- Validation: Strict TypeScript checking passed. Vitest contract tests passed
+  77 of 77 cases across 17 files, including 150/151-character bounds,
+  whitespace, invalid descriptions/thumbnails, leading-image excerpt fallback,
+  localized collection/RSS/metadata output, explicit versus generated-card
+  thumbnail sources, and Open Graph isolation. Playwright rendered-browser
+  layout and assistive-technology checks were not run.
+- Compatibility / follow-up: Content schema remains version 7; `excerpt` is
+  retained only for compatibility. Removing it requires a later schema
+  migration. No Git commit or push was performed in this change.
+
+## 2026-08-17T11:21:13+09:00 — Automatic post-thumbnail target specification
+
+- Change type: Approved frontmatter/image target, authoring-agent permission,
+  presentation handoff, implementation-status update, and test plan.
+- Reason: Allow an explicit thumbnail value in post attributes while ensuring
+  every link/list summary receives a useful thumbnail even when the owner does
+  not choose one individually. The owner granted standing permission for the
+  authoring agent to select or generate a thumbnail by default, without
+  conflating that permission with the existing owner-controlled Open Graph,
+  cover, and social-image contract.
+- Scope: `IMPLEMENTATION_SPEC.md` and `IMPLEMENTATION_STATUS.md`. The target
+  covers an optional localized `thumbnail` object, managed-asset validation,
+  explicit-owner precedence, agent selection/generation, representative-image
+  fallback, canonical asset storage, translation sharing/localization,
+  responsive 16:9 derivatives, collection and cross-language fallback
+  rendering, accessibility, no-JavaScript behavior, crop safety, performance,
+  SEO isolation, tests, policy updates, and implementation reporting.
+- Result: The approved target accepts `thumbnail.src` and localized
+  `thumbnail.alt` as an explicit list-presentation override. If absent, the
+  authoring agent may select a suitable owned post asset or create and store a
+  relevant thumbnail without another per-post confirmation. If a distinct
+  source is unnecessary, the web build derives the thumbnail from the resolved
+  social image, cover, or deterministic generated card, using its existing
+  16:9 representative derivative. AI generation occurs only during authoring;
+  production remains local and deterministic. A thumbnail never changes
+  `representativeImage`, Open Graph, `BlogPosting.image`, cover, social image,
+  or body media without a separate explicit decision. The sixty temporary
+  groups can use their localized generated-card fallback and therefore need no
+  immediate duplicate frontmatter migration.
+- Validation: Read the complete root `DESIGN.md` and reviewed the existing
+  frontmatter, content artifact, asset compiler, representative-image selector,
+  Sharp derivative pipeline, collection renderer, SEO contract, and prior
+  summary-target handoff. Confirmed that no current `thumbnail` source or
+  artifact field exists and that the existing pipeline already produces a 16:9
+  representative derivative suitable as the default source. Documentation
+  whitespace, heading order, reference existence, and status/spec consistency
+  checks were run after editing. No executable schema, renderer, asset source,
+  governed content-policy document, policy hash, or test was changed, so the
+  target remains explicitly unimplemented.
+- Compatibility / follow-up: The implementing AI must deliver the optional
+  field, resolved artifact, fallback precedence, responsive output, collection
+  UI, documentation, positive/negative/boundary/deterministic/regression tests,
+  rendered-browser checks, policy coverage, and history as one cohesive task.
+  It must preserve current representative-image approval semantics, must not
+  download unapproved third-party media, and must not perform AI generation in
+  production or CI. No Git commit, push, deployment, image generation, or post
+  migration was performed.
+
+## 2026-08-17T11:17:29+09:00 — Localized description-summary implementation specification
+
+- Change type: Approved implementation specification, developer handoff,
+  implementation-status correction, and known-gap documentation.
+- Reason: Make each post variant's existing `description` the single localized
+  summary shown with post links and metadata, cap it at 150 characters, avoid a
+  duplicate `summary` authoring field, and provide a complete instruction set
+  for a separate implementation AI without falsely describing unimplemented
+  behavior as current production behavior.
+- Scope: `IMPLEMENTATION_SPEC.md` and `IMPLEMENTATION_STATUS.md`. The approved
+  target covers English, Korean, and Japanese post authoring; frontmatter and
+  artifact validation; home/post/category/tag/archive/pagination collections;
+  related and cross-language fallback links; RSS, SEO, Open Graph, structured
+  data, Pagefind query snippets, compatibility excerpts, migration, tests,
+  policy traceability, and rendered-output checks. The status inventory also
+  now records the twenty temporary three-language draft groups instead of the
+  obsolete empty-content baseline.
+- Result: The target keeps `description` as the only author-controlled summary.
+  Every created, translated, or materially regenerated language variant must
+  receive its own faithful description of at most 150 Unicode characters after
+  trimming. Deterministic link/list/RSS/metadata surfaces will use that value;
+  Pagefind retains query-dependent excerpts. The existing derived `excerpt`
+  becomes collection-ineligible and, while retained for schema-version-7
+  compatibility, must skip non-prose leading blocks and fall back to
+  `description`. The handoff explicitly requires the implementing AI to update
+  code, runtime schemas, `CONTENT_RULES.md`, `I18N.md`, `PUBLISHING.md`,
+  `SEO.md`, policy hashes, tests, status, and history together. It includes
+  positive, 150/151-character boundary, whitespace, leading-image regression,
+  multilingual fallback, RSS/metadata, and Pagefind-separation acceptance
+  cases. Existing inspection showed the sixty temporary descriptions already
+  fit the new limit, with a maximum of 139 Unicode characters.
+- Validation: Read `CONTENT_RULES.md`, `I18N.md`, `TESTING.md`,
+  `PUBLISHING.md`, `SEO.md`, `IMPLEMENTATION_SPEC.md`, and
+  `IMPLEMENTATION_STATUS.md` completely before editing. Reviewed current
+  frontmatter, artifact, compiler, renderer, and search usages of
+  `description` and `excerpt`, and measured all sixty preview artifact
+  descriptions. Documentation whitespace, heading placement, and internal
+  consistency checks were run after the edit. No implementation, runtime
+  schema, governed content-policy source, policy hash, or executable test was
+  changed, so no build or automated behavior is reported as newly passing.
+- Compatibility / follow-up: This is deliberately a target-specification and
+  handoff change rather than a partial runtime change. Current executable
+  behavior and the governed contracts remain unchanged until the next AI
+  implements the entire completion list. That task must not refresh a policy
+  hash without reviewing and extending its mapped cases, must choose an
+  explicit compatibility plan before removing `excerpt`, and must retain the
+  existing descriptions' supported meaning during any migration. No Git
+  commit, push, deployment, or post-body modification was performed.
+
+## 2026-08-17T10:20:00+09:00 — Language-isolated static search
+
+- Change type: Search implementation, presentation, tests, and status update.
+- Reason: The search indexer existed, but the public search pages had no
+  labeled query field, result list, or Pagefind client, so readers could not
+  search.
+- Scope: Localized search form and no-JavaScript fallback; progressive
+  Pagefind client that loads only the active-language index; post HTML
+  pagefind body/weight/ignore markers; indexer exclusion of chrome and
+  boilerplate; preview eligibility for draft posts; preview server copies
+  search files; contract tests.
+- Result: `/search/`, `/en/search/`, and `/ja/search/` expose a labeled
+  search form, live result count, keyboard-reachable links, and taxonomy
+  fallbacks without JavaScript. Queries stay in the browser and do not go to
+  a server or analytics. Production still omits drafts; preview may index
+  preview-visible posts.
+- Validation: Strict TypeScript checking passed. Vitest contract tests passed
+  70 of 70 cases across 16 files, including empty-query behavior,
+  language-isolated index paths, C++ published fixtures, production draft
+  exclusion, search-page HTML contracts, and the empty-site Pages assembly.
+  Playwright rendered-browser search interaction was not run.
+- Compatibility / follow-up: `CONTENT_RULES.md` now records that production
+  indexes omit drafts while preview may index preview-visible posts. First
+  published posts will populate production indexes. Field ranking against a
+  larger corpus remains a follow-up check.
+
+## 2026-08-17T03:53:41+09:00 — Temporary post image and excerpt-output audit
+
+- Change type: Content-output audit, known-issue documentation, and validation
+  record.
+- Reason: Reinspect the twenty temporary multilingual post groups after adding
+  remote placeholder images, because successful schema, build, and test results
+  did not by themselves prove that derived list summaries remained readable.
+- Scope: All sixty draft sources across `docs/ko/`, `docs/en/`, and `docs/ja/`;
+  the twenty shared `placehold.org` body-image URLs and localized alternative
+  text; preview content artifacts; all sixty localized preview post routes; and
+  the derived excerpts displayed by preview home, category, and archive lists.
+  The supplied source directory was also searched case-insensitively for
+  YouTube URLs, `youtu.be` URLs, YouTube directives, and raw iframe markup.
+- Result: Every post variant contains one matching temporary body image, every
+  shared image URL occurs in the corresponding Korean, English, and Japanese
+  variants, and all sixty preview post pages emit an `<img>` element with
+  localized non-empty alternative text. No YouTube URL or embed syntax exists
+  in the twenty supplied source files, so no YouTube link was invented or
+  added. The audit found one output defect not covered by the passing automated
+  suite: because the image is the first Markdown block, `excerptFrom()` in
+  `packages/content-compiler/src/markdown.ts` selects the image-only block and
+  removes Markdown punctuation without removing its alternative text or URL.
+  Consequently all sixty artifact excerpts, and the confirmed preview home,
+  category, and archive list summaries that consume them, contain malformed
+  text such as `!AI 재귀 오염 개념을 표현한 임시
+이미지https://placehold.org/...` instead of the first prose paragraph. The
+  post bodies and images themselves render successfully. This entry records the
+  defect only; no post position, compiler behavior, schema, or test was changed
+  as part of the audit.
+- Validation: `npm run validate:config` passed. The preview content build wrote
+  60 post artifacts, and the preview web build wrote 151 files including 60
+  localized post pages with the expected remote image markup. Vitest passed all
+  70 contract tests across 16 files, strict TypeScript checking passed, and the
+  Git whitespace check passed. Manual artifact inspection confirmed malformed
+  image-derived excerpts in 60 of 60 post artifacts and matching malformed list
+  summaries in generated HTML. Source counts confirmed 20 Korean source
+  variants, 40 English/Japanese `ai-draft` variants, 60 `draft: true` variants,
+  and 60 image-bearing Markdown files. A representative placeholder request
+  returned HTTP 200 with `image/png`. Rendered-browser/Playwright visual QA,
+  deployed-site validation, and exhaustive live availability checks for all
+  twenty external image URLs were not run.
+- Compatibility / follow-up: The narrow content-only correction is to move each
+  body image after the first prose paragraph in all three language variants so
+  the current excerpt derivation selects readable text. A shared behavioral fix
+  would instead make the content compiler skip image-only blocks when deriving
+  excerpts; that option requires positive, negative, boundary, and regression
+  coverage, a review of `CONTENT_RULES.md` and policy traceability, and a new
+  history entry before completion. Until one option is explicitly implemented
+  and the preview lists are rechecked, the malformed excerpts remain a known
+  development-preview issue. All affected variants remain drafts. No Git
+  commit, push, deployment, or source correction was performed.
+
+## 2026-08-17T02:46:27+09:00 — English and Japanese preview-post translations
+
+- Change type: Multilingual preview content and prior-entry correction.
+- Reason: Correct the incomplete interpretation recorded in the
+  `2026-08-17T02:32:56+09:00` entry. Partial publication permits a reviewed
+  source to publish without every sibling, but the repository authoring
+  workflow still requires new Korean source work to receive English and
+  Japanese draft variants.
+- Scope: Faithful English and Japanese translations for all twenty Korean test
+  posts, preserving shared translation-group identity, categories, filenames,
+  slugs, tags, timestamps, generated-card mode, headings, tables, lists, and
+  source links.
+- Result: `docs/en/` and `docs/ja/` each contain twenty sibling posts matching
+  the twenty files under `docs/ko/`. Every new translation uses
+  `translationStatus: ai-draft` and `draft: true`; Korean files remain source
+  drafts. Preview compilation now produces sixty post artifacts and the web
+  preview renders sixty post routes plus fifteen localized category pages.
+- Validation: `validate:config` passed. The preview content build wrote 60
+  artifacts and the preview web build wrote 151 files. All 65 Vitest contract
+  tests across 15 files passed, strict TypeScript checking passed, locale path
+  sets matched 20/20/20, English sources contained no Hangul body text, all 60
+  sources passed heading/fence/local-path/placeholder checks, and the Git
+  whitespace check passed.
+- Compatibility / follow-up: The translations require owner review before
+  either language can change to `translationStatus: reviewed` or enter a
+  production build. No schema, taxonomy behavior, content rule, redirect, or
+  test contract changed. Git commit, push, deployment, and visual browser QA
+  were not performed.
+
+## 2026-08-17T02:32:56+09:00 — Temporary categorized preview posts
+
+- Change type: Preview content and taxonomy configuration.
+- Reason: Populate the developing blog with twenty temporary, anonymized
+  Markdown posts so post, category, tag, table, list, and link layouts can be
+  tested before the fixtures are deleted.
+- Scope: Twenty Korean draft posts under `docs/ko/`; five localized category
+  IDs including `research-lab` with the Korean label `연구소`; eighteen
+  localized tag IDs; deterministic generated-card selection for preview
+  rendering.
+- Result: The preview content compiler accepts all twenty posts and the web
+  preview emits twenty post routes plus category pages for `research-lab`,
+  `developer-life`, `life-notes`, `family-life`, and `everyday-lab`. The posts
+  remain `draft: true` because they are substantially AI-edited development
+  fixtures and must not enter production under the repository's
+  proofreading-only original-work declaration. No English or Japanese sibling
+  had been synthesized at this point; the later
+  `2026-08-17T02:46:27+09:00` entry records the required correction.
+- Validation: `validate:config` passed. The preview content build wrote 20
+  artifacts, and the preview web build wrote 111 files including 20 post pages
+  and 5 Korean category pages. All 65 Vitest contract tests across 15 files
+  passed, strict TypeScript checking passed, the 20 post sources passed manual
+  frontmatter/heading/fence/local-path/placeholder checks, and the Git
+  whitespace check passed.
+- Compatibility / follow-up: This adds only values allowed by the existing
+  taxonomy schema and uses existing post syntax, so no new unit-test case or
+  `CONTENT_RULES.md` change is required. Delete these temporary post groups and
+  remove taxonomy values that are no longer used after layout testing. Git
+  commit, push, deployment, translated-variant review, and visual browser QA
+  were not performed.
+
 ## 2026-08-17T01:05:00+09:00 — Executable static-blog pipeline
 
 - Change type: Architecture implementation, runtime contracts, build commands,

@@ -33,7 +33,7 @@ The blog renderer owns presentation of:
 - robots directive;
 - Open Graph and social-card fields;
 - the correct `<html lang>` and reciprocal absolute `rel="alternate"
-  hreflang="en|ko|ja"` links for every available translation;
+hreflang="en|ko|ja"` links for every available translation;
 - `Blog`, `BlogPosting`, `BreadcrumbList`, and other appropriate structured
   data derived from the same validated record rendered on the page.
 
@@ -56,6 +56,10 @@ profile or social URL. A personal blog must not label its author as an
 
 Post pages use post-owned metadata and a real post image when available. They
 must not silently inherit a generic social image that misrepresents the post.
+List/collection thumbnails are on-site presentation only. An explicit or
+derived thumbnail never replaces `og:image` or `BlogPosting.image`. The
+validated localized `description` is the post's document, Open Graph, RSS,
+and structured-data summary.
 Category, tag, archive, search, and 404 pages have route-specific titles and
 descriptions; search-result and 404 documents are `noindex`.
 

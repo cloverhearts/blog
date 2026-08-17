@@ -48,7 +48,7 @@ search:
   includePosts: true
   includeManagedPages: false
 listings:
-  pageSize: 20
+  pageSize: 10
 relatedPosts:
   maxItems: 4
 feeds:

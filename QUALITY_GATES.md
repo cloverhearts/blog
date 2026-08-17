@@ -72,7 +72,9 @@ merely because it compiles or looks correct in one browser.
 - Blog JavaScript is progressive enhancement and is split by route/capability.
 - Images have intrinsic dimensions and appropriate lazy/eager loading behavior;
   responsive `srcset`/`sizes` candidates are emitted, and the primary visible
-  image is not accidentally lazy-loaded.
+  image is not accidentally lazy-loaded. Collection thumbnails are stable 16:9
+  local derivatives with intrinsic dimensions; the first above-the-fold
+  thumbnail may load eagerly and later thumbnails use native lazy loading.
 - Fonts have licensed local files or resilient system fallbacks and do not block
   readable text.
 - Third-party embeds use lazy or consent-aware loading and retain normal-link

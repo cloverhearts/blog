@@ -42,4 +42,13 @@ test("builds an empty production site with required Pages files", async () => {
   assert.equal(existsSync(resolve(repositoryRoot, "dist/sitemap.xml")), true);
   assert.equal(existsSync(resolve(repositoryRoot, "dist/rss.xml")), true);
   assert.doesNotMatch(index, /<script src="https:\/\/www\.googletagmanager\.com/u);
+
+  const searchPage = readFileSync(resolve(repositoryRoot, "dist/search/index.html"), "utf8");
+  assert.match(searchPage, /<form role="search"/u);
+  assert.match(searchPage, /<noscript>/u);
+  assert.match(searchPage, /\/_assets\/app\/search.js/u);
+  assert.equal(existsSync(resolve(repositoryRoot, "dist/_assets/app/search.js")), true);
+  assert.equal(existsSync(resolve(repositoryRoot, "dist/_assets/search/ko")), true);
+  assert.equal(existsSync(resolve(repositoryRoot, "dist/_assets/search/en")), true);
+  assert.equal(existsSync(resolve(repositoryRoot, "dist/_assets/search/ja")), true);
 });

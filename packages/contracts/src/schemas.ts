@@ -217,7 +217,10 @@ const postSummaryFields = {
   route: z.string().min(1),
   category: z.string().min(1),
   title: z.string().min(1),
-  description: z.string().min(1),
+  description: z
+    .string()
+    .min(1)
+    .refine((value) => [...value].length <= 150, "description must be at most 150 Unicode characters"),
   tags: z.array(z.string().min(1)),
   createdAt: iso8601DateTimeSchema,
   updatedAt: iso8601DateTimeSchema.optional(),
@@ -226,6 +229,7 @@ const postSummaryFields = {
   representativeImage: representativeImageModeSchema,
   cover: postImageArtifactSchema.optional(),
   socialImage: postImageArtifactSchema.optional(),
+  thumbnail: postImageArtifactSchema.optional(),
   alternates: z.array(languageAlternateArtifactSchema),
 };
 

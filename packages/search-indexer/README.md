@@ -14,3 +14,8 @@ It uses validated content metadata only as an eligibility whitelist and descript
 One locale index cannot contain another locale's translation sibling. The
 browser loads only the active language index; changing language navigates to the
 matching static search page.
+
+The blog web search page is progressive enhancement: the labeled form, result
+list, and no-JavaScript taxonomy links live in initial HTML, and
+`/_assets/app/search.js` queries the language-isolated Pagefind bundle under
+`/_assets/search/<language>/`.

@@ -99,7 +99,13 @@ draft: false
 ### Required fields
 
 - `title`: accurate, specific, and written for humans.
-- `description`: one or two standalone sentences summarizing the article; aim for roughly 60–160 characters when natural.
+- `description`: the only author-controlled post summary. After trimming it
+  must be non-empty and at most 150 Unicode characters. Write one or two
+  standalone sentences in this variant's language; do not copy another
+  language's description, repeat the title, include Markdown, a URL, or
+  placeholder text. Collection pages, related/fallback links, RSS, document
+  metadata, Open Graph, and structured data display this value verbatim.
+  Pagefind search snippets remain query-dependent and do not replace it.
 - `translationKey`: stable lowercase ASCII kebab-case identity shared by the
   English, Korean, and Japanese variants. It is not a route.
 - `originalLanguage`: language in which the post was originally authored. It
@@ -145,6 +151,13 @@ or draft translation does not block it.
   `src` and localized `alt` are required together. It is required when
   `representativeImage: social-image` and may be omitted for the other modes;
   the renderer never silently changes the approved mode.
+- `thumbnail`: optional list-presentation override. When present it is exactly
+  `src` plus localized `alt`. `src` is a managed local static raster `asset:`
+  reference (PNG, JPEG, or WebP; not SVG, GIF, remote, or a machine path).
+  `alt` is required and non-empty. An explicit thumbnail never changes
+  `representativeImage`, cover, social image, Open Graph, or body media. If
+  omitted, the web build derives a 16:9 thumbnail from the resolved
+  representative source.
 - `related`: stable slugs for intentional editorial recommendations. Omit when there are no manual recommendations; the build may derive additional related posts.
 
 ### Derived authorship disclosure
@@ -515,7 +528,12 @@ The content compiler derives:
 - translation-group archive groupings;
 - translation-group automatic related-post scores with localized link
   resolution;
-- reading time and excerpts;
+- reading time and a compatibility `excerpt` derived from the first prose
+  body block, skipping leading images, media, headings, and other non-prose
+  blocks, and falling back to `description`; collection UIs must not use
+  `excerpt`;
+- optional explicit thumbnail asset records; list thumbnails are otherwise
+  derived by the web build from the representative 16:9 derivative;
 - ordered heading/anchor metadata for static table-of-contents navigation;
 - asset hashes, dimensions, variants, stable IDs, and artifact-relative paths;
 - the asset manifest;
@@ -550,7 +568,11 @@ The search indexer runs after the blog web build. It creates separate English,
 Korean, and Japanese indexes from eligible final static blog HTML so searchable
 text matches the page delivered to readers. It writes
 `.artifacts/search/<mode>/`; it does not parse Markdown or derive taxonomy.
-Managed pages are excluded by default.
+Managed pages are excluded by default. Production indexes omit drafts; a
+preview index may include preview-visible posts so local search can be checked
+before publication. The search page is progressive enhancement over those
+indexes and remains usable as a no-JavaScript explanation with category, tag,
+and archive links.
 
 Do not commit generated values into frontmatter unless this contract explicitly declares the field.
 
@@ -617,18 +639,18 @@ Navigation entries use the following explicit shape when added:
 ```yaml
 primary:
   - labels:
+      en: "Posts"
+      ko: "포스트"
+      ja: "記事"
+    type: "internal"
+    href: "/posts/"
+footer:
+  - labels:
       en: "Archive"
       ko: "보관함"
       ja: "アーカイブ"
     type: "internal"
     href: "/archive/"
-footer:
-  - labels:
-      en: "GitHub"
-      ko: "GitHub"
-      ja: "GitHub"
-    type: "external"
-    href: "https://github.com/example"
 ```
 
 - `labels`, `type`, and `href` are required. `labels` contains non-empty `en`,

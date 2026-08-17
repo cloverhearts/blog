@@ -68,6 +68,7 @@ const sanitizeSchema = {
 
 export async function compileMarkdown(input: {
   readonly body: string;
+  readonly description: string;
   readonly sourcePath: string;
   readonly postId: string;
   readonly language: string;
@@ -243,7 +244,7 @@ export async function compileMarkdown(input: {
     }
   }
 
-  const excerpt = excerptFrom(input.body);
+  const excerpt = excerptFrom(input.body, input.description);
   const readingMinutes = Math.max(1, Math.round(toString(tree).length / 500));
   void sha256Hex;
   return { bodyHtml, headings, assets, embeds, excerpt, readingMinutes };
@@ -280,13 +281,33 @@ function collectFragments(node: MdNode): readonly string[] {
   return fragments;
 }
 
-function excerptFrom(body: string): string {
-  const paragraph = body
-    .split(/\n{2,}/u)
-    .map((part) => part.replace(/[#>*`[\]()]/gu, "").trim())
-    .find((part) => part.length > 0);
-  const text = paragraph ?? body.trim();
-  return text.length <= 180 ? text : `${text.slice(0, 177).trimEnd()}...`;
+export function excerptFrom(body: string, description: string): string {
+  for (const block of body.split(/\n{2,}/u)) {
+    const trimmed = block.trim();
+    if (trimmed.length === 0 || isNonProseBlock(trimmed)) {
+      continue;
+    }
+    const text = trimmed
+      .replace(/^#{1,6}\s+/gmu, "")
+      .replace(/!\[[^\]]*\]\([^)]*\)/gu, "")
+      .replace(/\[([^\]]+)\]\([^)]*\)/gu, "$1")
+      .replace(/[`*_>]/gu, "")
+      .trim();
+    if (text.length === 0) {
+      continue;
+    }
+    return text.length <= 180 ? text : `${text.slice(0, 177).trimEnd()}...`;
+  }
+  return description;
+}
+
+function isNonProseBlock(block: string): boolean {
+  if (/^#{1,6}\s+\S[^\n]*$/u.test(block)) return true;
+  if (/^!\[[^\]]*\]\([^)]+\)\s*$/u.test(block)) return true;
+  if (/^::[a-z][\w-]*/u.test(block)) return true;
+  if (/^<(img|video|figure|iframe)\b/iu.test(block)) return true;
+  if (/^\[[^\]]+\]\([^)]+\)\s*$/u.test(block)) return true;
+  return false;
 }
 
 function escapeHtml(value: string): string {
