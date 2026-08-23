@@ -70,6 +70,20 @@ being described as passed.
 
 ## Local preview
 
+- `npm run dev` performs the initial preview content, web, and search build,
+  serves `http://127.0.0.1:4321`, and then watches normal-blog sources.
+- Changes under `apps/blog-web/`, `packages/search-indexer/`, or the root
+  `DESIGN.md` rebuild the web and search lanes. Changes under `docs/`,
+  `assets/content/`, `config/`, content/config/contracts/embed packages, or
+  reviewed embed plugins rebuild content, web, and search in dependency order.
+- Generated output, Open Design's `.od/` state, staged `design/open-design/`
+  concepts, dependencies, and unrelated documents are ignored so they cannot
+  cause rebuild loops. A staged concept affects the live blog only after its
+  approved changes are promoted into `DESIGN.md` or `apps/blog-web/`.
+- The preview response injects a development-only event client that reloads an
+  open browser after a successful rebuild. It is not written into preview
+  artifacts and cannot enter a production build. Rebuild failures stay visible
+  in the terminal and do not emit a reload event.
 - Preview builds use `.artifacts/*/preview/` and may include drafts.
 - Production builds use `.artifacts/*/production/` and cannot represent drafts.
 - Local preview never writes generated files into `docs/`, `assets/content/`, or
@@ -99,7 +113,10 @@ For the normal blog:
    decisions;
 6. update the root `DESIGN.md` and promote approved implementation tokens/assets
    into `apps/blog-web/`;
-7. run representative quality checks in Korean and English first, then verify
+7. while `npm run dev` is running, edits promoted to those source paths trigger
+   a rebuild and browser reload; editing only a staged export does not alter the
+   live blog;
+8. run representative quality checks in Korean and English first, then verify
    Japanese structural and overflow behavior.
 
 For a managed page:

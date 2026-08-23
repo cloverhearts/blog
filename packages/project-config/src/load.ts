@@ -16,6 +16,7 @@ import {
   aiCrawlersConfigSchema,
   analyticsConfigSchema,
   contentProvenanceConfigSchema,
+  curatedCollectionsConfigSchema,
   embedsConfigSchema,
   navigationConfigSchema,
   performanceBudgetsConfigSchema,
@@ -27,6 +28,7 @@ import {
   type AiCrawlersConfig,
   type AnalyticsYamlConfig,
   type ContentProvenanceConfig,
+  type CuratedCollectionsConfig,
   type EmbedsConfig,
   type NavigationConfig,
   type PerformanceBudgetsConfig,
@@ -72,6 +74,7 @@ export interface ProjectConfig {
   readonly site: SiteConfig;
   readonly routes: RoutesConfig;
   readonly taxonomy: TaxonomyConfig;
+  readonly curatedCollections: CuratedCollectionsConfig;
   readonly navigation: NavigationConfig;
   readonly redirects: RedirectsConfig;
   readonly security: SecurityConfig;
@@ -202,6 +205,160 @@ function validateNavigation(
   }
 }
 
+const TRACKING_PARAM = /^(utm_|fbclid|gclid|mc_cid|mc_eid)/iu;
+const CREDENTIAL_QUERY = /^(token|sig|signature|expires|awsaccesskeyid|x-amz-signature|access_token)$/iu;
+
+export function assertPublicContactHref(href: string, path: string, issues: string[]): void {
+  const trimmed = href.trim();
+  if (trimmed.length === 0) {
+    issues.push(issue(path, "contact href must not be empty"));
+    return;
+  }
+  if (trimmed.startsWith("mailto:")) {
+    const address = trimmed.slice("mailto:".length).split("?")[0] ?? "";
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/u.test(address) || trimmed.includes("?")) {
+      issues.push(issue(path, "mailto destinations must be a bare public email address"));
+    }
+    return;
+  }
+  let parsed: URL;
+  try {
+    parsed = new URL(trimmed);
+  } catch {
+    issues.push(issue(path, "contact href must be an absolute HTTPS or mailto URL"));
+    return;
+  }
+  if (parsed.protocol !== "https:") {
+    issues.push(issue(path, "contact href must use HTTPS except for mailto"));
+    return;
+  }
+  if (parsed.username.length > 0 || parsed.password.length > 0) {
+    issues.push(issue(path, "contact href must not embed authentication credentials"));
+  }
+  if (/^example(?:\.com)?$/iu.test(parsed.hostname) || parsed.hostname.endsWith(".example")) {
+    issues.push(issue(path, "documentation placeholder destinations must not be published"));
+  }
+  for (const key of parsed.searchParams.keys()) {
+    if (TRACKING_PARAM.test(key) || CREDENTIAL_QUERY.test(key)) {
+      issues.push(issue(path, `contact href must not include tracking or signed parameter ${key}`));
+    }
+  }
+}
+
+function validateOwnerIdentity(site: SiteConfig, issues: string[]): void {
+  const owner = site.identity.owner;
+  const expected: Record<"en" | "ko" | "ja", string> = {
+    ko: "/profile/",
+    en: "/en/profile/",
+    ja: "/ja/profile/",
+  };
+  for (const language of ["en", "ko", "ja"] as const) {
+    if (owner.profileRoutes[language] !== expected[language]) {
+      issues.push(
+        issue(
+          `config/site.yaml.identity.owner.profileRoutes.${language}`,
+          `must be ${expected[language]}`,
+        ),
+      );
+    }
+    if (/https?:\/\//iu.test(owner.shortBios[language]) || /[\u005b\u005d`*#]/u.test(owner.shortBios[language])) {
+      issues.push(
+        issue(`config/site.yaml.identity.owner.shortBios.${language}`, "must be plain localized prose"),
+      );
+    }
+  }
+  const ids = new Set<string>();
+  const hrefs = new Set<string>();
+  for (const [index, contact] of owner.contacts.entries()) {
+    const path = `config/site.yaml.identity.owner.contacts[${index}]`;
+    if (ids.has(contact.id)) {
+      issues.push(issue(`${path}.id`, `duplicate contact id ${contact.id}`));
+    }
+    ids.add(contact.id);
+    if (hrefs.has(contact.href)) {
+      issues.push(issue(`${path}.href`, "duplicate contact destination"));
+    }
+    hrefs.add(contact.href);
+    if (contact.kind === "email" && !contact.href.startsWith("mailto:")) {
+      issues.push(issue(`${path}.href`, "email contacts must use mailto"));
+    }
+    if (contact.kind !== "email" && contact.href.startsWith("mailto:")) {
+      issues.push(issue(`${path}.href`, "only email contacts may use mailto"));
+    }
+    assertPublicContactHref(contact.href, `${path}.href`, issues);
+  }
+}
+
+function validateCuratedCollections(
+  curated: CuratedCollectionsConfig,
+  routes: RoutesConfig,
+  taxonomy: TaxonomyConfig,
+  issues: string[],
+): void {
+  const usedRoutes = new Set<string>();
+  for (const [id, collection] of Object.entries(curated.collections)) {
+    if (collection.routeKey !== id && !(collection.routeKey in routes.curated)) {
+      issues.push(
+        issue(`config/curated-collections.yaml.collections.${id}.routeKey`, "must exist in config/routes.yaml curated map"),
+      );
+    }
+    const route = routes.curated[collection.routeKey];
+    if (!route) {
+      issues.push(
+        issue(
+          `config/curated-collections.yaml.collections.${id}.routeKey`,
+          `unknown curated route key ${collection.routeKey}`,
+        ),
+      );
+    } else if (usedRoutes.has(route)) {
+      issues.push(
+        issue(`config/curated-collections.yaml.collections.${id}.routeKey`, `route ${route} is already used`),
+      );
+    } else {
+      usedRoutes.add(route);
+    }
+    const include = new Set(collection.selector.includeTranslationKeys);
+    for (const key of collection.selector.excludeTranslationKeys) {
+      if (include.has(key)) {
+        issues.push(
+          issue(
+            `config/curated-collections.yaml.collections.${id}.selector`,
+            `translation key ${key} cannot be both included and excluded`,
+          ),
+        );
+      }
+    }
+    for (const tag of collection.selector.anyTags) {
+      if (!(tag in taxonomy.tags)) {
+        issues.push(
+          issue(`config/curated-collections.yaml.collections.${id}.selector.anyTags`, `unknown tag ${tag}`),
+        );
+      }
+    }
+    for (const category of collection.selector.anyCategories) {
+      if (!(category in taxonomy.categories)) {
+        issues.push(
+          issue(
+            `config/curated-collections.yaml.collections.${id}.selector.anyCategories`,
+            `unknown category ${category}`,
+          ),
+        );
+      }
+    }
+    for (const language of ["en", "ko", "ja"] as const) {
+      const description = collection.descriptions[language];
+      if (/https?:\/\//iu.test(description) || /[\u005b\u005d`*#]/u.test(description) || description.includes("](")) {
+        issues.push(
+          issue(
+            `config/curated-collections.yaml.collections.${id}.descriptions.${language}`,
+            "must be plain localized prose",
+          ),
+        );
+      }
+    }
+  }
+}
+
 function validateTaxonomy(taxonomy: TaxonomyConfig, issues: string[]): void {
   const tagIds = new Set(Object.keys(taxonomy.tags));
   for (const [alias, target] of Object.entries(taxonomy.tagAliases)) {
@@ -278,7 +435,9 @@ function createRouteRegistry(
     routes.paths.tags,
     routes.paths.archive,
     routes.paths.search,
+    routes.paths.explore,
     routes.paths.notFound,
+    ...Object.values(routes.curated),
   ];
   const claimed = new Map<string, string>();
 
@@ -336,6 +495,11 @@ export function loadProjectConfig(options: LoadProjectConfigOptions): ProjectCon
     taxonomyConfigSchema,
     issues,
   );
+  const curatedCollections = parseFile(
+    resolve(configDirectory, "curated-collections.yaml"),
+    curatedCollectionsConfigSchema,
+    issues,
+  );
   const navigation = parseFile(
     resolve(configDirectory, "navigation.yaml"),
     navigationConfigSchema,
@@ -374,8 +538,12 @@ export function loadProjectConfig(options: LoadProjectConfigOptions): ProjectCon
   );
 
   if (site) validateSiteSemantics(site, issues);
+  if (site) validateOwnerIdentity(site, issues);
   if (navigation && routes) validateNavigation(navigation, routes, issues);
   if (taxonomy) validateTaxonomy(taxonomy, issues);
+  if (curatedCollections && routes && taxonomy) {
+    validateCuratedCollections(curatedCollections, routes, taxonomy, issues);
+  }
   if (embeds) validateEmbeds(embeds, issues);
   if (aiCrawlers) validateCrawlers(aiCrawlers, issues);
 
@@ -459,6 +627,7 @@ export function loadProjectConfig(options: LoadProjectConfigOptions): ProjectCon
     !site ||
     !routes ||
     !taxonomy ||
+    !curatedCollections ||
     !navigation ||
     !redirects ||
     !security ||
@@ -478,6 +647,7 @@ export function loadProjectConfig(options: LoadProjectConfigOptions): ProjectCon
     site,
     routes,
     taxonomy,
+    curatedCollections,
     navigation,
     redirects,
     security,
@@ -496,6 +666,7 @@ export function loadProjectConfig(options: LoadProjectConfigOptions): ProjectCon
     site,
     routes,
     taxonomy,
+    curatedCollections,
     navigation,
     redirects,
     security,

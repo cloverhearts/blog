@@ -12,10 +12,14 @@ tags:
   - documentation
 createdAt: 2026-08-17T02:30:11+09:00
 representativeImage: generated-card
+thumbnail:
+  src: "asset:/research-lab/composable-sdk/thumbnail-source.png"
+  alt: "本文から選択した記事の代表画像"
 draft: true
 ---
 
-![Composable SDKを表す仮画像](https://placehold.org/1200x630/164E63/CFFAFE?text=Composable+SDK)
+![複数のソースファイルを編集しているVisual Studio Codeの画面](https://upload.wikimedia.org/wikipedia/commons/7/79/Vscode_screenshot.png)
+
 
 従来のSDK文書は主に人を読者としてきました。開発者が目次を読み、必要なAPIを探し、例を組み合わせて機能を完成させます。AIエージェントは別の使い方をする可能性があります。
 
@@ -50,3 +54,5 @@ ComposableなSDKでは、各機能を独立して理解でき、予測可能な�
 人が使うSDKでは良い案内書が道を説明しました。エージェント時代には材料の形と結合規則も明確でなければなりません。
 
 Composableな設計はAIだけの最適化ではありません。人が読み、テストし、交換しやすいSDKはエージェントにも扱いやすいものです。エージェントへの親和性は曖昧さを減らすことから始まります。
+
+*テスト画像の出典：[Wikimedia Commons — Huzaifa abedeen, CC BY-SA 4.0](https://commons.wikimedia.org/wiki/File:Vscode_screenshot.png)*

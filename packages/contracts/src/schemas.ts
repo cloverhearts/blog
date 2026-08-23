@@ -230,8 +230,62 @@ const postSummaryFields = {
   cover: postImageArtifactSchema.optional(),
   socialImage: postImageArtifactSchema.optional(),
   thumbnail: postImageArtifactSchema.optional(),
+  workEvidence: z
+    .object({
+      sortDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/u, "must be an ISO calendar date"),
+      period: z
+        .object({
+          start: z.string().regex(/^\d{4}-\d{2}$/u, "must be YYYY-MM"),
+          end: z.string().regex(/^\d{4}-\d{2}$/u, "must be YYYY-MM"),
+        })
+        .strict()
+        .optional(),
+    })
+    .strict()
+    .optional(),
   alternates: z.array(languageAlternateArtifactSchema),
 };
+
+export const curatedCollectionItemArtifactSchema = z
+  .object({
+    translationKey: z.string().min(1),
+    dateSource: z.enum(["work-evidence", "created-at"]),
+    sortDate: z.string().min(1),
+    period: z
+      .object({
+        start: z.string().min(1),
+        end: z.string().min(1),
+      })
+      .strict()
+      .optional(),
+  })
+  .strict();
+
+export const curatedCollectionArtifactSchema = z
+  .object({
+    id: z.string().min(1),
+    routeKey: z.string().min(1),
+    route: z.string().min(1),
+    labels: z
+      .object({
+        en: z.string().min(1),
+        ko: z.string().min(1),
+        ja: z.string().min(1),
+      })
+      .strict(),
+    descriptions: z
+      .object({
+        en: z.string().min(1),
+        ko: z.string().min(1),
+        ja: z.string().min(1),
+      })
+      .strict(),
+    presentation: z.enum(["work", "journal"]),
+    robots: z.enum(["index", "noindex"]),
+    count: z.number().int().nonnegative(),
+    items: z.array(curatedCollectionItemArtifactSchema),
+  })
+  .strict();
 
 export const previewPostSummaryArtifactSchema = z
   .object({
@@ -302,6 +356,7 @@ function contentManifestFields<PostSummary extends z.ZodType>(
   return {
     languages: z.array(supportedLanguageSchema),
     posts: z.array(postSummary),
+    curatedCollections: z.array(curatedCollectionArtifactSchema),
     categories: z.array(categoryArtifactSchema),
     tags: z.array(tagArtifactSchema),
     relatedPostIds: z.record(z.string(), z.array(z.string().min(1))),

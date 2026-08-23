@@ -11,6 +11,9 @@ tags:
   - reflection
 createdAt: 2026-08-17T02:30:11+09:00
 representativeImage: generated-card
+thumbnail:
+  src: "asset:/life-notes/good-advice/thumbnail-source.png"
+  alt: "Post representative image selected from the article"
 draft: true
 ---
 

@@ -4,33 +4,33 @@
 schemaVersion: 2
 primary:
   - labels:
-      en: "Posts"
-      ko: "포스트"
-      ja: "記事"
+      en: "All Posts"
+      ko: "전체 보기"
+      ja: "すべての記事"
     type: "internal"
     href: "/posts/"
   - labels:
-      en: "Categories"
-      ko: "카테고리"
-      ja: "カテゴリー"
+      en: "Selected Work"
+      ko: "주요 작업"
+      ja: "主な実績"
     type: "internal"
-    href: "/categories/"
+    href: "/work/"
   - labels:
-      en: "Tags"
-      ko: "태그"
-      ja: "タグ"
+      en: "Daily Notes"
+      ko: "일상 기록"
+      ja: "日々の記録"
     type: "internal"
-    href: "/tags/"
+    href: "/daily/"
+  - labels:
+      en: "Explore"
+      ko: "둘러보기"
+      ja: "探す"
+    type: "internal"
+    href: "/explore/"
   - labels:
       en: "Search"
       ko: "검색"
       ja: "検索"
     type: "internal"
     href: "/search/"
-footer:
-  - labels:
-      en: "Archive"
-      ko: "보관함"
-      ja: "アーカイブ"
-    type: "internal"
-    href: "/archive/"
+footer: []

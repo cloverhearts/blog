@@ -11,10 +11,14 @@ tags:
   - "research"
 createdAt: "2026-08-17T02:30:11+09:00"
 representativeImage: "generated-card"
+thumbnail:
+  src: "asset:/research-lab/trustworthy-ai-knowledge-base/thumbnail-source.png"
+  alt: "본문에서 선택한 포스트 대표 이미지"
 draft: true
 ---
 
-![AI 지식베이스를 표현한 임시 이미지](https://placehold.org/1200x630/172554/DBEAFE?text=Trusted+AI+Knowledge+Base)
+![노트북과 파일 탐색기가 함께 열린 JupyterLab 화면](https://upload.wikimedia.org/wikipedia/commons/7/74/Sample-jupyterlab-2021-06.png)
+
 
 개인 지식 관리 도구를 쓰다 보면 ‘세컨드 브레인’이라는 표현을 자주 만납니다. 무엇이든 모아 두면 언젠가 연결되고, 필요할 때 다시 꺼내 쓸 수 있다는 발상입니다. 사람이 직접 읽고 판단할 때는 이 방식이 꽤 잘 작동합니다.
 
@@ -54,3 +58,5 @@ draft: true
 이를 위해 문서마다 원본 링크를 연결하고, AI 요약에는 ‘미검증’ 상태를 기본값으로 둘 수 있습니다. 사람이 확인한 뒤에만 ‘검증됨’으로 바꾸면, 나중에 검색하거나 자동화할 때도 신뢰 수준을 기준으로 범위를 좁힐 수 있습니다.
 
 세컨드 브레인의 목표가 잊지 않는 것이라면, AI를 위한 지식베이스의 목표는 잘못 기억하지 않는 것입니다. 이 차이를 받아들이면 정리의 중심도 수집량에서 출처와 검증으로 옮겨갑니다.
+
+*테스트 이미지 출처: [Wikimedia Commons — Fuzheado, CC BY-SA 4.0](https://commons.wikimedia.org/wiki/File:Sample-jupyterlab-2021-06.png)*

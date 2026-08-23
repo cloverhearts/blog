@@ -30,17 +30,17 @@ remain follow-up work.
 
 | Lane                 | Status      | Present now                                                                                                                                                            | Still required                                                                                                         |
 | -------------------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| Root tooling         | Implemented | npm workspaces, lockfile, Node/npm pins, TypeScript, Vitest, documented command surface, quality and Pages workflows                                                   | Live custom-domain/Search Console operational checks                                                                   |
+| Root tooling         | Implemented | npm workspaces, lockfile, Node/npm pins, TypeScript, Vitest, documented command surface, watch-based preview rebuilds with development-only browser live reload, quality and Pages workflows | Live custom-domain/Search Console operational checks                                                                   |
 | Artifact contracts   | Implemented | Zod 4 schemas, inferred types, parse helpers, generated JSON Schema, 150-character descriptions, optional thumbnail records                                            | Schema-8 removal of compatibility `excerpt` remains a later explicit migration                                         |
 | Shared configuration | Implemented | Zod-backed loader for every `config/*.yaml` file, URL resolver, route registry, GA4/provenance/budget validation                                                       | None for the current configuration set                                                                                 |
 | Content compiler     | Implemented | Discovery, frontmatter, sanitization, assets, headings/TOC, translation groups, related posts, 150-character descriptions, compatibility excerpts, optional thumbnails | First reviewed production posts                                                                                        |
-| Embed core           | Implemented | Runtime schemas, explicit registry, sanitizer, deterministic execution, synthetic test plugin                                                                          | First reviewed real provider plugin                                                                                    |
-| Blog web             | Implemented | Static renderer, localized routes, classless shell, TOC, Open Graph, description summaries, 16:9 list thumbnails, GA4-off default                                      | Populated-site Playwright visual checks; branded design remains deferred                                               |
+| Embed core           | Implemented | Runtime schemas, explicit registry, safe iframe validation, deterministic execution, synthetic test plugin, and reviewed local YouTube provider                         | Additional providers only after separate review                                                                        |
+| Blog web             | Implemented | Static renderer, localized routes, named-component external CSS, Open Design refined white/green editorial shell, full-link post cards with restrained thumbnail transitions, overlapping workflow hero, numbered ruled lists, 132/704/132 post layout, mobile white hero, TOC, Open Graph, description summaries, 16:9 list thumbnails, dark/print modes, GA4-off default | Ongoing populated-corpus cross-browser and device visual regression checks                                             |
 | Search               | Implemented | Pagefind per-language indexes, labeled search form, no-JS fallback, and language-isolated client enhancement                                                           | Field ranking checks against a larger published corpus                                                                 |
 | Managed pages        | Implemented | `page.yaml` loader, document/presentation/application adapters, return control, preview/production manifests                                                           | First real managed-page package                                                                                        |
 | Site discovery       | Implemented | Config/artifact ingestion, sitemap, robots, llms.txt, per-language RSS, discovery manifest                                                                             | None until indexable managed pages exist                                                                               |
 | Release assembly     | Implemented | Production-only merge, collision checks, `dist/`, `verify:pages`, release manifest and diagnostic report                                                               | Isolated `/blog` portability build in CI after Pages environment exists                                                |
-| Content/plugins      | Partial     | Twenty temporary draft groups across English, Korean, and Japanese for development-preview testing; no production post, managed page, or provider plugin               | Owner review or later removal of temporary groups; first reviewed production content and separately approved providers |
+| Content/plugins      | Partial     | Twenty temporary draft groups across English, Korean, and Japanese for development-preview testing plus one reviewed local YouTube provider                            | Owner review or later removal of temporary groups; first reviewed production content                                    |
 | Delivery             | Partial     | Quality workflow plus Pages upload/deploy workflow                                                                                                                     | Custom-domain DNS, HTTPS enforcement, Search Console, rollback drill                                                   |
 
 ## Commands that exist now
@@ -103,11 +103,14 @@ The executable phases are present. Remaining work is content and operations:
    item. Archive routes and discovery remain.
 4. Completed: shared `listings.pageSize` is 10 for home and pageable
    collections, with `10 / 10 / 1` boundary coverage.
-5. Add the first reviewed Korean source post and independently reviewed
+5. Completed: public author identity, draft managed profile packages, All
+   Posts / Selected Work / Daily Notes / Explore / Search navigation, generic
+   curated collections, and in-place search-dialog enhancement.
+6. Add the first reviewed Korean source post and independently reviewed
    translations when the owner supplies them.
-6. Add a managed-page package only when a standalone profile or application is
-   requested.
-7. Add a real embed provider only after an explicit local plugin review.
+7. Completed: the first reviewed local provider supports privacy-enhanced
+   YouTube embeds with strict ID/title validation, a `noscript` normal-link
+   fallback, and no build-time network access.
 8. Complete custom-domain, HTTPS, Search Console, and rollback operations after
    the first Pages deployment.
 
@@ -137,6 +140,29 @@ Tags, and Search. Archive remains at `/archive/`, `/en/archive/`, and
 This gap is **implemented**. `config/site.yaml` `listings.pageSize` is 10, and
 home plus Posts/category/tag/Archive collections consume that shared value.
 Page 1 stays at the collection root; later pages use `/page/<n>/`.
+
+## Approved specification gap: public author and curated discovery
+
+`IMPLEMENTATION_SPEC.md` now approves a public author identity with localized
+short bios and validated contact points, three independently authored/indexable
+managed profile variants, and visible author-to-profile links that back one
+stable `Person` identity referenced by every post. It also approves the exact
+primary navigation order All Posts, Selected Work, Daily Notes, Explore, and
+Search; Profile remains a separate author-identity destination, while Archive
+stays secondary in the footer.
+
+This gap is **implemented**. `config/site.yaml` carries a validated owner
+record. Primary navigation is All Posts, Selected Work, Daily Notes, Explore,
+and Search. `/work/`, `/daily/`, and `/explore/` exist. Collection membership
+is compiler-derived from `config/curated-collections.yaml`. Content artifacts
+are schema 8 and include presentation-neutral curated records and optional
+`workEvidence`. Three managed profile packages exist as drafts and stay out of
+production until the owner reviews biography and destinations. Search remains a
+real `/search/` route and opens an in-page dialog when enhancement loads.
+
+The published profile remains draft. Temporary posts were not auto-promoted
+into Selected Work. Playwright visual and assistive-technology checks for the
+new surfaces were not run.
 
 ## High-risk rules the implementation must not reinterpret
 

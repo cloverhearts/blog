@@ -1,4 +1,5 @@
 export { compileContent, type CompileContentOptions, type CompiledContent } from "./compile.ts";
+export { deriveCuratedCollections } from "./curated.ts";
 export { discoverPosts } from "./discover.ts";
 export {
   assertThumbnailSource,

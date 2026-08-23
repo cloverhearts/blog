@@ -11,10 +11,14 @@ tags:
   - research
 createdAt: 2026-08-17T02:30:11+09:00
 representativeImage: generated-card
+thumbnail:
+  src: "asset:/research-lab/measuring-ax/thumbnail-source.png"
+  alt: "本文から選択した記事の代表画像"
 draft: true
 ---
 
-![AI活用の測定を表す仮画像](https://placehold.org/1200x630/1D4ED8/DBEAFE?text=Measuring+AI+Adoption)
+![複数の指標を表示するGrafanaダッシュボードの画面](https://upload.wikimedia.org/wikipedia/commons/5/59/Grafana_screenshot_%282018%29.png)
+
 
 AI導入を測るとき、最初に思い浮かぶのは利用量です。アカウント数、質問数、生成文書数など、集計しやすい数値があります。数値が増えると、AI変革も進んだように見えます。
 
@@ -47,3 +51,5 @@ AI利用の測定は個人監視になりやすいものです。質問数で順
 個人順位ではなく、作業種類ごとの変化、再利用できる事例、検証手順の成熟度を集計するほうが安全です。内容全体ではなく必要最小限の情報だけを扱います。
 
 AI利用量は出発点にはなりますが、AXの成績表ではありません。本当の変化は、人が仕事を定義し、実行し、検証する方法に現れます。
+
+*テスト画像の出典：[Wikimedia Commons — Joel Kennedy, Public Domain](https://commons.wikimedia.org/wiki/File:Grafana_screenshot_(2018).png)*

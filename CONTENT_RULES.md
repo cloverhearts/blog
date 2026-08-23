@@ -159,6 +159,12 @@ or draft translation does not block it.
   omitted, the web build derives a 16:9 thumbnail from the resolved
   representative source.
 - `related`: stable slugs for intentional editorial recommendations. Omit when there are no manual recommendations; the build may derive additional related posts.
+- `workEvidence`: optional work chronology used only with the `work-evidence`
+  marker tag. It is identical across translation variants and contains
+  `sortDate` (`YYYY-MM-DD`) plus optional `period.start`/`period.end`
+  (`YYYY-MM`, end not earlier than start). It is never derived from Git
+  history. Without it, Selected Work orders the group by `createdAt` and
+  labels that value as the publication date.
 
 ### Derived authorship disclosure
 
@@ -481,7 +487,16 @@ Standard Markdown links remain links. Do not automatically turn every media link
 - `title` is required for accessibility and no-script fallback text.
 - Do not add autoplay, tracking parameters, or arbitrary iframe permissions.
 - When the source only cites a video rather than asking to embed it, use a normal descriptive link.
-- YouTube and Vimeo directives are provider-plugin syntax. They become publishable only after their reviewed local plugins are installed and enabled in `config/embeds.yaml`.
+- The reviewed local YouTube plugin is installed and enabled. It validates an
+  11-character video ID, rejects extra author attributes, removes copied
+  tracking/query parameters, and renders a lazy privacy-enhanced
+  `youtube-nocookie.com` frame. Its durable normal YouTube link fallback is
+  emitted inside `noscript`, so it remains available without JavaScript but is
+  not duplicated visibly beneath a working player. Loading the frame makes an
+  external request; authors must not describe it as local-only or consent-gated.
+- Vimeo remains reserved provider-plugin syntax and becomes publishable only
+  after its own reviewed local plugin is installed and enabled in
+  `config/embeds.yaml`.
 
 ## 9. Maps
 
@@ -511,7 +526,7 @@ Map embeds are provider plugins rather than built-in content-compiler behavior. 
 - Each provider must define an allowlisted host, canonical identifier, accessible title, responsive rendering, privacy mode, content-security-policy requirements, iframe permissions, searchable fallback text, and normal-link fallback.
 - Privacy mode is required and must declare whether output is `local-only`, makes an `external-request`, or is `consent-required`. A plugin may not silently load a third party before the approved policy allows it.
 - Plugins execute at build time. Network access is denied by default; any future exception must be explicitly configured, cached or frozen for reproducibility, and represented in build provenance.
-- Optional browser behavior must be progressive enhancement. Failure or absence of JavaScript may disable the rich embed interaction, but must not remove the title, relevant explanation, or normal external link.
+- Optional browser behavior must be progressive enhancement. Failure or absence of JavaScript may disable the rich embed interaction, but must not remove the title, relevant explanation, or normal external link. A direct iframe provider may place that external link in `noscript` to avoid duplicating a working player's own controls.
 - Embed-core must sanitize plugin output and reject undeclared origins or permissions even though provider plugins are reviewed local code.
 - Unknown, disabled, duplicated, malformed, or policy-violating provider directives are content build errors.
 - API keys, access tokens, secrets, signed URLs, and private identifiers must not appear in Markdown, normalized embed artifacts, HTML, or browser bundles.
@@ -582,7 +597,8 @@ The content compiler writes its values to `.artifacts/content/<mode>/` using the
 
 Cross-lane values come from runtime-validated files under `config/`:
 
-- `site.yaml`: localized site identity descriptions, the production origin,
+- `site.yaml`: localized site identity descriptions, the owner display name,
+  short bios, profile routes, public contacts, the production origin,
   origin/base-path environment keys, supported/source/default and primary UX
   review languages, language route prefixes and preference key, timezone, and
   global discovery policies;
@@ -594,6 +610,8 @@ Cross-lane values come from runtime-validated files under `config/`:
 - `navigation.yaml`: intentional primary/footer links with all required
   localized labels, including a managed page only when the owner chooses to
   surface it;
+- `curated-collections.yaml`: reusable collection IDs, localized titles and
+  descriptions, selectors, order, presentation role, and robots policy;
 - `redirects.yaml`: explicit compatibility routes for published URL changes;
 - `security.yaml`: project-wide static-document defaults and the maximum direct managed-page external-origin and iframe-permission policy;
 - `embeds.yaml`: explicit local provider-plugin registry and global embed safety policy;
@@ -639,9 +657,9 @@ Navigation entries use the following explicit shape when added:
 ```yaml
 primary:
   - labels:
-      en: "Posts"
-      ko: "포스트"
-      ja: "記事"
+      en: "All Posts"
+      ko: "전체 보기"
+      ja: "すべての記事"
     type: "internal"
     href: "/posts/"
 footer:

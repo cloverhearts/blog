@@ -35,7 +35,10 @@
 - Home, post, category, tag, archive, pagination, related, and fallback
   summaries display the selected variant's localized `description`, never the
   compatibility `excerpt` or a Pagefind query snippet.
-- Category, tag, and archive counts include published production posts only.
+- Category, tag, archive, and curated-collection counts include published
+  production posts only. Selected Work and Daily Notes membership is derived
+  from `config/curated-collections.yaml` by the content compiler. A group may
+  appear in more than one collection and still has one canonical post route.
 - Lists, counts, pagination, archives, and related posts represent each
   translation group at most once. A link uses the active-language variant when
   published, otherwise English, otherwise Korean. If none is available, the

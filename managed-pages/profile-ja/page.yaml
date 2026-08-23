@@ -1,0 +1,25 @@
+schemaVersion: 1
+id: "profile-ja"
+route: "/ja/profile/"
+kind: "document"
+entry:
+  format: "markdown"
+  path: "content.md"
+status: "draft"
+language: "ja"
+translationKey: "profile"
+title: "CloverHearts"
+description: "CloverHeartsの公開プロフィールです。ソフトウェア、研究、日々の記録の文脈を紹介します。"
+returnTo: "/ja/"
+robots: "noindex"
+sitemap: false
+security:
+  externalOrigins:
+    frame: []
+    script: []
+    connect: []
+    image: []
+    style: []
+    font: []
+    media: []
+  iframePermissions: []

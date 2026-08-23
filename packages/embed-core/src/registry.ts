@@ -82,8 +82,15 @@ async function importPlugin(packageName: string, repositoryRoot: string): Promis
   if (packageName.startsWith(".") || packageName.startsWith("/")) {
     moduleUrl = pathToFileURL(resolve(repositoryRoot, packageName)).href;
   } else {
-    const require = createRequire(resolve(repositoryRoot, "package.json"));
-    moduleUrl = pathToFileURL(require.resolve(packageName)).href;
+    const repositoryRequire = createRequire(resolve(repositoryRoot, "package.json"));
+    const packagePath = (() => {
+      try {
+        return repositoryRequire.resolve(packageName);
+      } catch {
+        return createRequire(import.meta.url).resolve(packageName);
+      }
+    })();
+    moduleUrl = pathToFileURL(packagePath).href;
   }
 
   const imported = (await import(moduleUrl)) as { default?: EmbedPlugin; plugin?: EmbedPlugin };

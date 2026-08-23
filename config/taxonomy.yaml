@@ -26,6 +26,16 @@ categories:
       ko: "생활 실험실"
       ja: "暮らしの実験室"
 tags:
+  work-evidence:
+    labels:
+      en: "Work Evidence"
+      ko: "작업 근거"
+      ja: "実績"
+  daily-record:
+    labels:
+      en: "Daily Record"
+      ko: "일상 기록"
+      ja: "日々の記録"
   ai:
     labels:
       en: "AI"

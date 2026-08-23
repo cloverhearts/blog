@@ -12,10 +12,14 @@ tags:
   - software-development
 createdAt: 2026-08-17T02:30:11+09:00
 representativeImage: generated-card
+thumbnail:
+  src: "asset:/research-lab/building-ai-skills/thumbnail-source.png"
+  alt: "Post representative image selected from the article"
 draft: true
 ---
 
-![Temporary illustration of AI Skill design](https://placehold.org/1200x630/334155/F1F5F9?text=Building+AI+Skills)
+![Visual Studio Code with terminal output visible](https://upload.wikimedia.org/wikipedia/commons/9/91/VS_Code_Screenshot.png)
+
 
 At first, saving a frequently used prompt seemed sufficient. Once I began turning a repeated workflow into an AI Skill, it became clear that a good sentence was only a small part of the design.
 
@@ -50,3 +54,5 @@ It also reveals what should not be automated. Decisions involving taste, respons
 A short prompt is easy to copy but often needs to be explained again when the situation changes. A reusable Skill needs visible sections for input, procedure, output, and verification.
 
 Building an AI Skill is not only a technique for assigning work to AI. It is a way to describe work as a small system. Automation is one result; a clearer understanding of the work is another.
+
+*Test image source: [Wikimedia Commons — Cycling2, CC0](https://commons.wikimedia.org/wiki/File:VS_Code_Screenshot.png)*

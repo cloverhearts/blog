@@ -1,0 +1,51 @@
+# Generic curated post collections. Membership is derived by the content
+# compiler from validated taxonomy and optional work chronology.
+schemaVersion: 1
+collections:
+  work:
+    routeKey: "work"
+    labels:
+      en: "Selected Work"
+      ko: "주요 작업"
+      ja: "主な実績"
+    descriptions:
+      en: "A selection of projects, research, documentation, technical outcomes, and work improvements I created or led."
+      ko: "직접 만들거나 주도한 프로젝트, 연구, 문서, 기술적 결과와 업무 개선 사례를 소개합니다."
+      ja: "自ら制作または主導したプロジェクト、研究、ドキュメント、技術的成果、業務改善の事例を紹介します。"
+    selector:
+      anyTags: ["work-evidence"]
+      anyCategories: []
+      includeTranslationKeys:
+        - "building-ai-skills"
+        - "composable-sdk"
+        - "llms-txt-for-sdk-docs"
+        - "measuring-ax"
+        - "trustworthy-ai-knowledge-base"
+      excludeTranslationKeys: []
+    order:
+      primary: "work-evidence-date"
+      fallback: "created-at"
+      direction: "descending"
+    presentation: "work"
+    robots: "index"
+  daily:
+    routeKey: "daily"
+    labels:
+      en: "Daily Notes"
+      ko: "일상 기록"
+      ja: "日々の記録"
+    descriptions:
+      en: "Everyday stories about time with my children, hobbies, and life beyond work."
+      ko: "아이들과 함께한 시간과 취미 생활 등 일상의 이야기를 기록합니다."
+      ja: "子どもたちと過ごした時間や趣味など、日々の暮らしを記録します。"
+    selector:
+      anyTags: ["daily-record"]
+      anyCategories: ["life-notes", "family-life", "everyday-lab"]
+      includeTranslationKeys: []
+      excludeTranslationKeys: []
+    order:
+      primary: "created-at"
+      fallback: "created-at"
+      direction: "descending"
+    presentation: "journal"
+    robots: "index"

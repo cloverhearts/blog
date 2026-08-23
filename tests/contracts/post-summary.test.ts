@@ -129,6 +129,7 @@ test("collections, RSS, and metadata use description while thumbnails stay off O
   assert.doesNotMatch(home, /memory-layout/u);
   assert.match(home, /data-post-list/u);
   assert.match(home, /data-post-thumbnail="thumbnail"/u);
+  assert.match(home, /sizes="\(max-width: 40rem\) 100vw, \(max-width: 80rem\) 35vw, 27rem"/u);
   assert.match(home, /width="640" height="360"/u);
   assert.match(home, /alt=""/u);
   assert.match(home, /loading="eager"/u);
@@ -201,6 +202,7 @@ tags:
 tagAliases: {}
 `,
   );
+  writeFileSync(resolve(root, "config/curated-collections.yaml"), "schemaVersion: 1\ncollections: {}\n");
   writeFileSync(resolve(root, "CONTENT_RULES.md"), readFileSync(resolve(repositoryRoot, "CONTENT_RULES.md")));
   writeFileSync(resolve(root, "I18N.md"), readFileSync(resolve(repositoryRoot, "I18N.md")));
   writeFileSync(resolve(root, "DESIGN.md"), readFileSync(resolve(repositoryRoot, "DESIGN.md")));

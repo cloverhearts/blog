@@ -1,0 +1,25 @@
+schemaVersion: 1
+id: "profile"
+route: "/profile/"
+kind: "document"
+entry:
+  format: "markdown"
+  path: "content.md"
+status: "draft"
+language: "ko"
+translationKey: "profile"
+title: "CloverHearts"
+description: "CloverHearts의 공개 프로필입니다. 소프트웨어, 연구, 일상 기록의 맥락을 소개합니다."
+returnTo: "/"
+robots: "noindex"
+sitemap: false
+security:
+  externalOrigins:
+    frame: []
+    script: []
+    connect: []
+    image: []
+    style: []
+    font: []
+    media: []
+  iframePermissions: []

@@ -11,10 +11,14 @@ tags:
   - "software-development"
 createdAt: "2026-08-17T02:30:11+09:00"
 representativeImage: "generated-card"
+thumbnail:
+  src: "asset:/research-lab/building-ai-skills/thumbnail-source.png"
+  alt: "본문에서 선택한 포스트 대표 이미지"
 draft: true
 ---
 
-![AI Skill 설계를 표현한 임시 이미지](https://placehold.org/1200x630/334155/F1F5F9?text=Building+AI+Skills)
+![터미널 출력이 함께 보이는 Visual Studio Code 화면](https://upload.wikimedia.org/wikipedia/commons/9/91/VS_Code_Screenshot.png)
+
 
 처음에는 자주 하는 요청을 프롬프트로 저장해 두면 충분하다고 생각했습니다. 하지만 반복되는 작업 흐름을 AI Skill로 만들기 시작하자, 좋은 문장 하나보다 중요한 것이 훨씬 많다는 사실을 알게 됐습니다.
 
@@ -49,3 +53,5 @@ AI가 지침을 어기는 것처럼 보일 때, 실제로는 지침에 경계가
 짧은 프롬프트는 복사하기 쉽지만 상황이 조금만 달라져도 다시 설명해야 합니다. 재사용 가능한 Skill은 길이가 아니라 구조가 중요합니다. 입력, 절차, 출력, 검증이 서로 구분되어 있으면 다른 사람이 읽어도 수정할 지점을 찾기 쉽습니다.
 
 업무용 AI Skill을 만드는 일은 AI에게 일을 시키는 기술만은 아니었습니다. 내가 하는 일을 작은 시스템으로 설명하는 일이었습니다. 잘 만든 Skill의 첫 번째 효과가 자동화라면, 두 번째 효과는 작업 자체를 더 선명하게 이해하는 것이라고 생각합니다.
+
+*테스트 이미지 출처: [Wikimedia Commons — Cycling2, CC0](https://commons.wikimedia.org/wiki/File:VS_Code_Screenshot.png)*

@@ -11,10 +11,14 @@ tags:
   - research
 createdAt: 2026-08-17T02:30:11+09:00
 representativeImage: generated-card
+thumbnail:
+  src: "asset:/research-lab/trustworthy-ai-knowledge-base/thumbnail-source.png"
+  alt: "本文から選択した記事の代表画像"
 draft: true
 ---
 
-![信頼できるAI知識ベースを表す仮画像](https://placehold.org/1200x630/172554/DBEAFE?text=Trusted+AI+Knowledge+Base)
+![ノートブックとファイルブラウザーを表示したJupyterLabの画面](https://upload.wikimedia.org/wikipedia/commons/7/74/Sample-jupyterlab-2021-06.png)
+
 
 個人の知識管理では「セカンドブレイン」という表現がよく使われます。何でも集め、後でつなぎ、必要なときに取り出すという考え方です。人が自分で読み、文脈を復元する場合には比較的うまく機能します。
 
@@ -54,3 +58,5 @@ draft: true
 文書ごとに原文へのリンクを置き、AI要約の初期状態を「未検証」にします。人が確認した後だけ「検証済み」に変えれば、検索や自動化でも信頼度によって対象を絞れます。
 
 セカンドブレインの目的が忘れないことなら、AI向け知識ベースの目的は誤って記憶しないことです。この違いにより、整理の中心は収集量から出典と検証へ移ります。
+
+*テスト画像の出典：[Wikimedia Commons — Fuzheado, CC BY-SA 4.0](https://commons.wikimedia.org/wiki/File:Sample-jupyterlab-2021-06.png)*

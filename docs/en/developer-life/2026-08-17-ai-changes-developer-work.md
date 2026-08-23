@@ -12,10 +12,15 @@ tags:
   - developer-career
 createdAt: 2026-08-17T02:30:11+09:00
 representativeImage: generated-card
+thumbnail:
+  src: "asset:/developer-life/ai-changes-developer-work/thumbnail-source.png"
+  alt: "Post representative image selected from the article"
 draft: true
 ---
 
 ![Temporary illustration of changing roles for AI and developers](https://placehold.org/1200x630/1F2937/F9FAFB?text=AI+Changes+Developer+Work)
+
+::youtube{id="2GNIgiza-m0" title="YouTube test video"}
 
 Watching AI write code can make the developer’s role look as if it is shrinking. Implementations that once took considerable time can now appear after a few sentences. The important question is what work remains around that faster implementation.
 

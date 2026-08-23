@@ -4,6 +4,8 @@ import { parseWithContract } from "./errors.ts";
 import {
   assetArtifactSchema,
   categoryArtifactSchema,
+  curatedCollectionArtifactSchema,
+  curatedCollectionItemArtifactSchema,
   discoveryManifestArtifactSchema,
   embedCspRequirementArtifactSchema,
   embedPluginReferenceArtifactSchema,
@@ -53,6 +55,8 @@ export {
   buildModeSchema,
   categoryArtifactSchema,
   contractJsonSchemaSources,
+  curatedCollectionArtifactSchema,
+  curatedCollectionItemArtifactSchema,
   embedClientModeSchema,
   embedCspDirectiveSchema,
   embedCspRequirementArtifactSchema,
@@ -186,6 +190,12 @@ export type PublishedPostSummaryArtifact = z.infer<
 >;
 export type PreviewPostArtifact = z.infer<typeof previewPostArtifactSchema>;
 export type PublishedPostArtifact = z.infer<typeof publishedPostArtifactSchema>;
+export type CuratedCollectionItemArtifact = z.infer<
+  typeof curatedCollectionItemArtifactSchema
+>;
+export type CuratedCollectionArtifact = z.infer<
+  typeof curatedCollectionArtifactSchema
+>;
 export type CategoryArtifact = z.infer<typeof categoryArtifactSchema>;
 export type TagArtifact = z.infer<typeof tagArtifactSchema>;
 export type SearchDocumentMetadataArtifact = z.infer<

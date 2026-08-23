@@ -11,10 +11,14 @@ tags:
   - "research"
 createdAt: "2026-08-17T02:30:11+09:00"
 representativeImage: "generated-card"
+thumbnail:
+  src: "asset:/research-lab/measuring-ax/thumbnail-source.png"
+  alt: "본문에서 선택한 포스트 대표 이미지"
 draft: true
 ---
 
-![AI 활용 측정을 표현한 임시 이미지](https://placehold.org/1200x630/1D4ED8/DBEAFE?text=Measuring+AI+Adoption)
+![여러 지표가 배치된 Grafana 대시보드 화면](https://upload.wikimedia.org/wikipedia/commons/5/59/Grafana_screenshot_%282018%29.png)
+
 
 AI 도입 수준을 측정할 때 가장 먼저 떠오르는 숫자는 사용량입니다. 가입자 수, 질문 수, 생성한 문서 수처럼 집계하기 쉬운 지표가 많습니다. 숫자가 늘면 조직의 AI 전환도 진행된 것처럼 보입니다.
 
@@ -47,3 +51,5 @@ AI 활용을 측정하는 일은 쉽게 개인 감시로 흐를 수 있습니다
 따라서 개인별 순위를 만드는 대신 작업 유형별 변화, 재사용 가능한 사례, 검증 절차의 성숙도를 집계하는 편이 낫습니다. 내용 전체를 수집하기보다 필요한 최소한의 정보만 다뤄야 합니다.
 
 AI 활용량은 출발점이 될 수 있지만 AX의 성적표는 아닙니다. 진짜 변화는 질문 수가 아니라 사람이 일을 정의하고 수행하고 검증하는 방식이 얼마나 달라졌는지에서 보입니다.
+
+*테스트 이미지 출처: [Wikimedia Commons — Joel Kennedy, Public Domain](https://commons.wikimedia.org/wiki/File:Grafana_screenshot_(2018).png)*

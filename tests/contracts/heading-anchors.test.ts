@@ -7,8 +7,8 @@ import {
 } from "../../packages/content-compiler/src/heading-anchors.ts";
 import { CONTENT_ARTIFACT_SCHEMA_VERSION } from "../../packages/contracts/src/index.ts";
 
-test("uses authorship-disclosure content artifact schema version 7", () => {
-  assert.equal(CONTENT_ARTIFACT_SCHEMA_VERSION, 7);
+test("uses authorship-disclosure content artifact schema version 8", () => {
+  assert.equal(CONTENT_ARTIFACT_SCHEMA_VERSION, 8);
 });
 
 test("builds deterministic Korean, C++, duplicate, and explicit anchors", () => {

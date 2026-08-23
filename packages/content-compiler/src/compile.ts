@@ -21,6 +21,7 @@ import type { ProjectConfig } from "../../project-config/src/index.ts";
 import { resolveContentAsset, type ResolvedAsset } from "./assets.ts";
 import { discoverPosts, type DiscoveredPost } from "./discover.ts";
 import { compileMarkdown } from "./markdown.ts";
+import { deriveCuratedCollections } from "./curated.ts";
 import { deriveRelatedPostIds } from "./related.ts";
 import { resolvePublishedTranslationLanguages } from "./translation-publication.ts";
 
@@ -158,6 +159,7 @@ export async function compileContent(options: CompileContentOptions): Promise<Co
       ...(cover ? { cover } : {}),
       ...(socialImage ? { socialImage } : {}),
       ...(thumbnail ? { thumbnail } : {}),
+      ...(post.frontmatter.workEvidence ? { workEvidence: post.frontmatter.workEvidence } : {}),
       alternates: [],
       status: post.frontmatter.draft ? "draft" : "published",
       bodyHtml: compiled.bodyHtml,
@@ -201,6 +203,7 @@ export async function compileContent(options: CompileContentOptions): Promise<Co
   }
 
   const summaries: PreviewPostSummaryArtifact[] = compiledPosts.map(toSummary);
+  const curatedCollections = deriveCuratedCollections(compiledPosts, config, mode);
   const relatedPostIds = deriveRelatedPostIds(
     summaries,
     Object.fromEntries(compiledPosts.map((post) => [post.id, post.manualRelatedSlugs])),
@@ -237,6 +240,7 @@ export async function compileContent(options: CompileContentOptions): Promise<Co
   const manifestBase = {
     languages: ["ko", "en", "ja"] as const,
     posts: summaries,
+    curatedCollections,
     categories,
     tags,
     relatedPostIds,
@@ -253,7 +257,7 @@ export async function compileContent(options: CompileContentOptions): Promise<Co
   };
 
   const provenance = {
-    schemaVersion: 7 as const,
+    schemaVersion: 8 as const,
     buildMode: mode,
     producer: "@cloverhearts/content-compiler",
     producerVersion: "0.0.0",
@@ -350,6 +354,9 @@ function validateGroupInvariants(variants: readonly DiscoveredPost[]): readonly 
     }
     if (variant.frontmatter.tags.join(",") !== first.frontmatter.tags.join(",")) {
       issues.push(`${variant.sourcePath}: tags mismatch`);
+    }
+    if (JSON.stringify(variant.frontmatter.workEvidence ?? null) !== JSON.stringify(first.frontmatter.workEvidence ?? null)) {
+      issues.push(`${variant.sourcePath}: workEvidence mismatch`);
     }
   }
   return issues;

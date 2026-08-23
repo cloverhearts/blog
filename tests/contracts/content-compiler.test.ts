@@ -87,6 +87,7 @@ tags:
 tagAliases: {}
 `,
   );
+  writeFileSync(resolve(root, "config/curated-collections.yaml"), "schemaVersion: 1\ncollections: {}\n");
   writeFileSync(resolve(root, "CONTENT_RULES.md"), "content rules");
   writeFileSync(resolve(root, "I18N.md"), "i18n rules");
   const png = await sharp({

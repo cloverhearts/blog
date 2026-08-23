@@ -93,13 +93,21 @@ async function renderGeneratedCard(input: {
   readonly config: ProjectConfig;
   readonly categoryLabel: string;
 }): Promise<Buffer> {
+  const titleLines = wrapTitle(input.post.title, 24, 3);
+  const titleSvg = titleLines
+    .map((line, index) => `<tspan x="96" y="${260 + index * 76}">${escapeSvg(line)}</tspan>`)
+    .join("");
   const svg = `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
-  <rect width="1200" height="630" fill="#111111"/>
-  <rect x="48" y="48" width="1104" height="534" fill="none" stroke="#f4f4f4" stroke-width="2"/>
-  <text x="80" y="160" fill="#f4f4f4" font-size="28" font-family="system-ui, sans-serif">${escapeSvg(input.categoryLabel)}</text>
-  <text x="80" y="280" fill="#ffffff" font-size="56" font-family="system-ui, sans-serif">${escapeSvg(truncate(input.post.title, 42))}</text>
-  <text x="80" y="540" fill="#d0d0d0" font-size="24" font-family="system-ui, sans-serif">${escapeSvg(input.config.site.identity.name)}</text>
+  <rect width="1200" height="630" fill="#ffffff"/>
+  <rect x="48" y="48" width="1104" height="534" fill="#f6fbf8" stroke="#dde7e1" stroke-width="2"/>
+  <rect x="48" y="48" width="14" height="534" fill="#12b76a"/>
+  <circle cx="1056" cy="150" r="62" fill="#ecfdf3" stroke="#12b76a" stroke-width="2"/>
+  <circle cx="1056" cy="150" r="18" fill="#12b76a"/>
+  <text x="96" y="142" fill="#087a4f" font-size="28" font-weight="700" letter-spacing="2" font-family="Pretendard, system-ui, sans-serif">${escapeSvg(input.categoryLabel)}</text>
+  <text fill="#17211c" font-size="58" font-weight="600" font-family="Pretendard, system-ui, sans-serif">${titleSvg}</text>
+  <line x1="96" y1="505" x2="1104" y2="505" stroke="#c7d5cd" stroke-width="2"/>
+  <text x="96" y="552" fill="#66736c" font-size="25" font-weight="650" font-family="Pretendard, system-ui, sans-serif">${escapeSvg(input.config.site.identity.name)}</text>
 </svg>`;
   return sharp(Buffer.from(svg)).png().toBuffer();
 }
@@ -117,6 +125,26 @@ function escapeSvg(value: string): string {
     .replaceAll('"', "&quot;");
 }
 
-function truncate(value: string, max: number): string {
-  return value.length <= max ? value : `${value.slice(0, max - 1).trimEnd()}…`;
+function wrapTitle(value: string, maxCharacters: number, maxLines: number): string[] {
+  const units = Array.from(value.trim());
+  const lines: string[] = [];
+  let cursor = 0;
+  while (cursor < units.length && lines.length < maxLines) {
+    const remaining = units.slice(cursor);
+    if (remaining.length <= maxCharacters) {
+      lines.push(remaining.join(""));
+      cursor = units.length;
+      break;
+    }
+    const window = remaining.slice(0, maxCharacters + 1);
+    let breakAt = window.map((character, index) => (character === " " ? index : -1)).filter((index) => index > 0).at(-1) ?? maxCharacters;
+    if (breakAt < Math.floor(maxCharacters * 0.55)) breakAt = maxCharacters;
+    lines.push(remaining.slice(0, breakAt).join("").trimEnd());
+    cursor += breakAt;
+    while (units[cursor] === " ") cursor += 1;
+  }
+  if (cursor < units.length && lines.length > 0) {
+    lines[lines.length - 1] = `${lines[lines.length - 1]?.replace(/…?$/u, "").trimEnd()}…`;
+  }
+  return lines;
 }

@@ -1,4 +1,4 @@
-export const CONTENT_ARTIFACT_SCHEMA_VERSION = 7 as const;
+export const CONTENT_ARTIFACT_SCHEMA_VERSION = 8 as const;
 export const WEB_ARTIFACT_SCHEMA_VERSION = 2 as const;
 export const SEARCH_ARTIFACT_SCHEMA_VERSION = 2 as const;
 export const MANAGED_PAGE_ARTIFACT_SCHEMA_VERSION = 2 as const;

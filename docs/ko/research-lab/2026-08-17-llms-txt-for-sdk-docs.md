@@ -12,10 +12,14 @@ tags:
   - "research"
 createdAt: "2026-08-17T02:30:11+09:00"
 representativeImage: "generated-card"
+thumbnail:
+  src: "asset:/research-lab/llms-txt-for-sdk-docs/thumbnail-source.png"
+  alt: "본문에서 선택한 포스트 대표 이미지"
 draft: true
 ---
 
-![llms.txt 문서를 표현한 임시 이미지](https://placehold.org/1200x630/3F3F46/FAFAFA?text=llms.txt+for+SDK+Docs)
+![명령을 실행한 GNOME 터미널 화면](https://upload.wikimedia.org/wikipedia/commons/c/c5/GNOME_Terminal_3.32_screenshot.png)
+
 
 SDK 문서는 사람에게 읽기 좋도록 만들어집니다. 왼쪽에는 긴 목차가 있고, 본문 사이에는 탭과 접히는 예제가 있으며, 관련 페이지는 여러 링크로 나뉩니다. 사람은 화면을 탐색하며 맥락을 복원할 수 있지만, AI가 필요한 부분만 안정적으로 가져오기에는 불편할 수 있습니다.
 
@@ -58,3 +62,5 @@ AI가 읽기 쉬워졌는지는 파일이 생겼다는 사실만으로 판단할
 ## 참고 자료
 
 - [The /llms.txt file](https://llmstxt.org/)
+
+*테스트 이미지 출처: [Wikimedia Commons — GNOME Project·VulcanSphere, GPLv3+](https://commons.wikimedia.org/wiki/File:GNOME_Terminal_3.32_screenshot.png)*

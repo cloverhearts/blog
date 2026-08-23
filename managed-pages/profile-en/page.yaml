@@ -1,0 +1,25 @@
+schemaVersion: 1
+id: "profile-en"
+route: "/en/profile/"
+kind: "document"
+entry:
+  format: "markdown"
+  path: "content.md"
+status: "draft"
+language: "en"
+translationKey: "profile"
+title: "CloverHearts"
+description: "The public profile for CloverHearts, introducing the software, research, and everyday writing on this blog."
+returnTo: "/en/"
+robots: "noindex"
+sitemap: false
+security:
+  externalOrigins:
+    frame: []
+    script: []
+    connect: []
+    image: []
+    style: []
+    font: []
+    media: []
+  iframePermissions: []

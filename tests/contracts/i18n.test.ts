@@ -183,7 +183,7 @@ test("renders an optional original reference from validated metadata", () => {
   const origin = resolveTranslationOrigin("en", "ko", alternates);
   assert.equal(
     renderOriginalPostFooter("en", origin),
-    '<aside data-post-original-reference><span>Original language: 한국어</span><a href="/posts/example/">Original post</a></aside>',
+    '<aside class="post-original-reference" data-post-original-reference><span>Original language: 한국어</span><a href="/posts/example/">Original post</a></aside>',
   );
   assert.doesNotMatch(renderOriginalPostFooter("en", origin), /review|nuance/iu);
 });

@@ -81,7 +81,11 @@ export async function executeEmbedDirective(
   ) {
     throw new Error(`${loaded.plugin.id} is not allowed to emit client enhancement`);
   }
-  assertSafeEmbedHtml(rendered.staticHtml, loaded.plugin.id);
+  assertSafeEmbedHtml(
+    rendered.staticHtml,
+    loaded.plugin.id,
+    rendered.security.iframePermissions,
+  );
   if (registry.policy.requireExplicitSecurityOrigins) {
     const origins = rendered.security.csp.flatMap((entry) => entry.origins);
     assertDeclaredOrigins(rendered.staticHtml, origins, loaded.plugin.id);

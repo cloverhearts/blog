@@ -69,7 +69,7 @@ export function renderOriginalPostFooter(
   const labels = FOOTER_LABELS[currentLanguage] ?? FOOTER_LABELS.en;
   const originalLanguage = LANGUAGE_LABELS[origin.originalLanguage] ?? origin.originalLanguage;
   return [
-    '<aside data-post-original-reference>',
+    '<aside class="post-original-reference" data-post-original-reference>',
     `<span>${escapeHtml(labels.originalLanguage)}: ${escapeHtml(originalLanguage)}</span>`,
     `<a href="${escapeHtml(origin.originalRoute)}">${escapeHtml(labels.originalPost)}</a>`,
     "</aside>",

@@ -7,12 +7,12 @@ import {
 } from "../../packages/contracts/src/index.ts";
 
 test("rejects an unsupported or malformed published content manifest", () => {
-  assert.equal(CONTENT_ARTIFACT_SCHEMA_VERSION, 7);
-  assert.throws(() => parsePublishedContentManifest({ provenance: { schemaVersion: 6 } }));
+  assert.equal(CONTENT_ARTIFACT_SCHEMA_VERSION, 8);
+  assert.throws(() => parsePublishedContentManifest({ provenance: { schemaVersion: 7 } }));
   assert.throws(() =>
     parsePublishedContentManifest({
       provenance: {
-        schemaVersion: 7,
+        schemaVersion: 8,
         buildMode: "preview",
         producer: "x",
         producerVersion: "0",

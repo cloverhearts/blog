@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 import { test } from "vitest";
 
 import { buildWeb } from "../../apps/blog-web/src/build.ts";
+import { renderDocument } from "../../apps/blog-web/src/lib/render-document.ts";
 import { compileContent } from "../../packages/content-compiler/src/compile.ts";
 import { buildManagedPages } from "../../packages/managed-page-compiler/src/index.ts";
 import { loadProjectConfig } from "../../packages/project-config/src/index.ts";
@@ -33,7 +34,7 @@ test("builds an empty production site with required Pages files", async () => {
 
   const index = readFileSync(resolve(repositoryRoot, "dist/index.html"), "utf8");
   assert.match(index, /<html lang="ko">/u);
-  assert.match(index, /CloverHearts Blog/u);
+  assert.match(index, /CloverHearts Labs/u);
   assert.equal(existsSync(resolve(repositoryRoot, "dist/404.html")), true);
   assert.equal(existsSync(resolve(repositoryRoot, "dist/en/index.html")), true);
   assert.equal(existsSync(resolve(repositoryRoot, "dist/ja/index.html")), true);
@@ -48,7 +49,37 @@ test("builds an empty production site with required Pages files", async () => {
   assert.match(searchPage, /<noscript>/u);
   assert.match(searchPage, /\/_assets\/app\/search.js/u);
   assert.equal(existsSync(resolve(repositoryRoot, "dist/_assets/app/search.js")), true);
+  assert.equal(existsSync(resolve(repositoryRoot, "dist/_assets/app/image-viewer.js")), true);
   assert.equal(existsSync(resolve(repositoryRoot, "dist/_assets/search/ko")), true);
   assert.equal(existsSync(resolve(repositoryRoot, "dist/_assets/search/en")), true);
   assert.equal(existsSync(resolve(repositoryRoot, "dist/_assets/search/ja")), true);
+});
+
+test("adds the localized image viewer only to post documents", () => {
+  const base = {
+    language: "ko" as const,
+    title: "테스트",
+    description: "테스트 설명",
+    siteName: "CloverHearts Labs",
+    canonicalUrl: "https://blog.cloverhearts.com/posts/test/",
+    robots: "index,follow",
+    homeHref: "/",
+    profileHref: "/profile/",
+    authorName: "CloverHearts",
+    searchIndex: "/_assets/search/ko/",
+    basePath: "",
+    primaryNavigation: [],
+    languageNavigation: [],
+    head: "",
+    body: '<article><div data-article-body><img src="/example.png" alt="예제"></div></article>',
+    footer: "",
+  };
+  const post = renderDocument({ ...base, pageKind: "post" });
+  const collection = renderDocument({ ...base, pageKind: "collection" });
+
+  assert.match(post, /<dialog class="image-viewer"[^>]*data-image-viewer/u);
+  assert.match(post, /aria-label="이미지 확대 보기"/u);
+  assert.match(post, /<script type="module" src="\/_assets\/app\/image-viewer.js">/u);
+  assert.doesNotMatch(collection, /data-image-viewer/u);
+  assert.doesNotMatch(collection, /image-viewer.js/u);
 });

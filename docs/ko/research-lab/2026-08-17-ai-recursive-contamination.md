@@ -11,6 +11,9 @@ tags:
   - "knowledge-management"
 createdAt: "2026-08-17T02:30:11+09:00"
 representativeImage: "generated-card"
+thumbnail:
+  src: "asset:/research-lab/ai-recursive-contamination/thumbnail-source.png"
+  alt: "본문에서 선택한 포스트 대표 이미지"
 draft: true
 ---
 

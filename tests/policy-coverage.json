@@ -18,7 +18,7 @@
         },
         {
           "path": "DEVELOPMENT.md",
-          "sha256": "ad826d7843259333a85d2c6d7b29a307ba7025c53d34a20bb25da4a81160c6af"
+          "sha256": "6680cc88d64bf0ee8ae0a43f3f98fb95b98022fadc7e988a9e6d7a1a7a9bea5f"
         },
         {
           "path": "tests/contracts/policy-governance.test.ts",
@@ -36,6 +36,14 @@
           "path": "tests/contracts/site-baseline.test.ts",
           "cases": [
             "keeps agent and runbook baseline instructions aligned"
+          ]
+        },
+        {
+          "path": "tests/contracts/dev-preview.test.ts",
+          "cases": [
+            "classifies blog design changes for the smallest safe preview rebuild",
+            "ignores generated and unrelated files so preview rebuilds cannot loop",
+            "injects one development-only live reload client into served HTML"
           ]
         }
       ]
@@ -84,7 +92,7 @@
         },
         {
           "path": "CONTENT_RULES.md",
-          "sha256": "a213a31c5a329da629505daffc511915d2f4424fee50f4442907ab518274b8d1"
+          "sha256": "7148b90466cd15e1bde3f2632730f760907cdc0d3d84ab52fc103f144586eae5"
         },
         {
           "path": "packages/project-config/src/content-provenance.ts",
@@ -96,7 +104,7 @@
         },
         {
           "path": "packages/contracts/src/index.ts",
-          "sha256": "b43a676a534d00eff44ee41b60f1b6a45f8a4541cdf8f9dc754718facf734391"
+          "sha256": "ab3d11419cb14c3f6a00e55c314d8c6557e8d1f137e8cc43659f5b04d408e79a"
         }
       ],
       "tests": [
@@ -118,13 +126,61 @@
         {
           "path": "tests/contracts/heading-anchors.test.ts",
           "cases": [
-            "uses authorship-disclosure content artifact schema version 7"
+            "uses authorship-disclosure content artifact schema version 8"
           ]
         },
         {
           "path": "tests/contracts/site-baseline.test.ts",
           "cases": [
             "keeps authoring asset limits aligned with release budgets"
+          ]
+        },
+        {
+          "path": "tests/contracts/embed-core.test.ts",
+          "cases": [
+            "documents the installed YouTube directive contract"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "youtube-embed-provider",
+      "sources": [
+        {
+          "path": "ARCHITECTURE.md",
+          "sha256": "aef7f4be5498d49ef791de31ece09d90f3e397cf57cf3cb473ade71e52b7316e"
+        },
+        {
+          "path": "config/embeds.yaml",
+          "sha256": "d940657d8853444fda6b60038aa623e12e63dad9bf3033c8b792c4178b0e8a51"
+        },
+        {
+          "path": "packages/embed-core/src/sanitize.ts",
+          "sha256": "d7b02a66eaac6bce4aee827f787b708f63e3ca6f60fbfd93b5556ce62aa53fe6"
+        },
+        {
+          "path": "packages/embed-core/src/execute.ts",
+          "sha256": "aef43225a19a52ab85d7eb327d1ec73148a75e87c248b40ff5e417f811dba206"
+        },
+        {
+          "path": "packages/embed-core/src/registry.ts",
+          "sha256": "23d7469e28c804a5b1e68418458dbd951731016ebbde8a08688c737682472060"
+        },
+        {
+          "path": "packages/content-compiler/src/markdown.ts",
+          "sha256": "19668142a6885c68b89b1fbf49a42cda7ee4f121af8d1150ea39676512ca5c25"
+        },
+        {
+          "path": "plugins/embeds/youtube/src/index.ts",
+          "sha256": "e235f5d164f3dd930761453bb3f01973f06dbba7588b75446ae665ca219e6a13"
+        }
+      ],
+      "tests": [
+        {
+          "path": "tests/contracts/embed-core.test.ts",
+          "cases": [
+            "renders a privacy-enhanced YouTube iframe with a static fallback",
+            "rejects malformed YouTube directives and unsafe iframe capabilities"
           ]
         }
       ]
@@ -134,7 +190,7 @@
       "sources": [
         {
           "path": "IMPLEMENTATION_SPEC.md",
-          "sha256": "ed70ffbd86b20fa8904395aed67be3e133190fdefd57b77341c5914ee4e00583"
+          "sha256": "061a3370cca76d9816a7380f324397b99122cf9929beba9e326d3778830acda1"
         },
         {
           "path": "decisions/0004-implementation-stack.md",
@@ -173,7 +229,7 @@
       "sources": [
         {
           "path": "I18N.md",
-          "sha256": "e160e6610588a361ab2a259424d193ffa760516739beead07b2a334c966db53a"
+          "sha256": "03e126570ff861f5e32ce9a03907e4a670094272ce2b41a17024ce03e462a757"
         },
         {
           "path": "decisions/0008-multilingual-publication-and-link-fallback.md",
@@ -181,7 +237,7 @@
         },
         {
           "path": "config/site.yaml",
-          "sha256": "6835d4777e73e6ad386cd29c361e6da1cd66ecfa4c2352637ed7dfb539af7a58"
+          "sha256": "64a80c430503fe4a2fb4b1ec98a52af4183f86bccfca1c8be449d083f2a8a9d1"
         },
         {
           "path": "packages/project-config/src/i18n.ts",
@@ -193,11 +249,11 @@
         },
         {
           "path": "apps/blog-web/src/i18n/translation-origin.ts",
-          "sha256": "39a550f45fb26e2e8b6136b2a13e2f1bc95b7f5b20f008acbea30c1ee84b0982"
+          "sha256": "3bfe846b9177eac2e510d857d143c055bcb87e91eb08a068ac4c1205050e2f90"
         },
         {
           "path": "apps/blog-web/src/i18n/messages.ts",
-          "sha256": "105372953fe8a2190fedffd755a2b8fbd66b051aa08f79f214d8dd43b238fe98"
+          "sha256": "46e4f59d65f51a4228dcee111d506897cfa9c1eee4130cc236e4d9f8196e0c19"
         }
       ],
       "tests": [
@@ -217,6 +273,13 @@
           ]
         },
         {
+          "path": "tests/contracts/curated-discovery.test.ts",
+          "cases": [
+            "rejects unsafe or placeholder owner contact destinations",
+            "adds a third curated container from configuration only"
+          ]
+        },
+        {
           "path": "tests/contracts/project-config.test.ts",
           "cases": [
             "loads every shared configuration file and resolves public URLs",
@@ -231,6 +294,12 @@
             "keeps Japanese supported outside the primary design review pair",
             "uses unprefixed Korean and explicit English and Japanese route trees"
           ]
+        },
+        {
+          "path": "tests/contracts/pagination-navigation.test.ts",
+          "cases": [
+            "keeps related posts in the active language before configured fallbacks"
+          ]
         }
       ]
     },
@@ -243,11 +312,11 @@
         },
         {
           "path": "DESIGN.md",
-          "sha256": "f0ded176aa25839a23c3d912e5bdad888ed34ecdc8058764fb293b81dadf0946"
+          "sha256": "e2c5f5abae3c440323a49afe556f98ceac5c6065012921c798e4e3c67514c3f7"
         },
         {
           "path": "UX_FLOW.md",
-          "sha256": "c44acb4ac4cb1503951fd3b7ff6160e747f19545bbb3096a3b6990bc0c8e9e2f"
+          "sha256": "bd5fb202c8ff273daf0cd50460738c0ce3214ee4a19a8c1dd3b2d5847a13b4bf"
         },
         {
           "path": "GITHUB_PAGES.md",
@@ -259,19 +328,23 @@
         },
         {
           "path": "config/navigation.yaml",
-          "sha256": "0f300daf8b12f6a5194365ed82b65b5f931de1c9830a6e0a8255336e3fb47fa8"
+          "sha256": "d290823606f62fa2a326063384fabe6bf9470f053ca084dbfda70d7e98446a27"
+        },
+        {
+          "path": "config/curated-collections.yaml",
+          "sha256": "e05e99c980a6fc3e01875c9acb1e6b18456cbfd56c6ae2faf7e8833d1bbcc469"
         },
         {
           "path": "packages/project-config/src/performance-budgets.ts",
           "sha256": "8d84d8bf776d7b395bc29fff6ac406c0cf6ef151d243462aff8c3f75940da418"
         },
         {
-          "path": "apps/blog-web/src/styles/classless.css",
-          "sha256": "f807274e6dc9f851d37da2985f1ba0788ed635ae7d176004d735c32f0bd73645"
+          "path": "apps/blog-web/src/styles/blog.css",
+          "sha256": "191d19085a1877617989a57c4ab39502d573cb8dc28acd7913756c29d52a31f4"
         },
         {
           "path": "apps/blog-web/src/layouts/BlogShell.astro",
-          "sha256": "46d5551ffc62bc4154db724d33391e6b2d54109f2d263df756fcc847b517c36e"
+          "sha256": "3f6eb955faf123b7d43796f3112acb0e791f31d747e66c4241d87a7bc2036e73"
         }
       ],
       "tests": [
@@ -281,7 +354,8 @@
             "defines primary exploration as localized static links",
             "defines conservative GitHub Pages Pro budgets",
             "rejects budgets that consume a Pages service ceiling",
-            "ships semantic classless CSS with resilient Pretendard fallbacks",
+            "ships named component CSS with resilient Pretendard fallbacks",
+            "keeps blog element defaults out of injected browser UI",
             "keeps the Pretendard dynamic subset within the font budget",
             "defines a static recovery path for every primary UX flow"
           ]
@@ -289,7 +363,14 @@
         {
           "path": "tests/contracts/pagination-navigation.test.ts",
           "cases": [
-            "moves Archive to the footer while keeping localized archive routes"
+            "omits footer navigation while keeping localized archive routes",
+            "renders list and featured posts as one full-card link without inline presentation styles"
+          ]
+        },
+        {
+          "path": "tests/contracts/curated-discovery.test.ts",
+          "cases": [
+            "derives curated membership, work chronology, and configuration-only extra collections"
           ]
         },
         {
@@ -330,7 +411,7 @@
       "sources": [
         {
           "path": "PUBLISHING.md",
-          "sha256": "81ad90098e65e5e5f838559e03dc6a6863daaa5ea4fa95a07afc3dff59669681"
+          "sha256": "176cd5753c35c1a502673f1451813866eb13d231a107f897ab116beeb49d824b"
         },
         {
           "path": "SEO.md",
@@ -354,6 +435,12 @@
           "path": "tests/contracts/pagination-navigation.test.ts",
           "cases": [
             "paginates home and collections by ten logical post groups"
+          ]
+        },
+        {
+          "path": "tests/contracts/curated-discovery.test.ts",
+          "cases": [
+            "rejects include and exclude of the same translation key"
           ]
         }
       ]

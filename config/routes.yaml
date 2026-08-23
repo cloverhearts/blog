@@ -1,5 +1,5 @@
 # Shared route policy. Blog design details do not belong here.
-schemaVersion: 4
+schemaVersion: 5
 trailingSlash: "always"
 paginationSegment: "page"
 # These are locale-neutral logical routes. The URL resolver leaves Korean
@@ -11,6 +11,7 @@ paths:
   tags: "/tags/"
   archive: "/archive/"
   search: "/search/"
+  explore: "/explore/"
   notFound: "/404/"
   assets: "/_assets/"
   contentAssets: "/_assets/content/"
@@ -18,6 +19,12 @@ paths:
   rss: "/rss.xml"
   sitemap: "/sitemap.xml"
   llms: "/llms.txt"
+# Curated collection routes are a dynamic map. Adding a collection that uses
+# existing selector/order/presentation vocabulary does not require a new
+# TypeScript property.
+curated:
+  work: "/work/"
+  daily: "/daily/"
 reservedPrefixes:
   - "/_assets/"
   - "/search/"

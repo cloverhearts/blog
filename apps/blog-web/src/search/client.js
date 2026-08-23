@@ -74,7 +74,7 @@ export function renderSearchResultItems(results, basePath) {
       const href = publicResultUrl(basePath, result.url ?? "/");
       const title = result.meta?.title || href;
       const excerpt = result.excerpt ?? "";
-      return `<li><a href="${escapeHtml(href)}">${escapeHtml(title)}</a>${excerpt ? `<p>${excerpt}</p>` : ""}</li>`;
+      return `<li><a class="search-result" href="${escapeHtml(href)}"><span class="search-result__icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M6.75 3.75h7.5l3 3v13.5H6.75z"/><path d="M14.25 3.75v3h3M9.5 11h5M9.5 14.5h5"/></svg></span><span class="search-result__copy"><strong>${escapeHtml(title)}</strong>${excerpt ? `<span class="search-result__excerpt">${excerpt}</span>` : ""}</span><span class="search-result__arrow" aria-hidden="true">→</span></a></li>`;
     })
     .join("");
 }
@@ -174,6 +174,87 @@ export function bindSiteSearch(root) {
   }
 }
 
-if (typeof document !== "undefined" && document.querySelector("[data-site-search]")) {
-  bindSiteSearch(document);
+/**
+ * @param {ParentNode} root
+ */
+export function bindSearchDialog(root) {
+  const dialog = root.querySelector("[data-search-dialog]");
+  const triggers = [...root.querySelectorAll("[data-search-trigger]")];
+  if (!(dialog instanceof HTMLDialogElement) || triggers.length === 0) {
+    return;
+  }
+
+  const form = dialog.querySelector("[data-search-dialog-form]");
+  const input = dialog.querySelector("#dialog-search-query");
+  const status = dialog.querySelector("[data-search-status]");
+  const list = dialog.querySelector("[data-search-results]");
+  const empty = dialog.querySelector("[data-search-empty]");
+  const hint = dialog.querySelector("[data-search-hint]");
+  const close = dialog.querySelector("[data-search-close]");
+  const indexBase = dialog.getAttribute("data-search-index") ?? "";
+  const basePath = dialog.getAttribute("data-search-base") ?? "";
+  const countTemplate = dialog.getAttribute("data-search-count") ?? "{n}";
+  /** @type {PagefindApi | undefined} */
+  let pagefind;
+  /** @type {HTMLElement | null} */
+  let lastTrigger = null;
+
+  const render = (/** @type {Awaited<ReturnType<typeof searchPagefindIndex>>} */ results) => {
+    if (list) list.innerHTML = renderSearchResultItems(results, basePath);
+    if (status) {
+      status.textContent = results.length > 0 ? formatResultCount(countTemplate, results.length) : "";
+    }
+    if (empty instanceof HTMLElement) {
+      empty.hidden = results.length > 0;
+    }
+  };
+
+  const run = async () => {
+    if (!(input instanceof HTMLInputElement) || !shouldRunSearch(input.value)) {
+      render([]);
+      if (hint instanceof HTMLElement) hint.hidden = false;
+      if (empty instanceof HTMLElement) empty.hidden = true;
+      if (status) status.textContent = "";
+      return;
+    }
+    if (hint instanceof HTMLElement) hint.hidden = true;
+    pagefind ??= await loadPagefind(indexBase);
+    render(await searchPagefindIndex(pagefind, input.value));
+  };
+
+  const open = (/** @type {HTMLElement} */ trigger) => {
+    lastTrigger = trigger;
+    dialog.showModal();
+    if (input instanceof HTMLInputElement) input.focus();
+  };
+
+  const restore = () => {
+    lastTrigger?.focus();
+    lastTrigger = null;
+  };
+
+  for (const trigger of triggers) {
+    if (!(trigger instanceof HTMLAnchorElement)) continue;
+    trigger.addEventListener("click", (event) => {
+      event.preventDefault();
+      open(trigger);
+    });
+  }
+
+  if (form instanceof HTMLFormElement) {
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      void run();
+    });
+  }
+  close?.addEventListener("click", () => dialog.close());
+  dialog.addEventListener("close", restore);
+  dialog.addEventListener("cancel", restore);
+}
+
+if (typeof document !== "undefined") {
+  if (document.querySelector("[data-site-search]")) {
+    bindSiteSearch(document);
+  }
+  bindSearchDialog(document);
 }

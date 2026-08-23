@@ -23,4 +23,7 @@ A provider plugin must not:
 - expand CSP or iframe permissions beyond values approved by `config/embeds.yaml` and project validation;
 - register itself by directory scanning or remote installation.
 
-Adding a provider later requires its package, an explicit registry entry in `config/embeds.yaml`, provider fixtures, security review, and the matching `CONTENT_RULES.md` syntax update. This directory currently contains no provider implementation.
+Adding a provider requires its package, an explicit registry entry in
+`config/embeds.yaml`, provider fixtures, security review, and the matching
+`CONTENT_RULES.md` syntax update. The reviewed `youtube/` provider is currently
+the only production implementation; other provider names remain unsupported.

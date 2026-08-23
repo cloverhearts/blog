@@ -15,7 +15,7 @@ test("loads every shared configuration file and resolves public URLs", () => {
       SITE_BASE_PATH: "",
     },
   });
-  assert.equal(config.site.identity.name, "CloverHearts Blog");
+  assert.equal(config.site.identity.name, "CloverHearts Labs");
   assert.equal(config.resolved.origin, "https://blog.cloverhearts.com");
   assert.equal(config.resolved.basePath, "");
   assert.equal(config.resolved.ga4.enabled, false);

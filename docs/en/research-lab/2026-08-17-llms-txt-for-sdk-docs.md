@@ -13,10 +13,14 @@ tags:
   - research
 createdAt: 2026-08-17T02:30:11+09:00
 representativeImage: generated-card
+thumbnail:
+  src: "asset:/research-lab/llms-txt-for-sdk-docs/thumbnail-source.png"
+  alt: "Post representative image selected from the article"
 draft: true
 ---
 
-![Temporary illustration of llms.txt documentation](https://placehold.org/1200x630/3F3F46/FAFAFA?text=llms.txt+for+SDK+Docs)
+![GNOME Terminal displaying executed commands](https://upload.wikimedia.org/wikipedia/commons/c/c5/GNOME_Terminal_3.32_screenshot.png)
+
 
 SDK documentation is designed for people. It may include a long sidebar, tabs, collapsible examples, and links spread across many pages. A person can explore the screen and restore context, while an AI may struggle to retrieve the right section consistently.
 
@@ -59,3 +63,5 @@ The proposal is a useful starting point, but the real goal is a documentation st
 ## Reference
 
 - [The /llms.txt file](https://llmstxt.org/)
+
+*Test image source: [Wikimedia Commons — GNOME Project and VulcanSphere, GPLv3+](https://commons.wikimedia.org/wiki/File:GNOME_Terminal_3.32_screenshot.png)*

@@ -7,7 +7,7 @@ complete blog presentation layer.
 
 `npm run build:web` reads a validated content artifact and writes
 `.artifacts/web/<mode>/`. The renderer emits localized home, list, taxonomy,
-search, 404, and post routes, plus social-card derivatives and the classless
+search, 404, and post routes, plus social-card derivatives and the named-component
 stylesheet. `astro.config.ts` keeps the approved Astro static boundary for
 future page-level refinement. See the repository-root
 `IMPLEMENTATION_STATUS.md` for the complete handoff matrix.
@@ -19,11 +19,12 @@ tokens and assets are implemented inside this application. A change to blog
 layout, typography, components, responsive behavior, motion, or visual assets
 must update `DESIGN.md` in the same task.
 
-`src/styles/classless.css` is the approved initial implementation. It styles
-semantic elements directly, imports the pinned local Pretendard variable
-dynamic-subset package, and uses system colors/fallbacks. `UX_FLOW.md` owns page
-and navigation order; branded classes or a component framework must not replace
-that static flow without a later approved design change.
+`src/styles/blog.css` is the approved named-component implementation. It uses
+descriptive classes for layout and presentation, keeps `data-*` attributes for
+runtime and indexing hooks, imports the pinned local Pretendard variable
+dynamic-subset package, and uses system fallbacks. Generated pages link this
+external stylesheet and do not inject component styles inline. `UX_FLOW.md`
+continues to own page and navigation order.
 
 Allowed inputs:
 

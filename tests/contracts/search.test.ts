@@ -46,7 +46,9 @@ test("renders keyboard-reachable local result links without a server request", (
     [{ url: "/posts/cpp-programming/", meta: { title: "C++" }, excerpt: "memory" }],
     "",
   );
-  assert.match(html, /<a href="\/posts\/cpp-programming\/">C\+\+<\/a>/u);
+  assert.match(html, /<a class="search-result" href="\/posts\/cpp-programming\/">[\s\S]*<strong>C\+\+<\/strong>[\s\S]*class="search-result__arrow"/u);
+  assert.match(html, /class="search-result__icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false">[\s\S]*<\/svg><\/span>/u);
+  assert.doesNotMatch(html, /<use\b|https?:\/\//u);
   assert.doesNotMatch(html, /gtag|search_term|googletagmanager/u);
 });
 
@@ -78,15 +80,21 @@ test("indexes published language-isolated HTML and keeps C++ tokens searchable",
   );
   assert.match(searchPage, /<form role="search"/u);
   assert.match(searchPage, /<label for="site-search-query">/u);
-  assert.match(searchPage, /<input id="site-search-query" name="q" type="search"/u);
+  assert.match(searchPage, /<input class="site-control site-control--field site-search__input" id="site-search-query" name="q" type="search"/u);
   assert.match(searchPage, /data-search-results/u);
   assert.match(searchPage, /data-search-empty/u);
   assert.match(searchPage, /<noscript>/u);
   assert.match(searchPage, /\/categories\//u);
   assert.match(searchPage, /content="noindex,follow"/u);
   assert.match(searchPage, /data-search-index="\/_assets\/search\/ko\/"/u);
+  assert.match(searchPage, /class="search-dialog__header"/u);
+  assert.match(searchPage, /class="search-dialog__field"/u);
+  assert.match(searchPage, /placeholder="검색어를 입력하세요"/u);
+  assert.match(searchPage, /data-search-hint/u);
+  assert.match(searchPage, /aria-labelledby="search-dialog-title"/u);
   assert.match(searchPage, /<script type="module" src="\/_assets\/app\/search.js">/u);
-  assert.doesNotMatch(searchPage, /class=/u);
+  assert.match(searchPage, /class="site-search"/u);
+  assert.doesNotMatch(searchPage, /<style(?:\s|>)|\sstyle=/u);
   const englishSearch = readFileSync(
     resolve(root, ".artifacts/web/production/site/en/search/index.html"),
     "utf8",
@@ -159,6 +167,7 @@ tags:
 tagAliases: {}
 `,
   );
+  writeFileSync(resolve(root, "config/curated-collections.yaml"), "schemaVersion: 1\ncollections: {}\n");
   writeFileSync(resolve(root, "CONTENT_RULES.md"), readFileSync(resolve(repositoryRoot, "CONTENT_RULES.md")));
   writeFileSync(resolve(root, "I18N.md"), readFileSync(resolve(repositoryRoot, "I18N.md")));
   writeFileSync(resolve(root, "DESIGN.md"), readFileSync(resolve(repositoryRoot, "DESIGN.md")));

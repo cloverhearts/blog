@@ -11,10 +11,14 @@ tags:
   - software-development
 createdAt: 2026-08-17T02:30:11+09:00
 representativeImage: generated-card
+thumbnail:
+  src: "asset:/research-lab/building-ai-skills/thumbnail-source.png"
+  alt: "本文から選択した記事の代表画像"
 draft: true
 ---
 
-![AI Skill設計を表す仮画像](https://placehold.org/1200x630/334155/F1F5F9?text=Building+AI+Skills)
+![ターミナル出力が表示されたVisual Studio Codeの画面](https://upload.wikimedia.org/wikipedia/commons/9/91/VS_Code_Screenshot.png)
+
 
 最初は、よく使う依頼をプロンプトとして保存すれば十分だと思っていました。しかし繰り返しの作業をAI Skillにすると、良い一文より重要なものが多いと分かりました。
 
@@ -49,3 +53,5 @@ AIが指示を破ったように見えても、指示に境界がなかった場
 短いプロンプトはコピーしやすくても、状況が変わると再説明が必要です。入力、手順、出力、検証が分かれていれば、修正箇所も見つけやすくなります。
 
 AI Skillを作ることはAIに仕事を頼む技術だけではありません。自分の作業を小さなシステムとして説明することです。自動化に加え、仕事の理解が明確になることも大きな効果です。
+
+*テスト画像の出典：[Wikimedia Commons — Cycling2, CC0](https://commons.wikimedia.org/wiki/File:VS_Code_Screenshot.png)*

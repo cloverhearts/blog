@@ -4,6 +4,1414 @@ This file records non-routine changes to the blog project. Entries are ordered
 newest first and use the `Asia/Seoul` timezone. Routine post authoring is omitted
 unless it changes shared content behavior, routes, schemas, or project rules.
 
+## 2026-08-23T22:45:14+09:00 — Blog implementation checkpoint prepared
+
+- Change type: Source-control checkpoint and cumulative implementation record.
+- Reason: The owner requested that the completed blog design, responsive UX,
+  localized content presentation, discovery, search, media, managed profile,
+  development-preview, and validation work be recorded together before commit
+  and push.
+- Scope: Normal-blog presentation and routes; Korean, English, and Japanese
+  post metadata; representative media; curated collections; search and image
+  enhancements; YouTube embed support; managed profile pages; content and
+  runtime contracts; development workflow; documentation; tests and policy
+  traceability. Transient files under `outputs/` are excluded from the source
+  checkpoint.
+- Result: The repository contains the current serviceable static-blog
+  implementation and the detailed chronological entries below document each
+  design and behavior decision included in this checkpoint.
+- Validation: The latest cumulative run passed 93 of 93 contract tests across
+  20 files, TypeScript checking, configuration and embed validation, preview
+  content/web builds, production build, GitHub Pages verification, browser
+  layout inspection, and `git diff --check`.
+- Compatibility / follow-up: Generated `.artifacts/` and `dist/` remain outside
+  source control. The local `outputs/` working directory is retained but is not
+  part of this checkpoint; canonical post sources and assets remain under
+  `docs/` and `assets/content/`.
+
+## 2026-08-23T22:28:51+09:00 — Active navigation underline raised
+
+- Change type: Owner-requested selected-navigation visual refinement,
+  design-contract update, and regression coverage.
+- Reason: The active underline was attached to the bottom edge of the full
+  interaction box, leaving an approximately `13.4px` visual gap below the menu
+  label even after compact-row padding was reduced.
+- Scope: Normal-blog primary-navigation selected indicator, compact navigation
+  inset, `DESIGN.md`, site-baseline assertions, and policy hashes. Link sizes,
+  alignment, order, destinations, and language navigation are unchanged.
+- Result: The selected indicator is now an independent `1px` pseudo-element
+  inset `.5rem` from the interaction box bottom. It sits approximately `4.9px`
+  below the rendered label while preserving the shared `44px`/`48px` link
+  heights and centered label baseline.
+- Validation: `npm test` passed 93 of 93 cases across 20 files; `npm run
+  typecheck`, `npm run validate:config`, and `npm run validate:embeds` passed;
+  preview content/web builds passed; production build and GitHub Pages
+  verification passed. In-app browser inspection of `/work/` measured the
+  selected line at a `4.9px` visual gap with zero horizontal overflow.
+- Compatibility / follow-up: Keyboard focus, `aria-current`, touch targets,
+  compact scrolling, and browser-injected-control isolation remain unchanged.
+
+## 2026-08-23T11:59:33+09:00 — Compact header first row centered
+
+- Change type: Owner-reported responsive header correction, design-contract
+  refinement, and regression coverage.
+- Reason: Although the wordmark and language controls had matching link-box
+  centers, the grid's shared row gap sat between the first and second header
+  rows. This left the first-row controls centered at `22px` inside a visibly
+  `64px`-high region whose actual center was `32px`.
+- Scope: Normal-blog two-row header grid at the `64rem` breakpoint,
+  `DESIGN.md`, site-baseline assertions, and policy hashes. Desktop composition,
+  navigation semantics, routes, and labels are unchanged.
+- Result: The compact header now declares an explicit `64px` first row and no
+  inter-row grid gap. The wordmark and language selector remain `44px` controls
+  but are both centered at `32px`; the primary row follows directly beneath.
+- Validation: `npm test` passed 93 of 93 cases across 20 files; `npm run
+  typecheck`, `npm run validate:config`, and `npm run validate:embeds` passed;
+  preview content/web builds passed; production build and GitHub Pages
+  verification passed. In-app browser inspection of `/explore/` at
+  `876 × 905` measured zero offset for both controls from the first-row center
+  and zero horizontal overflow.
+- Compatibility / follow-up: The selected-menu underline, compact horizontal
+  navigation, touch target sizes, DOM order, and CSS isolation from injected
+  browser controls remain unchanged.
+
+## 2026-08-23T11:55:16+09:00 — Selected navigation alignment stabilized
+
+- Change type: Owner-requested responsive navigation alignment correction,
+  design-contract update, and regression strengthening.
+- Reason: The selected primary item used different block padding from adjacent
+  links, so applying the active underline changed its height and visual
+  baseline, especially in the compact second navigation row.
+- Scope: Normal-blog primary and language navigation link boxes, compact header
+  navigation, `DESIGN.md`, site-baseline assertions, and policy hashes. Link
+  order, labels, routes, selection semantics, and browser annotation isolation
+  are unchanged.
+- Result: Every primary and language link now uses the same centered `44px`
+  interaction row and reserved transparent underline slot. The current primary
+  link changes only the underline color; compact primary links likewise share
+  one `48px` row without a selected-state padding override.
+- Validation: `npm test` passed 93 of 93 cases across 20 files; `npm run
+  typecheck`, `npm run validate:config`, and `npm run validate:embeds` passed;
+  preview content/web builds passed; production build and GitHub Pages
+  verification passed. In the in-app browser at `876 × 905`, all five primary
+  links shared a `48px` height and identical center, all three language links
+  shared a `44px` height and identical center, and horizontal overflow was
+  zero.
+- Compatibility / follow-up: Keyboard focus, active-page semantics, compact
+  horizontal scrolling, and the named CSS boundary for browser-injected
+  controls remain intact.
+
+## 2026-08-23T11:50:51+09:00 — Home vertical rhythm and header alignment refined
+
+- Change type: Owner-requested responsive layout correction, home spacing
+  refinement, design-contract update, and regression coverage.
+- Reason: At the tablet-width home layout, the wordmark and language selector
+  did not share a visible vertical center, content-box sizing made hero padding
+  increase its declared minimum height, and the stacked main/footer spacing
+  produced an oversized blank transition.
+- Scope: Named normal-blog header, home hero, home main, and footer containers;
+  `DESIGN.md`; site-baseline assertions; policy hashes. Content, routes,
+  navigation order, browser-injected controls, and non-home footer spacing are
+  unchanged.
+- Result: The wordmark and language selector now share a `44px` alignment row;
+  named width- and height-bearing containers use explicit `border-box` sizing;
+  the home hero keeps its intended minimum height without adding padding on top
+  of it; and the final home-to-footer transition uses compact responsive
+  spacing. At `876 × 905`, both header centers matched exactly, horizontal
+  overflow was zero, the hero measured approximately `424px`, and the
+  main-to-footer gap measured approximately `53px`.
+- Validation: `npm test` passed 93 of 93 cases across 20 files; `npm run
+  typecheck`, `npm run validate:config`, and `npm run validate:embeds` passed;
+  preview content/web builds passed; production build and GitHub Pages
+  verification passed. The in-app browser rendered the Korean home at
+  `876 × 905` with the expected alignment and spacing, and the temporary
+  viewport was reset afterward.
+- Compatibility / follow-up: The fix intentionally avoids restoring a global
+  universal box-model selector, preserving the isolation boundary for ChatGPT
+  Desktop annotation controls. Compact navigation remains a second scrollable
+  row and all semantic link order is unchanged.
+
+## 2026-08-23T11:18:07+09:00 — Annotation control isolation completed
+
+- Change type: Follow-up compatibility correction, named-control markup
+  refinement, design-contract clarification, and regression strengthening.
+- Reason: The previous root-scoping fix remained insufficient because ChatGPT
+  Desktop injects annotation controls inside the blog header or main surface;
+  descendant `button`, `input`, `summary`, and universal selectors therefore
+  still matched those controls.
+- Scope: Normal-blog search, TOC, analytics-consent, search-dialog, and
+  image-viewer control classes; foundational control and motion CSS; responsive
+  search selectors; `DESIGN.md`; search/site-baseline tests; policy hashes.
+- Result: Blog-owned controls now opt into presentation with explicit
+  `site-control`, `site-control--button`, `site-control--field`, and
+  `site-control--summary` classes. No generic or descendant-universal rule sets
+  their size, padding, surface, box model, hover motion, or reduced-motion state,
+  so controls injected within blog surfaces retain their own UI styling.
+- Validation: `npm run validate:config`, `npm run validate:embeds`, and
+  `npm run typecheck` passed; preview content/web builds passed; the final
+  `npm test` rerun passed 93 of 93 cases across 20 files after one preceding
+  transient timeout in the unchanged pagination fixture; production build and
+  GitHub Pages verification passed. The in-app browser rendered `/en/work/`
+  correctly at its normal width and at a temporary `485 × 905` compact
+  viewport, which was reset afterward.
+- Compatibility / follow-up: Existing named search, TOC, consent, and image
+  controls retain their behavior and minimum target sizes. ChatGPT's annotation
+  implementation remains external, so local coverage prevents matching its
+  anonymous controls rather than asserting private extension markup.
+
+## 2026-08-23T11:10:19+09:00 — Blog CSS isolated from browser annotations
+
+- Change type: Owner-reported UI compatibility fix, embed fallback presentation
+  refinement, design/content contract update, and regression coverage.
+- Reason: Broad element and universal selectors were styling ChatGPT Desktop's
+  injected annotation controls, and the working YouTube player duplicated its
+  canonical link immediately beneath the frame.
+- Scope: Normal-blog foundational CSS scope; YouTube embed fallback placement;
+  `DESIGN.md`, `CONTENT_RULES.md`, `ARCHITECTURE.md`, implementation status,
+  site-baseline/embed contract tests, and policy traceability. Post prose,
+  routes, provider permissions, and publication state are unchanged.
+- Result: Element defaults, control resets, focus, box-sizing, hover, and reduced
+  motion rules now apply only within blog-owned surfaces rather than arbitrary
+  browser-injected UI. The YouTube canonical link remains in static HTML inside
+  `noscript` for no-JavaScript access but no longer appears below a working
+  player.
+- Validation: `npm run validate:config`, `npm run validate:embeds`, and
+  `npm run typecheck` passed; `npm test` passed 93 of 93 cases across 20 files,
+  including `keeps blog element defaults out of injected browser UI` and the
+  updated `renders a privacy-enhanced YouTube iframe with a static fallback`;
+  preview content/web builds passed; `SITE_ORIGIN=https://blog.cloverhearts.com
+  npm run build` and the matching `npm run verify:pages` passed. The in-app
+  browser snapshot retained the iframe and no longer exposed the duplicate
+  visible link.
+- Compatibility / follow-up: The no-JavaScript fallback, iframe security
+  declaration, responsive player, blog focus styles, and reduced-motion behavior
+  remain intact. ChatGPT's annotation chrome is external to the page and cannot
+  be contract-tested directly, so the regression test enforces the local
+  isolation boundary that prevents the observed collision.
+
+## 2026-08-23T10:47:24+09:00 — Privacy-enhanced YouTube preview enabled
+
+- Change type: Owner-requested draft-content embed, first reviewed provider
+  implementation, provider-neutral iframe hardening, policy/configuration
+  update, implementation-status update, and regression coverage.
+- Reason: The owner wanted to inspect how one supplied YouTube video appears in
+  the currently viewed draft post without committing the copied raw iframe or
+  its tracking query parameter.
+- Scope: The Korean, English, and Japanese draft variants of
+  `ai-changes-developer-work`; the local `youtube` provider package; explicit
+  embed registry; embed-core safe iframe/origin/permission validation;
+  content-compiler sanitized embed insertion; provider documentation,
+  `CONTENT_RULES.md`, `ARCHITECTURE.md`, `IMPLEMENTATION_STATUS.md`, package
+  workspace metadata, and policy traceability. No post was published.
+- Result: `::youtube` accepts only an 11-character ID plus localized accessible
+  title and renders a lazy `youtube-nocookie.com` 16:9 iframe with sandbox,
+  strict referrer policy, declared minimum permissions, and a durable normal
+  YouTube link fallback. Unknown attributes, malformed IDs, undeclared iframe
+  permissions, unsafe markup, and origin-prefix tricks are rejected. The
+  supplied `si` parameter is not stored.
+- Validation: `npm run validate:config` and `npm run validate:embeds` passed
+  with one enabled provider; focused embed-core and policy-governance suites
+  passed 6 of 6 cases; `npm run typecheck` passed; `npm test` passed 92 of 92
+  cases across 20 files; preview content and web builds emitted the iframe and
+  fallback; `SITE_ORIGIN=https://blog.cloverhearts.com npm run build` and
+  `SITE_ORIGIN=https://blog.cloverhearts.com npm run verify:pages` passed. The
+  in-app browser loaded the responsive player, exposed its accessible controls,
+  and retained the fallback link beneath it.
+- Compatibility / follow-up: All three edited variants remain `draft: true`,
+  so the experiment is excluded from production discovery and release output.
+  Loading the visible player makes a request to YouTube's privacy-enhanced
+  origin; it is not represented as local-only or consent-gated. Other providers
+  remain disabled until separately reviewed.
+
+## 2026-08-22T22:16:46+09:00 — Image viewer surface and caption refined
+
+- Change type: Owner-directed image-viewer presentation refinement, design
+  contract update, CSS regression coverage, and governed policy coverage.
+- Reason: The enlarged image's surrounding white panel obscured the page
+  context, while its caption sat too far below the image and lacked sufficient
+  local contrast.
+- Scope: Normal-blog image-viewer dialog surface, figure flow, image height,
+  caption spacing and surface, `DESIGN.md`, CSS contract assertions, and
+  governed source hashes. Source images, article content, routes, and managed
+  pages are unchanged.
+- Result: The dialog panel is transparent with no panel border or shadow while
+  retaining the blurred `30%` white modal backdrop. The figure now groups the
+  image and caption vertically; the caption sits `.75rem` below the image with
+  `1rem` padding, stable dark text, and a `50%` white background. The image
+  height budget reserves space for the caption inside the viewport.
+- Validation: Focused site-baseline and policy-governance suites passed 12 of 12
+  cases; `npm run typecheck` passed; `npm test` passed 89 of 89 cases across 20
+  files; `SITE_ORIGIN=https://blog.cloverhearts.com npm run build` and
+  `SITE_ORIGIN=https://blog.cloverhearts.com npm run verify:pages` passed. The
+  live-rebuilt in-app preview was opened, and the transparent panel, adjacent
+  caption, close control, and blurred background rendered together.
+- Compatibility / follow-up: Native Escape dismissal, focus restoration,
+  linked-image behavior, compact dialog sizing, and no-JavaScript article media
+  remain compatible.
+
+## 2026-08-22T22:09:54+09:00 — Post header measures aligned to content
+
+- Change type: Owner-directed post-header layout refinement, named-component
+  markup update, design contract update, CSS regression coverage, and governed
+  policy coverage.
+- Reason: The title needed to use the full post-header width with clearer
+  vertical separation, while the supporting description needed to align with
+  the article body's reading measure.
+- Scope: Normal-blog post-header title and description measures, vertical title
+  spacing, description class naming, `DESIGN.md`, CSS contract assertions, and
+  governed source hashes. Post content, routes, SEO, and managed pages are
+  unchanged.
+- Result: Wide post titles now use the complete `47.5rem` header measure rather
+  than an `18ch` cap, with explicit `.875rem` top and `1.375rem` bottom margins
+  and `.125rem` block padding. Supporting descriptions now use the same `40rem`
+  reading measure as article content through the named
+  `post-header__description` component class.
+- Validation: Focused site-baseline and policy-governance suites passed 12 of 12
+  cases; `npm run typecheck` passed; `npm test` passed 89 of 89 cases across 20
+  files; `SITE_ORIGIN=https://blog.cloverhearts.com npm run build` and
+  `SITE_ORIGIN=https://blog.cloverhearts.com npm run verify:pages` passed. The
+  restarted in-app preview rendered the updated Korean post title and
+  description in the expected document structure.
+- Compatibility / follow-up: Compact title sizing, metadata, tags, article
+  typography, image enlargement, print output, and no-JavaScript reading remain
+  compatible.
+
+## 2026-08-22T22:03:51+09:00 — Post title scale reduced again
+
+- Change type: Owner-directed post-title scale refinement, responsive design
+  contract update, CSS regression coverage, and governed policy coverage.
+- Reason: The post title still appeared too prominent after the first size
+  reduction and needed one additional visual step down.
+- Scope: Normal-blog wide and compact post-title sizes, `DESIGN.md`, CSS
+  contract assertions, and governed source hashes. Description sizing, the
+  `18ch` measure, content, routes, SEO, and managed pages are unchanged.
+- Result: Wide titles now scale from `34px` to `48px` using a `3.8vw` fluid
+  value, which resolves near `41px` at the reviewed desktop width. Compact
+  titles use `30px`.
+- Validation: Focused site-baseline and policy-governance suites passed 12 of 12
+  cases; `npm run typecheck` passed; `npm test` passed 89 of 89 cases across 20
+  files; `SITE_ORIGIN=https://blog.cloverhearts.com npm run build` and
+  `SITE_ORIGIN=https://blog.cloverhearts.com npm run verify:pages` passed. The
+  restarted in-app preview rendered the updated post title.
+- Compatibility / follow-up: Title wrapping width, description, metadata,
+  article typography, image enlargement, print output, and no-JavaScript
+  reading remain compatible.
+
+## 2026-08-22T21:51:26+09:00 — Post header type scale reduced
+
+- Change type: Owner-directed post-header typography refinement, responsive
+  design contract update, CSS regression coverage, and governed policy coverage.
+- Reason: The post title and supporting description remained visually too large
+  after widening the title measure.
+- Scope: Normal-blog post-title responsive scale, description size/leading,
+  compact title size, `DESIGN.md`, CSS contract assertions, and governed source
+  hashes. The `18ch` title measure, post content, routes, SEO, and managed pages
+  are unchanged.
+- Result: Wide title sizing now scales from `36px` to `52px` instead of roughly
+  `38px` to `58px`; compact titles use `32px` instead of `34px`. The description
+  now uses `16px / 1.7` instead of `17px / 1.75`, preserving a clear subordinate
+  relationship and the wider natural wrapping measure.
+- Validation: Focused site-baseline and policy-governance suites passed 12 of 12
+  cases; `npm run typecheck` passed; `npm test` passed 89 of 89 cases across 20
+  files; `SITE_ORIGIN=https://blog.cloverhearts.com npm run build` and
+  `SITE_ORIGIN=https://blog.cloverhearts.com npm run verify:pages` passed. The
+  restarted preview rendered one post title and one supporting description.
+- Compatibility / follow-up: Header metadata, tags, mobile width, article
+  typography, image enlargement, print output, and no-JavaScript reading remain
+  compatible.
+
+## 2026-08-22T21:03:36+09:00 — Post title measure widened
+
+- Change type: Owner-directed post-header typography refinement, design
+  contract update, CSS regression coverage, and governed policy coverage.
+- Reason: Long Korean post titles wrapped within an unnecessarily narrow
+  measure and needed slightly more horizontal expression space.
+- Scope: Normal-blog wide post-title maximum measure, `DESIGN.md`, CSS contract
+  assertion, and governed source hashes. Mobile title width, title size/weight,
+  content, routes, SEO, and managed pages are unchanged.
+- Result: Wide post titles now use an `18ch` maximum instead of `15ch`, producing
+  fewer and more natural Korean line breaks while compact layouts continue to
+  use the available width.
+- Validation: Focused site-baseline and policy-governance suites passed 12 of 12
+  cases; `npm run typecheck` passed; `npm test` passed 89 of 89 cases across 20
+  files; `SITE_ORIGIN=https://blog.cloverhearts.com npm run build` and
+  `SITE_ORIGIN=https://blog.cloverhearts.com npm run verify:pages` passed. The
+  restarted preview rendered one post title, and its served stylesheet exposed
+  `18ch` on wide screens with the existing `100%` compact override.
+- Compatibility / follow-up: Mobile wrapping, header metadata, breadcrumbs,
+  article measure, print output, and no-JavaScript reading remain compatible.
+
+## 2026-08-22T20:53:40+09:00 — Image viewer backdrop lightened
+
+- Change type: Owner-directed modal presentation refinement, design contract
+  update, CSS regression coverage, and governed policy coverage.
+- Reason: The article image enlargement needed a lighter overlay that better
+  preserves the blog's white visual system.
+- Scope: Normal-blog image-viewer backdrop color/opacity, `DESIGN.md`, CSS
+  contract assertion, and governed source hashes. Dialog behavior, images,
+  content, routes, search, SEO, and managed pages are unchanged.
+- Result: The previous dark overlay is replaced by a white backdrop at `30%`
+  opacity while retaining the existing `.5rem` blur, native modal containment,
+  close control, and Escape behavior.
+- Validation: Focused site-baseline and policy-governance suites passed 12 of 12
+  cases; `npm run typecheck` passed; `npm test` passed 89 of 89 cases across 20
+  files; `SITE_ORIGIN=https://blog.cloverhearts.com npm run build` and
+  `SITE_ORIGIN=https://blog.cloverhearts.com npm run verify:pages` passed. In
+  the restarted in-app preview, the article image opened one modal and the
+  close control returned the count to zero.
+- Compatibility / follow-up: Image enlargement interaction, focus restoration,
+  static media, print output, dark theme, and no-JavaScript reading remain
+  compatible.
+
+## 2026-08-22T20:33:10+09:00 — Spacious journal typography selected
+
+- Change type: Owner-selected post typography refinement, responsive design
+  contract update, CSS regression coverage, and governed policy coverage.
+- Reason: The owner selected concept 03 “spacious journal” from five Pretendard
+  hierarchy previews to give Korean long-form posts a calmer reading rhythm.
+- Scope: Normal-blog reading measure, article body size/leading/tracking,
+  paragraph rhythm, H2/H3 scale and spacing, compact prose treatment,
+  `DESIGN.md`, CSS contract assertions, and governed source hashes. Post source,
+  metadata, media behavior, routes, search, SEO, and managed pages are unchanged.
+- Result: Wide articles now use a `40rem` measure with `18px / 1.82` prose,
+  `-.006em` tracking, and `1.55em` block separation. H2 uses `30px / 1.38` at
+  weight `600` with more section space, H3 uses `23px / 1.4`, and compact prose
+  uses `17px / 1.78`. Header metadata follows the same narrowed measure.
+- Validation: Focused site-baseline and policy-governance suites passed 12 of 12
+  cases; `npm run typecheck` passed; `npm test` passed 89 of 89 cases across 20
+  files; `SITE_ORIGIN=https://blog.cloverhearts.com npm run build` and
+  `SITE_ORIGIN=https://blog.cloverhearts.com npm run verify:pages` passed. The
+  restarted local preview rendered one article, four H2 sections, and one
+  metadata row, and its served stylesheet contained every selected wide and
+  compact typography token.
+- Compatibility / follow-up: Article HTML, image enlargement, code, tables,
+  print output, responsive rail collapse, and no-JavaScript reading remain
+  compatible.
+
+## 2026-08-22T19:47:23+09:00 — Post metadata and image viewing refined
+
+- Change type: Owner-directed post layout and progressive-enhancement change,
+  localized interaction copy, design/UX/i18n contract updates, regression
+  coverage, governed policy coverage, and preview-only typography exploration.
+- Reason: Wide post-header metadata wrapped despite having enough reading width,
+  article screenshots could not be inspected at a larger size, and the owner
+  requested five Pretendard hierarchy concepts before choosing a body redesign.
+- Scope: Normal-blog post metadata sizing, post-only image-viewer dialog and
+  client enhancement, localized labels, asset copying, responsive/print CSS,
+  `DESIGN.md`, `UX_FLOW.md`, `I18N.md`, renderer/CSS/i18n/pipeline tests, policy
+  hashes, and five uncommitted design-preview images. Post source, media assets,
+  routes, search, SEO, and managed pages are unchanged.
+- Result: Wide metadata occupies the same `44rem` measure as the article and
+  stays on one line while compact layouts may wrap. Unlinked article images now
+  open by pointer, Enter, or Space in a large native dialog with a blurred
+  backdrop, contained media, localized top-right ESC/close control, and focus
+  restoration; linked images and no-JavaScript reading remain unchanged. Five
+  labeled Pretendard concepts compare balanced editorial, compact technical,
+  spacious journal, documentation grid, and focused reading hierarchies; none
+  has been applied pending owner selection.
+- Validation: Focused site-baseline, i18n, pipeline, and policy-governance suites
+  passed 24 of 24 cases after replacing an invalid empty-production fixture
+  assumption with a renderer boundary test; `npm run typecheck` passed; `npm
+  test` passed 89 of 89 cases across 20 files;
+  `SITE_ORIGIN=https://blog.cloverhearts.com npm run build` and
+  `SITE_ORIGIN=https://blog.cloverhearts.com npm run verify:pages` passed.
+  In-app browser review opened the first article image in one native modal,
+  found one close control, and confirmed the dialog closed to zero open modals.
+- Compatibility / follow-up: Static article media, authored image links,
+  localized routes, compact wrapping, print output, and reduced-motion behavior
+  remain compatible. A selected typography concept still requires a separate
+  owner-directed CSS application and visual review.
+
+## 2026-08-22T19:29:40+09:00 — Post filter link affordance clarified
+
+- Change type: Owner-directed interaction hierarchy refinement, design contract
+  update, CSS regression coverage, and governed policy coverage.
+- Reason: Category and tag group labels were visually too similar to their
+  selectable links, so the interactive filter targets were difficult to scan.
+- Scope: Normal-blog post-filter link opacity states, `DESIGN.md`, CSS contract
+  assertions, and governed source hashes. Filter labels, taxonomy data, routes,
+  selection behavior, search, SEO, and managed pages are unchanged.
+- Result: Category and tag labels remain at full opacity. Selectable links rest
+  at `50%`, return to `100%` on hover or keyboard focus, and retain the shared
+  `68%` pressed-state feedback.
+- Validation: Focused site-baseline and policy-governance suites passed 12 of 12
+  cases; `npm run typecheck` passed; `npm test` passed 88 of 88 cases across 20
+  files; `SITE_ORIGIN=https://blog.cloverhearts.com npm run build` and
+  `SITE_ORIGIN=https://blog.cloverhearts.com npm run verify:pages` passed. The
+  restarted local preview stylesheet contains the `50%`, `100%`, and `68%`
+  filter-link states. An initial production build without the required
+  `SITE_ORIGIN` was rejected as designed before the configured build passed.
+- Compatibility / follow-up: Static HTML, no-JavaScript navigation, keyboard
+  focus visibility, filter URLs, and compact layouts remain compatible.
+
+## 2026-08-22T19:26:05+09:00 — Visible date and time formats standardized
+
+- Change type: Owner-directed timestamp presentation change, locale/design
+  contract update, renderer regression coverage, and governed policy coverage.
+- Reason: Curated collection evidence exposed raw ISO timestamps while other
+  views showed inconsistent date-only punctuation, making time metadata
+  difficult to scan.
+- Scope: Normal-blog visible timestamp and work-period formatter, `DESIGN.md`,
+  `I18N.md`, curated/pagination/i18n contract assertions, and governed source
+  hashes. Source metadata, ISO offsets, ordering, structured data, routes, SEO,
+  and managed pages are unchanged.
+- Result: Full timestamps display as `YYYY. MM. DD HH:mm`, date-only values as
+  `YYYY. MM. DD`, and year-month values as `YYYY. MM` in every supported
+  language. `<time datetime>` and structured data retain their validated ISO
+  8601 source values, and partial dates never receive invented time values.
+- Validation: Focused curated-discovery, pagination/navigation, i18n, and policy
+  governance suites passed 19 of 19 cases; `npm run typecheck` passed; `npm
+  test` passed 88 of 88 cases across 20 files;
+  `SITE_ORIGIN=https://blog.cloverhearts.com npm run build`,
+  `SITE_ORIGIN=https://blog.cloverhearts.com npm run verify:pages`, and local
+  preview inspection passed. The live Work route displays `2026. 08. 17 02:30`
+  while preserving `2026-08-17T02:30:11+09:00` in each `datetime` attribute.
+- Compatibility / follow-up: Chronological sorting, source offsets, feed and
+  structured-data dates, static HTML, and `CONTENT_RULES.md` remain compatible.
+
+## 2026-08-22T19:18:53+09:00 — Explore page hierarchy reorganized
+
+- Change type: Owner-directed discovery-page hierarchy redesign, renderer and
+  responsive CSS enhancement, design contract update, regression coverage, and
+  governed policy coverage.
+- Reason: The Explore introduction, curated collections, categories, and tags
+  had weak separation and nearly identical typographic weight, making the page
+  difficult to scan as a discovery hub.
+- Scope: Normal-blog Explore renderer classes and link grouping, introduction
+  divider, curated-card and taxonomy-row CSS, compact stacking, `DESIGN.md`,
+  curated/CSS contract assertions, and governed source hashes. Collection and
+  taxonomy data, routes, counts, SEO, search, and managed pages are unchanged.
+- Result: A full-width rule now separates the introduction from content.
+  Curated collections render as two full-link cards with post count, dark title,
+  muted description, green top rule, and arrow. Categories and tags occupy two
+  separately ruled columns with dark labels and tertiary localized counts. All
+  discovery groups stack to one column on compact screens.
+- Validation: Focused curated-discovery, CSS, and policy-governance suites
+  passed 16 of 16 cases; `npm run typecheck` passed; `npm test` passed 88 of 88
+  cases across 20 files; `SITE_ORIGIN=https://blog.cloverhearts.com npm run
+  build`, `SITE_ORIGIN=https://blog.cloverhearts.com npm run verify:pages`, and
+  browser review passed. At 1090×905, the introduction had a 1px divider, two
+  497.5×192px curated cards, two taxonomy columns, and distinct dark/muted/green
+  text roles. At 390×844, both card and taxonomy grids resolved to one 335px
+  column with no horizontal overflow.
+- Compatibility / follow-up: Static full-row links, localized counts,
+  keyboard focus, reduced-motion behavior, and `CONTENT_RULES.md` remain
+  compatible.
+
+## 2026-08-22T19:14:00+09:00 — Search result document icon repaired
+
+- Change type: Owner-directed search-result visual repair, design contract
+  update, search/CSS regression coverage, and governed policy coverage.
+- Reason: The CSS-only empty rectangle used as a document mark rendered like a
+  broken or incomplete icon in live search results.
+- Scope: Local search-result rendering, document-icon CSS, `DESIGN.md`, search
+  and CSS contract assertions, and governed source hashes. Search indexing,
+  queries, result ranking, routes, analytics, and managed pages are unchanged.
+- Result: Every result now includes a self-contained, decorative inline SVG
+  document icon with a fixed 24×24 view box, folded corner, text lines, and
+  current-color strokes. It has no icon-font, external sprite, or network
+  dependency.
+- Validation: Focused search, CSS, and policy-governance suites passed 17 of 17
+  cases; `npm run typecheck` passed; `npm test` passed 88 of 88 cases across 20
+  files; `SITE_ORIGIN=https://blog.cloverhearts.com npm run build`,
+  `SITE_ORIGIN=https://blog.cloverhearts.com npm run verify:pages`, and browser
+  review passed. A live “업무” search rendered two 40×40 icon containers, each
+  with one 22×22 SVG, a 24×24 view box, 1.5px green stroke, and no horizontal
+  overflow.
+- Compatibility / follow-up: Full-row result links, accessible hidden
+  decoration, local-only Pagefind behavior, static search fallback, and
+  `CONTENT_RULES.md` remain compatible.
+
+## 2026-08-22T19:11:02+09:00 — Pagination controls aligned horizontally
+
+- Change type: Owner-directed responsive pagination refinement, design contract
+  update, CSS regression coverage, and governed policy coverage.
+- Reason: The generated pagination uses previous, numbered, and next sibling
+  containers, but only the unused list-form selector had horizontal layout,
+  causing desktop controls to stack vertically.
+- Scope: Normal-blog pagination container CSS, `DESIGN.md`, CSS contract
+  assertions, and governed source hashes. Pager markup, routes, publication
+  behavior, content, SEO, localization, and managed pages are unchanged.
+- Result: Previous, numbered, and next controls now share one centered flex row
+  on desktop and may wrap in semantic order when compact width requires it.
+- Validation: Focused CSS, pagination/navigation, and policy-governance suites
+  passed 16 of 16 cases; `npm run typecheck` passed; `npm test` passed 88 of 88
+  cases across 20 files; `SITE_ORIGIN=https://blog.cloverhearts.com npm run
+  build`, `SITE_ORIGIN=https://blog.cloverhearts.com npm run verify:pages`, and
+  browser review passed. At 1090×905, the numbered and Next containers shared
+  the same top coordinate in a 43.44px-high row. At 390×844, the pager remained
+  within its 335px content width with no horizontal overflow.
+- Compatibility / follow-up: Static links, current-page semantics, keyboard
+  focus, responsive wrapping, and `CONTENT_RULES.md` remain compatible.
+
+## 2026-08-22T19:08:26+09:00 — Listing geometry and navigation alignment unified
+
+- Change type: Owner-directed navigation, filter, and collection-list layout
+  refinement, design contract update, CSS regression coverage, and governed
+  policy coverage.
+- Reason: The active menu underline sat too far below its label, filter group
+  labels and options did not share a visual baseline, and non-home listing
+  thumbnails were smaller than the established Home list treatment.
+- Scope: Normal-blog primary-navigation current state, category/tag filter
+  alignment, shared post-list row and responsive thumbnail CSS, `DESIGN.md`,
+  CSS contract assertions, and governed source hashes. Markup, content, routes,
+  localization, SEO, and managed pages are unchanged.
+- Result: The active underline now sits `.2rem` below its label. Filter labels
+  and options use the same 18px computed line box and top position. Every
+  desktop post list now uses a 35%-wide thumbnail that fills the 240px row;
+  mobile lists place the same image below the copy at 16:9.
+- Validation: Focused CSS and policy-governance tests passed 12 of 12 cases;
+  `npm run typecheck` passed; `npm test` passed 88 of 88 cases across 20 files;
+  `SITE_ORIGIN=https://blog.cloverhearts.com npm run build`,
+  `SITE_ORIGIN=https://blog.cloverhearts.com npm run verify:pages`, and browser
+  review passed. At 1090×905, Home and All Posts both measured 240px rows with
+  35%-wide, full-height images; the current underline gap was 3.2px and filter
+  text shared the same baseline. At 390×844, images were static 16:9 blocks and
+  no horizontal overflow occurred.
+- Compatibility / follow-up: Full-card links, resting/hover opacity, mobile
+  stacking, static HTML, reduced-motion behavior, and `CONTENT_RULES.md` remain
+  compatible.
+
+## 2026-08-22T18:56:56+09:00 — Footer copyright line removed
+
+- Change type: Owner-directed footer simplification, design contract update,
+  renderer regression coverage, and governed policy coverage.
+- Reason: The standalone `© CloverHearts` line was redundant beneath the site
+  identity and localized description.
+- Scope: Normal-blog footer renderer, `DESIGN.md`, footer contract assertion,
+  and governed design hash. Content, routes, localization, SEO, analytics
+  controls, and managed pages are unchanged.
+- Result: The copyright paragraph is no longer emitted. The footer retains only
+  the site identity, localized description, and optional analytics controls.
+- Validation: Focused pagination/navigation and policy-governance suites passed
+  5 of 5 cases; `npm run typecheck` passed; `npm test` passed 88 of 88 cases
+  across 20 files; `SITE_ORIGIN=https://blog.cloverhearts.com npm run build`,
+  `SITE_ORIGIN=https://blog.cloverhearts.com npm run verify:pages`, and browser
+  review passed. The live footer contains no `data-footer-meta` element and has
+  no horizontal overflow.
+- Compatibility / follow-up: Footer identity, description, optional consent
+  controls, static HTML, and `CONTENT_RULES.md` remain compatible.
+
+## 2026-08-22T18:54:38+09:00 — Links and controls gained restrained interaction motion
+
+- Change type: Owner-directed interaction-motion enhancement, design contract
+  update, CSS regression coverage, and governed policy coverage.
+- Reason: Links and controls changed state abruptly, providing limited tactile
+  feedback on pointer hover and activation.
+- Scope: Normal-blog link, button, disclosure, and form-control state CSS,
+  shared motion tokens, `DESIGN.md`, CSS contract assertions, and governed
+  source hashes. Markup, content, routes, localization, SEO, and managed pages
+  are unchanged.
+- Result: Links transition color, underline color/offset, and opacity over
+  180ms and briefly lower opacity on activation. Enabled buttons and disclosure
+  controls rise by 1px on hover and press by 1px with a restrained 0.985 scale;
+  form-field borders transition to green on pointer hover. Disabled controls
+  remain still and visibly unavailable. No effect changes layout geometry.
+- Validation: Focused CSS and policy-governance tests passed 12 of 12 cases;
+  `npm run typecheck` passed; `npm test` passed 88 of 88 cases across 20 files;
+  `SITE_ORIGIN=https://blog.cloverhearts.com npm run build`,
+  `SITE_ORIGIN=https://blog.cloverhearts.com npm run verify:pages`, and browser
+  review passed. Browser-computed link and search-control transitions were
+  180ms at 1090×905, with no horizontal overflow at 1090×905 or 390×844.
+- Compatibility / follow-up: Existing card opacity behavior, keyboard focus
+  outlines, reduced-motion suppression, static HTML, print output, and
+  `CONTENT_RULES.md` remain compatible.
+
+## 2026-08-22T18:51:28+09:00 — Post prose rhythm aligned with list summaries
+
+- Change type: Owner-directed long-form readability refinement, design contract
+  update, CSS regression coverage, and governed policy coverage.
+- Reason: Post prose retained a looser line height than the recently refined
+  Korean list summaries, so the reading rhythm was inconsistent and visually
+  wider than intended.
+- Scope: Normal-blog article-body line height and prose-block spacing,
+  `DESIGN.md`, CSS contract assertions, and governed source hashes. Post
+  content, headings, code-block typography, routes, localization, SEO, and
+  managed pages are unchanged.
+- Result: Article prose now uses `1.6` line height on wide and compact screens.
+  Paragraphs, lists, and quotes use `1.35em` trailing separation so individual
+  lines remain compact while adjacent prose blocks stay clearly distinct.
+- Validation: Focused CSS and policy-governance tests passed 12 of 12 cases;
+  `npm run typecheck` passed; `npm test` passed 88 of 88 cases across 20 files;
+  `SITE_ORIGIN=https://blog.cloverhearts.com npm run build`,
+  `SITE_ORIGIN=https://blog.cloverhearts.com npm run verify:pages`, and browser
+  review passed. At both 1090×905 and 390×844, the computed 17px prose uses a
+  27.2px line height and 22.95px block gap with no horizontal overflow.
+- Compatibility / follow-up: Heading hierarchy, media spacing, code-block line
+  height, static HTML, reduced-motion behavior, and `CONTENT_RULES.md` remain
+  compatible.
+
+## 2026-08-22T18:47:50+09:00 — Command-palette search and post navigation refined
+
+- Change type: Owner-selected search design implementation, tag-navigation
+  enhancement, post-navigation interaction refinement, localized UI expansion,
+  design/UX contract update, regression coverage, and governed policy coverage.
+- Reason: The original search dialog did not match the selected centered
+  command-palette concept, post tag chips were not actionable, and adjacent
+  previous/next links read as one undifferentiated block.
+- Scope: Normal-blog search dialog markup, local Pagefind result rendering,
+  localized search copy, tag-chip links, previous/next markup and CSS,
+  `DESIGN.md`, `UX_FLOW.md`, related contract tests, and governed source hashes.
+  Post sources, content schemas, publication rules, SEO, analytics, and managed
+  pages are unchanged.
+- Result: Search now opens as a centered 48rem command palette with a compact
+  title/ESC header, large green-outlined query field, truthful scope hint, and
+  full-row local results. No recent-query data is fabricated or persisted.
+  Every localized tag chip links to its generated tag collection. Previous and
+  next posts occupy separate equal-width bordered regions, use smaller labels
+  and titles, rest at 50% opacity, and transition to full opacity on hover or
+  keyboard focus; compact screens stack the regions.
+- Validation: Focused search, pagination/navigation, CSS baseline, and policy
+  governance suites passed 21 of 21 cases; `npm run typecheck` passed; `npm
+  test` passed 88 of 88 cases across 20 files;
+  `SITE_ORIGIN=https://blog.cloverhearts.com npm run build`,
+  `SITE_ORIGIN=https://blog.cloverhearts.com npm run verify:pages`, and `git
+  diff --check` passed. Browser review at 1090×905 confirmed a 768px dialog,
+  76px query field, 12 local results for “AI,” localized tag destinations,
+  equal 333.5px previous/next regions at 50% resting opacity, and no horizontal
+  overflow. At 390×844, the navigation stacked into two 335px regions and the
+  search palette remained within the viewport without horizontal overflow.
+- Compatibility / follow-up: The real `/search/` fallback, server-free query
+  handling, static post links, native dialog Escape behavior, reduced-motion
+  rules, print suppression, and `CONTENT_RULES.md` remain compatible.
+
+## 2026-08-22T18:32:35+09:00 — Home list typography and author action spacing refined
+
+- Change type: Owner-directed list readability and author-row spacing
+  refinement, design contract update, CSS regression coverage, and governed
+  policy coverage.
+- Reason: List metadata sat too close to descriptions, inherited body line
+  height made Korean summaries feel loose, and the Profile action sat too close
+  to the content-frame edge.
+- Scope: Normal-blog post-card description/metadata CSS, home author action
+  spacing, `DESIGN.md`, CSS contract assertions, and governed source hashes.
+  Renderer markup, post sources, routes, localization, SEO, and managed pages
+  are unchanged.
+- Result: Post-card descriptions use `1.6` line height, metadata starts `.75rem`
+  below the description, and the Profile action has `1rem` trailing margin.
+- Validation: Focused CSS and policy-governance tests passed 12 of 12 cases;
+  `npm run typecheck` passed; `npm test` passed 88 of 88 cases across 20 files;
+  `SITE_ORIGIN=https://blog.cloverhearts.com npm run build`,
+  `SITE_ORIGIN=https://blog.cloverhearts.com npm run verify:pages`, and `git
+  diff --check` passed. Browser review at 1117×905 measured a 27.2px description
+  line height, 12px metadata gap, 16px Profile trailing margin and 48px total
+  frame gap. At 390×844 it measured 25.6px line height, 12px metadata gap, and
+  no horizontal overflow.
+- Compatibility / follow-up: Card interaction, image behavior, responsive
+  stacking, full-card links, static HTML, and `CONTENT_RULES.md` remain
+  compatible.
+
+## 2026-08-22T18:28:01+09:00 — Card resting copy opacity lowered to 50 percent
+
+- Change type: Owner-directed interaction contrast refinement, design contract
+  update, CSS regression coverage, and governed policy coverage.
+- Reason: The 70% resting copy opacity still did not create enough contrast
+  between idle and focused post cards.
+- Scope: Normal-blog post-list and featured-card copy opacity, `DESIGN.md`, CSS
+  contract assertions, and governed source hashes. Images, markup, post content,
+  routes, localization, SEO, and managed pages are unchanged.
+- Result: Card index/category/title/description/metadata and featured copy now
+  rest at 50% opacity and transition to full opacity on pointer hover or keyboard
+  focus. Thumbnail and featured-image resting opacity remains 85%.
+- Validation: The focused CSS suite passed 11 of 11 cases; `npm run typecheck`
+  passed; `npm test` passed 88 of 88 cases across 20 files;
+  `SITE_ORIGIN=https://blog.cloverhearts.com npm run build`,
+  `SITE_ORIGIN=https://blog.cloverhearts.com npm run verify:pages`, and `git
+  diff --check` passed. Browser review confirmed 0.50 resting copy/index, 0.85
+  resting image opacity, full hover opacity, and no horizontal overflow.
+- Compatibility / follow-up: Image behavior, stable card geometry, full-card
+  links, keyboard focus, reduced motion, static HTML, and `CONTENT_RULES.md`
+  remain compatible.
+
+## 2026-08-22T18:18:37+09:00 — Home section spacing consolidated
+
+- Change type: Owner-directed home spacing refinement, design contract update,
+  CSS regression coverage, and governed policy coverage.
+- Reason: Featured, Recent Posts, and Selected Work combined a large top margin
+  with equally large top padding, making section separation feel excessive.
+- Scope: Normal-blog home-section spacing CSS, `DESIGN.md`, CSS contract
+  assertions, and governed source hashes. Renderer markup, post content,
+  routes, localization, SEO, and managed pages are unchanged.
+- Result: Every home content section now uses one responsive block margin from
+  `3.5rem` to `5rem`; the duplicate section-specific top padding and larger
+  override were removed. Sections remain separated by whitespace without
+  decorative top dividers.
+- Validation: Focused CSS and policy-governance tests passed 12 of 12 cases;
+  `npm run typecheck` passed; `npm test` passed 88 of 88 cases across 20 files;
+  `SITE_ORIGIN=https://blog.cloverhearts.com npm run build`,
+  `SITE_ORIGIN=https://blog.cloverhearts.com npm run verify:pages`, and `git
+  diff --check` passed. Browser review measured consistent 67.02px gaps at
+  1117×905 and 56px gaps at 390×844, zero top padding/borders, and no horizontal
+  overflow.
+- Compatibility / follow-up: Home hierarchy, one-link card interactions,
+  responsive stacking, static HTML, and `CONTENT_RULES.md` remain compatible.
+
+## 2026-08-22T18:14:56+09:00 — Home card focus now uses contrast without image scaling
+
+- Change type: Owner-directed interaction and motion refinement, design
+  contract update, CSS regression coverage, and governed policy coverage.
+- Reason: The `1.05` thumbnail enlargement introduced unnecessary spatial
+  motion, while the former 85% resting copy opacity did not distinguish the
+  focused card strongly enough.
+- Scope: Normal-blog post-list and featured-card interaction CSS, `DESIGN.md`,
+  CSS contract assertions, and governed source hashes. Renderer markup, post
+  sources, content contracts, routes, localization, SEO, and managed pages are
+  unchanged.
+- Result: Card index/category/title/description/metadata copy now rests at 70%
+  opacity, thumbnails and featured visuals rest at 85%, and both reach full
+  opacity on pointer hover or keyboard focus. Image scaling and its transform
+  transition were removed entirely, leaving card geometry stable.
+- Validation: Focused CSS and policy-governance tests passed 12 of 12 cases;
+  `npm run typecheck` passed; `npm test` passed 88 of 88 cases across 20 files;
+  `SITE_ORIGIN=https://blog.cloverhearts.com npm run build`,
+  `SITE_ORIGIN=https://blog.cloverhearts.com npm run verify:pages`, and `git
+  diff --check` passed. Browser review of `/` confirmed 0.70 copy/index and
+  0.85 image resting opacity, full hover opacity, `transform: none` before and
+  during hover, and no horizontal overflow.
+- Compatibility / follow-up: The one-link card target, keyboard focus,
+  reduced-motion handling, responsive layout, static HTML, and
+  `CONTENT_RULES.md` remain compatible.
+
+## 2026-08-22T18:01:38+09:00 — Home cards now share one coordinated focus treatment
+
+- Change type: Owner-directed home interaction polish, section-spacing and CTA
+  refinement, featured-card semantics, design contract update, renderer/CSS
+  regression coverage, and governed policy coverage.
+- Reason: Post-list hover emphasized only the thumbnail, featured content did
+  not share the same card interaction, decorative section-top dividers added
+  visual noise, and the hero action underline sat too far below its label.
+- Scope: Home featured-post markup, shared normal-blog CSS, `DESIGN.md`, static
+  renderer and CSS contract tests, and governed source hashes. Post sources,
+  content contracts, routes, localization, SEO, and managed pages are unchanged.
+- Result: List indexes, category/title/description copy, metadata, and images
+  now move together from 85% to full opacity on hover or keyboard focus while
+  images scale to `1.05`. The featured post is one full-card link with the same
+  treatment and no nested links. Featured, Recent Posts, and Selected Work use
+  whitespace instead of a decorative top rule, and the hero action underline
+  sits 2px below its text.
+- Validation: Focused CSS, renderer, and policy-governance tests passed 16 of
+  16 cases; `npm run typecheck` passed; `npm test` passed 88 of 88 cases across
+  20 files; `SITE_ORIGIN=https://blog.cloverhearts.com npm run build`,
+  `SITE_ORIGIN=https://blog.cloverhearts.com npm run verify:pages`, and `git
+  diff --check` passed. Browser review at 1117×905 confirmed 85% resting and
+  100% hover opacity for featured and list copy/images, `1.05` image scaling,
+  zero-pixel section top borders, and no horizontal overflow. Review at 390×844
+  confirmed the single-column layout and no horizontal overflow.
+- Compatibility / follow-up: Static HTML, no-JavaScript card navigation,
+  localized labels, reduced-motion behavior, content artifacts, and
+  `CONTENT_RULES.md` remain compatible.
+
+## 2026-08-22T17:35:27+09:00 — Blog presentation moved to named component classes
+
+- Change type: Owner-directed HTML/CSS architecture refinement, list-card
+  interaction and spacing improvement, motion/accessibility behavior, design
+  and UX contracts, renderer regression coverage, implementation status, and
+  governed policy coverage.
+- Reason: Normal-blog presentation depended on classless `data-*` selectors,
+  list rows linked only their titles, adjacent full-height thumbnails touched
+  row dividers, and the requested hover treatment could not apply consistently
+  to one shared card target.
+- Scope: Static document shell, home/collection/post/search renderer markup,
+  translation-origin markup, the renamed external `blog.css`, Astro shell,
+  normal-blog documentation, CSS/static-render/search/navigation regressions,
+  and policy hashes. Content artifacts, routes, publication semantics, SEO,
+  managed pages, and post source are unchanged.
+- Result: Presentation now uses descriptive classes such as `site-header`,
+  `home-hero`, `post-card`, and `post-layout`; `data-*` attributes remain only
+  as state, indexing, enhancement, and test hooks. Each post row is one link
+  containing its title, description, metadata, and thumbnail. Thumbnails rest
+  at 85% opacity and transition to full opacity plus `1.05` scale on hover or
+  keyboard focus, with reduced-motion compatibility. Recent Posts and Selected
+  Work rows have 1rem divider inset above and below. Generated HTML links only
+  the external `blog.css` and emits no inline style blocks or attributes.
+- Validation: Focused `tests/contracts/site-baseline.test.ts`,
+  `tests/contracts/pagination-navigation.test.ts`,
+  `tests/contracts/curated-discovery.test.ts`,
+  `tests/contracts/dev-preview.test.ts`, `tests/contracts/i18n.test.ts`, and
+  `tests/contracts/policy-governance.test.ts` passed; `npm run typecheck`
+  passed; `npm test` passed 88 of 88 cases across 20 files;
+  `SITE_ORIGIN=https://blog.cloverhearts.com npm run build`,
+  `SITE_ORIGIN=https://blog.cloverhearts.com npm run verify:pages`, and `git
+  diff --check` passed. Browser review of `/` at 1117×905 and 390×844 confirmed
+  one full-card link, successful image-click navigation, 85% resting opacity,
+  0.24-second opacity/scale transitions, 16px row inset on both sides, external
+  `blog.css`, and no horizontal overflow. The only observed runtime inline
+  style belonged to the Codex browser-comment overlay, not generated site HTML.
+- Compatibility / follow-up: Static HTML, no-JavaScript navigation,
+  localization, search hooks, Pagefind attributes, print, dark mode, and
+  content contracts remain compatible. `CONTENT_RULES.md` remains accurate.
+
+## 2026-08-22T13:34:36+09:00 — Footer navigation removed
+
+- Change type: Owner-directed global navigation simplification, UX and design
+  contract alignment, localized renderer regression coverage, and governed
+  policy coverage.
+- Reason: The Profile and Archive links in the site footer did not provide
+  useful navigation in that location and added visual noise.
+- Scope: Shared footer navigation configuration, normal-blog design and UX
+  contracts, navigation/static-render assertions, and policy hashes. Profile
+  and Archive routes, the home author-profile link, search/404 recovery links,
+  content, and managed pages are unchanged.
+- Result: The footer no longer renders a navigation landmark or links in Korean,
+  English, Japanese, or base-path builds. It retains the site identity,
+  localized description, optional analytics controls, and copyright.
+- Validation: Focused `tests/contracts/site-baseline.test.ts`,
+  `tests/contracts/pagination-navigation.test.ts`, and
+  `tests/contracts/policy-governance.test.ts` passed 15 of 15 cases; `npm run
+  typecheck` passed; `npm test` passed 87 of 87 cases across 20 files;
+  `SITE_ORIGIN=https://blog.cloverhearts.com npm run build`,
+  `SITE_ORIGIN=https://blog.cloverhearts.com npm run verify:pages`, and `git
+  diff --check` passed. Browser review of `/posts/building-ai-skills/`
+  confirmed zero footer links, zero footer navigation landmarks, and no
+  horizontal overflow.
+- Compatibility / follow-up: Navigation-only. The stable Profile and Archive
+  routes remain available through intentional discovery and recovery surfaces;
+  static HTML, no-JavaScript behavior, localization, SEO, and content contracts
+  remain compatible. `CONTENT_RULES.md` remains accurate.
+
+## 2026-08-22T13:32:20+09:00 — Post header metadata and tags refined
+
+- Change type: Owner-directed post-header typography, category-link and tag
+  presentation refinement, design contract, regression coverage, and governed
+  policy coverage.
+- Reason: The author, publication date, and reading-time row appeared larger
+  and heavier than the adjacent tags; unboxed tags were difficult to distinguish
+  individually, and the category underline added unnecessary emphasis.
+- Scope: Normal-blog post-header metadata, category link and tag styles,
+  `DESIGN.md`, focused CSS regression assertions, and policy hashes. Post
+  content, metadata values, links, routes, and publication semantics are
+  unchanged.
+- Result: Header metadata now matches the tags at `0.75rem` with a lighter 500
+  weight. Tags use separate low-contrast outlined boxes with 4px by 10px inset
+  spacing, and the category link no longer has an underline.
+- Validation: Focused `tests/contracts/site-baseline.test.ts` and
+  `tests/contracts/policy-governance.test.ts` passed 12 of 12 cases; `npm run
+  typecheck` passed; `npm test` passed 87 of 87 cases across 20 files;
+  `SITE_ORIGIN=https://blog.cloverhearts.com npm run build`,
+  `SITE_ORIGIN=https://blog.cloverhearts.com npm run verify:pages`, and `git
+  diff --check` passed. Browser review of `/posts/building-ai-skills/` at
+  1132×905 and 390×844 confirmed matching 12px text scales, 500-weight metadata,
+  separately boxed tags, no category underline, no horizontal overflow, and a
+  single tag row at the compact viewport.
+- Compatibility / follow-up: Presentation-only. Static HTML readability,
+  no-JavaScript behavior, localization, SEO, and content contracts remain
+  compatible; `CONTENT_RULES.md` remains accurate.
+
+## 2026-08-22T13:27:56+09:00 — Post navigation labels separated from titles
+
+- Change type: Owner-directed post-navigation typography and spacing,
+  accessible static markup refinement, design contract, regression coverage,
+  and governed policy coverage.
+- Reason: The localized Previous Post and Next Post labels appeared directly
+  attached to their destination titles, weakening the distinction between the
+  navigation direction and post name.
+- Scope: Previous/next link markup whitespace, label/title display and spacing,
+  `DESIGN.md`, CSS/static-markup regression assertions, and policy hashes.
+  Navigation destinations, post ordering, localization messages, and content
+  are unchanged.
+- Result: Each navigation label and title now occupies its own line with a 6px
+  visual gap. The source HTML also contains separating whitespace so accessible
+  link text does not concatenate the label and title. Both previous and next
+  links use the same structure on wide and compact layouts.
+- Validation: Focused `tests/contracts/site-baseline.test.ts`,
+  `tests/contracts/policy-governance.test.ts`, and
+  `tests/contracts/pagination-navigation.test.ts` passed 15 of 15 cases; `npm
+  run typecheck` passed; `npm test` passed 87 of 87 cases across 20 files;
+  `SITE_ORIGIN=https://blog.cloverhearts.com npm run build`,
+  `SITE_ORIGIN=https://blog.cloverhearts.com npm run verify:pages`, and `git
+  diff --check` passed. Browser review of `/posts/building-ai-skills/` at the
+  default desktop viewport and 390×844 confirmed newline-separated inner and
+  text content, a 6px label/title gap, and no console warnings or errors.
+- Compatibility / follow-up: Presentation-only. Static link behavior,
+  no-JavaScript navigation, routes, localization, SEO, and content contracts
+  remain compatible; `CONTENT_RULES.md` remains accurate.
+
+## 2026-08-22T13:20:05+09:00 — Selected Work adopts the Recent Posts layout
+
+- Change type: Owner-directed home layout refinement, responsive thumbnail
+  sizing, renderer/CSS alignment, design contract, regression coverage, and
+  governed policy coverage.
+- Reason: The home Selected Work rows used compact fixed thumbnails and reduced
+  row spacing while Recent Posts used a clearer full-height 35% media column.
+  The Selected Work heading also repeated the same label as both eyebrow and
+  heading.
+- Scope: Home Selected Work section heading markup, post-list image candidate
+  sizing, desktop and compact row styles, `DESIGN.md`, focused renderer/CSS
+  assertions, and policy hashes. Collection pages, post content, routes,
+  publication semantics, and managed pages are unchanged.
+- Result: Selected Work now shares the Recent Posts section-heading pattern and
+  row composition. Desktop rows use the same 35% right-aligned, full-height,
+  `object-fit: cover` thumbnail; compact rows place a 16:9 image beneath the
+  copy. The duplicate Selected Work eyebrow was removed, and all five curated
+  preview items remain in their configured order.
+- Validation: Focused `tests/contracts/site-baseline.test.ts` and
+  `tests/contracts/curated-discovery.test.ts` passed 15 of 15 cases; `npm run
+  typecheck` passed; `npm test` passed 87 of 87 cases across 20 files;
+  `SITE_ORIGIN=https://blog.cloverhearts.com npm run build`,
+  `SITE_ORIGIN=https://blog.cloverhearts.com npm run verify:pages`, and `git
+  diff --check` passed. Browser review at 1132×905 measured identical
+  1053×240px first rows and 368.5×240px thumbnails for Recent Posts and Selected
+  Work. At 390×844 both used 287×161.4px 16:9 images beneath the copy, with zero
+  horizontal overflow and no console warnings or errors.
+- Compatibility / follow-up: Presentation-only. Static HTML readability,
+  localization, content contracts, SEO, and build boundaries are unchanged;
+  `CONTENT_RULES.md` remains accurate.
+
+## 2026-08-21T01:12:22+09:00 — Post language and layout integrity pass
+
+- Change type: Defect correction, localized related-post resolution, responsive
+  post structure, spacing and thumbnail refinement, design contract, regression
+  coverage, and governed policy coverage.
+- Reason: A Korean post displayed four English related-post titles and `/en/`
+  links even though Korean variants existed. Related/list thumbnails also used
+  their source height instead of the declared 16:9 presentation, stretching a
+  168px-wide image to 360px and making each related row about 400px tall.
+  Mobile additionally placed author context after the entire related list.
+- Scope: Normal-blog related-post selection and post DOM grouping, shared list
+  thumbnail sizing, post header/rail/author/article/navigation/related spacing,
+  responsive author order, `DESIGN.md`, renderer and CSS regressions, and policy
+  hashes. Content sources, translation status, routes, schemas, publication
+  semantics, and managed pages are unchanged.
+- Result: Related candidates are now collapsed to one variant per translation
+  group in active-language, English, then Korean priority before category
+  filtering and limiting; the current group is excluded by translation key.
+  The reviewed Korean post now shows four Korean titles and unprefixed Korean
+  routes. General thumbnails render at 16:9 automatic height (168×94.5px in the
+  desktop related list), reducing rows to about 175px. The post frame now uses
+  explicit breadcrumb/header spacing, matching TOC/author inset padding, a
+  flush leading article image, and distinct article, original-reference,
+  author, previous/next, and related phases. Responsive DOM order is TOC,
+  article, author, previous/next, then related posts.
+- Validation: Focused `tests/contracts/pagination-navigation.test.ts` and
+  `tests/contracts/site-baseline.test.ts` passed 14 of 14 cases, including
+  “keeps related posts in the active language before configured fallbacks”;
+  `npm run typecheck` passed; `npm test` passed 87 of 87 cases across 20 files;
+  `SITE_ORIGIN=https://blog.cloverhearts.com npm run build` and
+  `SITE_ORIGIN=https://blog.cloverhearts.com npm run verify:pages` passed.
+  Browser checks at 1440×900 and 390×844 covered Home, Posts, Selected Work,
+  Daily Notes, Explore, Search, 404, and the Korean Composable SDK post. All 16
+  route/viewport combinations retained Korean document language, header/footer,
+  and zero horizontal overflow, with no console warnings or errors. Desktop
+  post transitions measured 48px from header to reading frame and 72px around
+  navigation/related sections; compact author and following-section gaps were
+  48–56px.
+- Compatibility / follow-up: Intentional cross-language fallback remains
+  available only when the active-language variant is absent. `I18N.md`,
+  `UX_FLOW.md`, and `CONTENT_RULES.md` were reviewed and already describe the
+  corrected behavior, so no content-contract revision was needed.
+
+## 2026-08-21T01:03:23+09:00 — Five-item Selected Work preview
+
+- Change type: Owner-requested curated-membership configuration, home-list
+  rendering limit, regression coverage, and governed policy coverage.
+- Reason: Populate the currently empty Selected Work area with five existing
+  test posts so its layout and readability can be reviewed before real work
+  evidence is published.
+- Scope: The `work` selector in `config/curated-collections.yaml`, the home
+  Selected Work display limit, curated-discovery fixtures/assertions, and the
+  policy coverage manifest. No post source, route, taxonomy, representative
+  image, or managed page was changed.
+- Result: Selected Work now explicitly includes `building-ai-skills`,
+  `composable-sdk`, `llms-txt-for-sdk-docs`, `measuring-ax`, and
+  `trustworthy-ai-knowledge-base`. Preview compilation derives those existing
+  draft groups into the collection and the home page renders all five rather
+  than truncating after three. Production continues to exclude drafts under the
+  existing publication policy.
+- Validation: Focused `tests/contracts/curated-discovery.test.ts` passed 4 of 4
+  cases, including a five-item home rendering assertion; `npm run typecheck`
+  passed; `npm test` passed 86 of 86 cases across 20 files;
+  `SITE_ORIGIN=https://blog.cloverhearts.com npm run build` and
+  `SITE_ORIGIN=https://blog.cloverhearts.com npm run verify:pages` passed.
+  Browser verification of `http://127.0.0.1:4321/` found exactly five Selected
+  Work cards in the requested order, no horizontal overflow, and no invented
+  project content.
+- Compatibility / follow-up: This is preview-oriented membership using existing
+  draft posts. `CONTENT_RULES.md` and `PUBLISHING.md` were reviewed and remain
+  accurate because selector syntax and draft publication semantics did not
+  change. Replace or remove the explicit keys when reviewed work-evidence posts
+  become available.
+
+## 2026-08-21T00:59:34+09:00 — Open Design home-reference alignment
+
+- Change type: Owner-directed Open Design promotion, responsive featured-post
+  layout refinement, design contract, regression coverage, and governed policy
+  coverage.
+- Reason: Apply the supplied `cloverhearts-blog-home.png` composition to the
+  normal blog. The staging directory contained only its review README, so the
+  owner-supplied image was used as the visual reference; it showed the featured
+  post as an equal media/editorial split rather than the implemented 35:65
+  split.
+- Scope: Normal-blog featured-post desktop grid, compact stacking contract,
+  `DESIGN.md`, the branded CSS contract assertion, and policy source hashes.
+  Recent-post 35% full-height media, post pages, routes, content contracts, and
+  managed pages remain unchanged.
+- Result: The wide featured card now divides into two equal columns on one
+  continuous pale-mint surface, with the approved/generated visual filling the
+  left half and the summary occupying the right half. The existing compact
+  breakpoint still stacks media before copy in one column.
+- Validation: Focused `tests/contracts/site-baseline.test.ts` and
+  `tests/contracts/post-summary.test.ts` passed 18 of 18 cases; `npm run
+  typecheck` passed; the first full `npm test` run passed 85 of 86 cases but the
+  existing pagination fixture exceeded its five-second limit; the focused
+  pagination suite then passed 2 of 2 cases and the complete rerun passed 86 of
+  86 cases across 20 files. `SITE_ORIGIN=https://blog.cloverhearts.com npm run
+  build` and `SITE_ORIGIN=https://blog.cloverhearts.com npm run verify:pages`
+  passed. Browser verification at 1440×900 measured equal 607px columns inside
+  the 1216px card; the Recent Posts image remained 425.6px wide (35%) and 240px
+  high. At 390×844 the featured grid resolved to one 333px column. Both widths
+  had no horizontal overflow and the browser reported no warnings or errors.
+- Compatibility / follow-up: Presentation-only. Open Design remains a staging
+  authoring aid with no runtime or production dependency; the empty staging
+  README was not promoted as executable code. Static HTML readability,
+  localization behavior, SEO, publication semantics, and build boundaries are
+  unchanged.
+
+## 2026-08-21T00:50:18+09:00 — Recent-post image alignment refinement
+
+- Change type: Owner-directed responsive layout refinement, image candidate
+  sizing, design contract, regression expectations, and governed policy
+  coverage.
+- Reason: The Recent Posts rows appeared visually unbalanced because the copy
+  consumed most of the line while the fixed-width thumbnail sat too narrowly
+  at the far right.
+- Scope: Home Recent Posts rendering options and responsive image `sizes`,
+  normal-blog list CSS, `DESIGN.md`, focused renderer/CSS assertions, and policy
+  hashes. Other post lists and managed pages retain their existing layouts.
+- Result: At desktop widths each recent-post thumbnail is right-aligned at 35%
+  of the complete row, reaches both vertical edges, and uses centered
+  `object-fit: cover` cropping. The index and copy occupy the remaining columns
+  with matching vertical padding. At mobile width the row returns to two
+  columns and the image spans the full copy column beneath the text at 16:9.
+- Validation: `npm run typecheck`; focused `tests/contracts/site-baseline.test.ts`
+  and `tests/contracts/post-summary.test.ts` (18 of 18 cases); `npm test` (86 of
+  86 cases across 20 files); `SITE_ORIGIN=https://blog.cloverhearts.com npm run
+  build`; `SITE_ORIGIN=https://blog.cloverhearts.com npm run verify:pages`; and
+  `git diff --check` passed. Browser verification at 1440×900 measured a
+  426×240px image in a 1216×240px row (35%, zero right or height gap). At
+  390×844 the image measured 287×161px at 16:9 in the copy column. Both widths
+  had zero horizontal overflow and no console warnings or errors.
+- Compatibility / follow-up: Presentation-only; content contracts, routes,
+  publication behavior, SEO, static HTML readability, and approved image
+  provenance remain unchanged.
+
+## 2026-08-21T00:22:12+09:00 — Live Open Design preview workflow
+
+- Change type: Local development behavior, watch-based build orchestration,
+  preview-only live reload, development documentation, implementation status,
+  automated regression coverage, and governed policy coverage.
+- Reason: Allow the owner to run the real blog with `npm run dev`, edit its
+  approved source from Open Design at the repository root, and see saved changes
+  without restarting the preview server or manually reloading the browser.
+- Scope: `scripts/dev.ts`, the local-preview and Open Design instructions in
+  `DEVELOPMENT.md`, root-tooling status, focused preview tests, and the policy
+  coverage manifest. Production build lanes and managed-page presentation are
+  unchanged.
+- Result: The preview server now watches normal-blog sources, debounces bursts,
+  rebuilds web/search for presentation changes, rebuilds content/web/search for
+  content or shared-contract changes, copies the refreshed search index, and
+  sends a browser reload event only after success. Generated output, dependency
+  directories, `.od/` state, and staged Open Design concepts are ignored to
+  prevent loops. The live-reload client is injected only into served preview
+  responses and is not written to artifacts or production output. Open Design
+  remains an external authoring tool rather than a project dependency.
+- Validation: Focused `tests/contracts/dev-preview.test.ts` passed 3 of 3 cases:
+  “classifies blog design changes for the smallest safe preview rebuild”,
+  “ignores generated and unrelated files so preview rebuilds cannot loop”, and
+  “injects one development-only live reload client into served HTML”. `npm run
+  typecheck`, `npm run validate:config`, `npm run validate:embeds`, `npm test`
+  (86 of 86 cases across 20 files), `SITE_ORIGIN=https://blog.cloverhearts.com
+  npm run build`, `SITE_ORIGIN=https://blog.cloverhearts.com npm run
+  verify:pages`, and `git diff --check` passed. A live integration probe caused
+  web rebuild revisions 1 and 2, delivered matching SSE reload events, and
+  confirmed that preview artifacts contain no live-reload marker.
+- Compatibility / follow-up: `npm run dev` retains the existing address and
+  preview artifact contract. Open Design must promote an approved change into
+  `DESIGN.md` or `apps/blog-web/`; editing only `design/open-design/` remains a
+  staging action and intentionally does not change the live blog.
+
+## 2026-08-19T00:17:07+09:00 — Open Design refined editorial implementation
+
+- Change type: Owner-supplied Open Design application, responsive visual
+  refinement, static renderer presentation, localized interface copy, social
+  card typography, design contract, regression coverage, governed policy
+  coverage, and implementation-status update.
+- Reason: Apply the approved “Refined Current 01” handoff to the working blog
+  while preserving the previously requested lighter title treatment and the
+  static, no-JavaScript reading contract.
+- Scope: Normal-blog home hero, author strip, featured/recent/work sections,
+  collection and taxonomy lists, post header and three-region reading layout,
+  search and recovery presentation, responsive and dark-mode states, generated
+  social cards, localized all-posts call to action, `DESIGN.md`,
+  `IMPLEMENTATION_STATUS.md`, CSS contract assertions, and policy hashes.
+  Managed pages remain outside the root design system.
+- Result: The normal blog now uses a 1216px white editorial frame, a pale
+  overlapping workflow trace, a single text-style home action, thin ruled
+  two-digit post rows, compact right-side thumbnails, a 132/704/132 desktop
+  post grid, a white mobile hero, and 600-weight post/list titles. No Open
+  Design runtime, remote asset, font, package, or production dependency was
+  added. `CONTENT_RULES.md` was reviewed and remains accurate because content
+  syntax, metadata, assets, and publication semantics did not change.
+- Validation: `npm run typecheck`; `npm run validate:config`; `npm run
+  validate:embeds`; `npm test` (83 of 83 cases across 19 files), including
+  “ships the branded semantic CSS with resilient Pretendard fallbacks” and
+  “provides the same non-empty UI message set for every language”;
+  `SITE_ORIGIN=https://blog.cloverhearts.com npm run build`;
+  `SITE_ORIGIN=https://blog.cloverhearts.com npm run verify:pages`; and `git
+  diff --check` passed. Browser checks at 1440×900 and 390×844 confirmed zero
+  horizontal overflow, a 704px desktop reading column, final title weight 600,
+  mobile reflow, and no console warnings or errors.
+- Compatibility / follow-up: Presentation-only. Routes, schemas, SEO,
+  publication behavior, translated-post policy, managed-page isolation, and
+  generated-HTML readability remain unchanged. Populated-corpus device testing
+  may continue as posts move from development fixtures to reviewed publication.
+
+## 2026-08-18T18:33:34+09:00 — Second display-title weight reduction
+
+- Change type: Owner-directed typography refinement, design contract,
+  regression expectation, and governed policy coverage.
+- Reason: The owner requested one additional reduction after reviewing the
+  first lighter title treatment.
+- Scope: Normal-blog home hero and post-detail title weights, `DESIGN.md`, the
+  branded CSS contract assertion, and policy hashes.
+- Result: The home hero changed from 760 to 700 and post titles changed from
+  680 to 600. Size, spacing, wrapping, responsive structure, and managed pages
+  remain unchanged.
+- Validation: `npm run typecheck`, `npm test` (83 of 83 cases across 19 files),
+  governed policy validation, and `git diff --check` passed.
+- Compatibility / follow-up: Presentation-only; content, routes, schemas, SEO,
+  publication behavior, and static HTML guarantees are unchanged.
+
+## 2026-08-18T18:28:58+09:00 — Lighter display-title weights
+
+- Change type: Visual typography refinement, design contract, regression test,
+  and governed policy coverage.
+- Reason: The owner found the large title glyphs excessively heavy after the
+  first branded-design pass.
+- Scope: Home hero and post-detail title weights in the normal blog stylesheet,
+  the corresponding typography rule in `DESIGN.md`, the branded CSS contract
+  test, and policy source hashes.
+- Result: The home hero weight changed from 850 to 760 and the post title now
+  uses 680. Font size, line height, responsive wrapping, semantic hierarchy,
+  and managed-page styles are unchanged.
+- Validation: `npm run typecheck` passed. The first `npm test` run reached the
+  existing 5-second timeout while building the pagination fixture without an
+  assertion failure; an immediate full rerun passed all 83 cases across 19
+  files, including the explicit 760/680 branded CSS assertions and governed
+  policy validation. `git diff --check` passed. A new browser screenshot was
+  not required because layout metrics, sizes, and wrapping rules were unchanged.
+- Compatibility / follow-up: This is presentation-only and changes no content,
+  route, schema, publication, SEO, or no-JavaScript behavior.
+
+## 2026-08-18T17:50:06+09:00 — White and clear-green responsive blog design
+
+- Change type: Owner-approved visual system, static blog presentation,
+  localization, brand identity, social-card styling, tests, governed policy
+  coverage, and implementation-status update.
+- Reason: Implement the supplied desktop/mobile design brief as a complete,
+  readable blog experience using the existing preview posts instead of leaving
+  the branded direction deferred.
+- Scope: Root `DESIGN.md`; `CloverHearts Labs` site identity and localized
+  descriptions; shared header/footer and search dialog landmarks; localized
+  home, collection, taxonomy, post, search, and 404 presentation; editorial
+  hero, author introduction, featured/recent/selected-work hierarchy; responsive
+  post TOC/article/author layout; light/dark/print/accessibility states;
+  deterministic white/green generated social cards; design and renderer
+  contract tests; policy hashes; `IMPLEMENTATION_STATUS.md`.
+- Result: The normal blog now ships a white editorial surface with clear-green
+  tokens, a two-column desktop and full-surface mobile terminal hero, ruled post
+  lists, artifact-backed filters, a three-region desktop reading layout, native
+  mobile TOC, responsive media/code/table handling, calm recovery/search
+  surfaces, OS dark mode, reduced-motion handling, and print rules. All primary
+  content remains static HTML and the managed-page design boundary is unchanged.
+  `CONTENT_RULES.md` was reviewed and remains accurate because no authoring
+  field, content syntax, asset rule, or publication semantic changed.
+- Validation: `npm run typecheck`, `npm run validate:config`,
+  `npm run validate:embeds`, `SITE_ORIGIN=https://blog.cloverhearts.com npm run
+  build`, `SITE_ORIGIN=https://blog.cloverhearts.com npm run verify:pages`,
+  `npm test`, `npm run test:i18n`, `npm run test:seo`, and
+  `npm run test:quality` passed. Vitest passed 83 of 83 cases across 19 files,
+  including the renamed `ships the branded semantic CSS with resilient
+  Pretendard fallbacks`, updated pagination/navigation coverage, site identity,
+  deterministic social-card palette, and governed policy validation. In-app
+  browser checks at 1440×1000 and 390×844 covered Home and Post View: both had
+  zero horizontal overflow; the desktop article column measured about 685px;
+  the mobile terminal hero, navigation, TOC, and article reading order rendered
+  without console errors.
+- Compatibility / follow-up: Existing post/content contracts, stable routes,
+  base-path portability, no-JavaScript behavior, and GitHub Pages deployment
+  remain compatible. The three profile managed pages remain owner-unreviewed
+  drafts and therefore are not present in production output; their configured
+  public links require a later owner review/publication decision. No deployment,
+  commit, or push was performed.
+
+## 2026-08-17T21:26:55+09:00 — Public author identity and curated discovery
+
+- Change type: Configuration, content contract, compiler, presentation,
+  managed-page capability, tests, governed documents, and status update.
+- Reason: Implement the approved public-author and curated-discovery target,
+  including the generic container engine and per-content disclosure rule.
+- Scope: Site owner identity; dynamic curated routes; `curated-collections.yaml`;
+  marker tags; optional `workEvidence`; content artifact schema 8; generic
+  collection/Explore renderer; author/profile access; in-place search dialog;
+  draft Korean/English/Japanese profile packages; contract tests and policy
+  coverage; `CONTENT_RULES.md`, `I18N.md`, `PUBLISHING.md`, `UX_FLOW.md`,
+  `DESIGN.md`, `ARCHITECTURE.md`, implementation spec/status.
+- Result: Primary navigation is All Posts, Selected Work, Daily Notes, Explore,
+  and Search. Archive and Profile sit in the footer. `/work/`, `/daily/`, and
+  `/explore/` are generic collection/discovery routes. Membership is
+  compiler-derived and does not copy posts. BlogPosting author references a
+  stable Person `@id`. Profile packages exist as drafts and are omitted from
+  production. Search remains a real `/search/` route and opens a dialog when
+  enhancement loads. Temporary posts were not auto-tagged as selected work.
+  GitHub is the only configured public contact; email/LinkedIn/Instagram were
+  not invented.
+- Validation: `npm run typecheck` passed. `npm run validate:config` passed.
+  Vitest passed 83 of 83 cases across 19 files, including
+  `rejects unsafe or placeholder owner contact destinations`,
+  `rejects include and exclude of the same translation key`,
+  `derives curated membership, work chronology, and configuration-only extra
+collections`, `adds a third curated container from configuration only`,
+  updated primary-navigation assertions, and
+  `validates every governed policy source and named test case`. Playwright
+  rendered-browser visual and dialog-focus checks were not run. Production
+  profile URLs remain unpublished until owner review.
+- Compatibility / follow-up: Content schema is now 8. A later owner-approved
+  biography and real additional contact destinations are required before the
+  profile can be published and indexed. New selector/order/presentation
+  vocabulary still needs a contract change. No Git commit or push was
+  performed in this change.
+
+## 2026-08-17T20:44:34+09:00 — Generic curated-container implementation workflow
+
+- Change type: Approved implementation workflow, configuration/route
+  extensibility contract, artifact ownership, developer handoff, status
+  clarification, lifecycle plan, and regression-test requirements.
+- Reason: Another implementation AI needs an exact process for building the
+  first Selected Work and Daily Notes containers and for adding later curated
+  post pages without duplicating Markdown, hard-coding template queries, or
+  creating a new compiler branch per page.
+- Scope: The curated-collection target in `IMPLEMENTATION_SPEC.md` and its
+  specified-only gap in `IMPLEMENTATION_STATUS.md`. The workflow assigns
+  validation to project config, membership/order to the content compiler,
+  presentation-neutral records to the versioned content artifact, generic
+  route rendering to the blog web lane, and canonical/discovery output to the
+  existing downstream lanes. It covers dynamic curated routes, initial engine
+  sequencing, routine later additions, non-routine extensions, retirement,
+  navigation/Explore exposure, validation, and history.
+- Result: Selected Work and Daily Notes are now explicitly acceptance fixtures
+  for one reusable engine rather than bespoke pages. The first implementation
+  must add the generic config-to-artifact-to-route pipeline. Once implemented,
+  a normal new container can be added by declaring a stable ID/route, localized
+  title and description, existing selector/order/presentation values, taxonomy
+  markers and qualifying posts, plus optional intentional navigation. It must
+  require no duplicated post, page template, hard-coded query, new artifact
+  field, or compiler conditional. New behavior vocabulary remains a governed
+  contract change with tests rather than an arbitrary configuration value.
+- Validation: Reviewed the existing curated configuration example, selector
+  precedence, translation-group fallback, work chronology, Explore/search
+  boundaries, architecture ownership, route registry, content artifact, and
+  cohesive implementation checklist before editing. Documentation whitespace,
+  code-fence balance, section/timestamp order, referenced-file existence, and
+  spec/status consistency checks were run afterward. No executable config,
+  schema, artifact, compiler, renderer, route, content, test, policy hash, or
+  generated output was changed.
+- Compatibility / follow-up: The implementation AI must version any changed
+  artifact/config contracts, update all producers and consumers together,
+  preserve existing post canonical routes and category/tag/Archive behavior,
+  and prove configuration-only addition with at least one extra synthetic
+  container fixture. Removing a published container requires the existing
+  route-retirement/redirect review and must never delete its source posts. No
+  Git commit, push, deployment, or publication was performed.
+
+## 2026-08-17T20:34:18+09:00 — Per-content disclosure replaces blanket profile restrictions
+
+- Change type: Approved specification correction, disclosure ownership,
+  developer handoff, implementation-status clarification, and compatibility
+  note.
+- Reason: Company names, tenure, public accounts, credentials, and personal
+  information should not be suppressed by one blog-wide author/profile rule.
+  Their publication context belongs to the individual post or managed profile
+  that contains and reviews the information.
+- Scope: The public-author portions of `IMPLEMENTATION_SPEC.md` and the related
+  gap in `IMPLEMENTATION_STATUS.md`. This entry supersedes only the blanket
+  restriction language in the 2026-08-17T19:15:46+09:00 target entry; its
+  navigation, profile indexing, curated collections, search, localization,
+  accessibility, and test plans remain approved.
+- Result: The target no longer defines employer, tenure, account, credential,
+  or personal-information fields as a globally prohibited set. A post or
+  managed profile may publish any of those details when its reviewed source
+  supports them. Shared configuration and renderers must preserve approved
+  values rather than remove them. Structured data may represent such facts
+  only when they match reviewed information visibly presented on the public
+  page. URL safety validation still rejects embedded authentication
+  credentials, signed/private destinations, unsafe schemes, and tracking
+  parameters; that security rule is unrelated to professional credentials.
+- Validation: Located every affected restriction in the approved target,
+  status handoff, and earlier history entry; reviewed the surrounding identity,
+  managed-profile, structured-data, contact-URL, and work-chronology clauses;
+  then ran documentation whitespace, code-fence balance, heading/timestamp
+  order, and target/status consistency checks. No executable configuration,
+  schema, renderer, content, managed page, test, policy hash, or generated
+  output was changed.
+- Compatibility / follow-up: The implementation AI must treat disclosure as
+  content-owned and must not add a global sanitizer, denylist, or renderer rule
+  for these fact categories. Existing factual-integrity, source review,
+  publication review, privacy/security, and safe-URL contracts continue to
+  apply at their normal content boundaries. No Git commit, push, deployment,
+  or publication was performed.
+
+## 2026-08-17T19:15:46+09:00 — Public author and curated-discovery target specification
+
+- Change type: Approved information architecture, public-author identity,
+  managed-profile, curated-collection, search interaction, developer handoff,
+  implementation-status update, privacy boundary, and regression-test plan.
+- Reason: Readers arriving through public posts or external search need a
+  visible, consistent path from an article to the author, public profile,
+  contact points, and supporting work. The owner also wants all posts, selected
+  work, and everyday writing to remain one canonical post corpus while being
+  discoverable through purpose-specific curated views.
+- Scope: `IMPLEMENTATION_SPEC.md` and `IMPLEMENTATION_STATUS.md`. The target
+  specifies the exact localized navigation order All Posts, Selected Work,
+  Daily Notes, Explore, and Search; a separate author-linked public Profile;
+  localized site/author descriptions and LinkedIn/GitHub/Instagram/email-style
+  contact points; three indexable managed profile variants; Person/ProfilePage
+  and BlogPosting author identity; configuration-driven curated collections;
+  `work-evidence`/`daily-record` marker tags; optional work chronology; common
+  localized collection introductions; combined category/tag exploration; an
+  accessible in-place search dialog with route fallback; architecture,
+  privacy, localization, SEO, accessibility, migration, and test obligations.
+- Result: The approved content menu is `전체 보기 · 주요 작업 · 일상 기록 ·
+둘러보기 · 검색`, with equivalent English and Japanese labels. Selected Work
+  uses the visible description `직접 만들거나 주도한 프로젝트, 연구, 문서,
+기술적 결과와 업무 개선 사례를 소개합니다.` Daily Notes uses `아이들과
+함께한 시간과 취미 생활 등 일상의 이야기를 기록합니다.` Each curated
+  page shows its localized title, description, and logical-post count before a
+  shared 10-item paginated list. Posts retain one canonical route and may
+  appear in multiple collections. Profile is reached through visible author
+  identity links, is externally indexable after owner review, and remains
+  excluded from post search, taxonomy, Archive, recommendations, and RSS.
+- Validation: Read `TESTING.md` and `ARCHITECTURE.md` completely; reviewed the
+  current site/navigation/taxonomy/route schemas, managed-page contract,
+  profile SEO provisions, publishing/list fallback rules, search boundary,
+  UX/design navigation requirements, existing temporary taxonomy, and current
+  implementation status before editing. Documentation whitespace, heading and
+  timestamp order, code-fence balance, referenced-file existence, and target/
+  status consistency checks were run after editing. No configuration, runtime
+  schema, artifact, route, renderer, managed page, post, taxonomy, test, policy
+  hash, or generated output was changed, so executable behavior remains the
+  current Posts/Categories/Tags/Search navigation and route-based search.
+- Compatibility / follow-up: The implementing AI must add and migrate the
+  configuration/schema versions, route claims, generic collection engine,
+  optional post chronology, curated membership artifacts, author/profile
+  presentation, managed profile packages, SEO/discovery relationships,
+  accessible search enhancement, governed documents, fixtures, browser and
+  contract tests, and policy hashes as one reviewed change. It must keep real
+  profile packages draft until the owner supplies and approves biography and
+  public destinations and must not infer employers, tenure, accounts, or
+  credentials. Final visual styling is intentionally deferred to a later
+  owner-approved design task. No Git commit, push, deployment, or content
+  publication was performed.
+
 ## 2026-08-17T14:18:01+09:00 — Ten-item pagination and secondary Archive navigation
 
 - Change type: Configuration, presentation, UX/design/publishing contracts,

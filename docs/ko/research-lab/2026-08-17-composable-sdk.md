@@ -12,10 +12,14 @@ tags:
   - "documentation"
 createdAt: "2026-08-17T02:30:11+09:00"
 representativeImage: "generated-card"
+thumbnail:
+  src: "asset:/research-lab/composable-sdk/thumbnail-source.png"
+  alt: "본문에서 선택한 포스트 대표 이미지"
 draft: true
 ---
 
-![Composable SDK를 표현한 임시 이미지](https://placehold.org/1200x630/164E63/CFFAFE?text=Composable+SDK)
+![여러 코드 파일을 편집하는 Visual Studio Code 화면](https://upload.wikimedia.org/wikipedia/commons/7/79/Vscode_screenshot.png)
+
 
 기존 SDK 문서는 대체로 사람을 독자로 삼습니다. 개발자가 목차를 읽고, 필요한 API를 찾고, 예제 코드를 조합해 하나의 기능을 완성합니다. 하지만 AI 에이전트가 코드를 작성하기 시작하면 SDK의 사용 방식도 달라집니다.
 
@@ -50,3 +54,5 @@ Composable한 SDK는 각 기능이 독립적으로 이해되고, 예측 가능�
 사람이 SDK를 사용하던 시대에는 좋은 안내서가 길을 설명했습니다. 에이전트 시대에는 길뿐 아니라 재료의 모양과 결합 규칙까지 명확해야 합니다.
 
 Composable한 설계는 AI만을 위한 최적화가 아닙니다. 사람이 읽기 쉽고, 테스트하기 쉽고, 교체하기 쉬운 SDK가 에이전트에게도 좋은 SDK입니다. 결국 에이전트 친화성은 특별한 마법보다 모호함을 줄인 설계에서 시작합니다.
+
+*테스트 이미지 출처: [Wikimedia Commons — Huzaifa abedeen, CC BY-SA 4.0](https://commons.wikimedia.org/wiki/File:Vscode_screenshot.png)*

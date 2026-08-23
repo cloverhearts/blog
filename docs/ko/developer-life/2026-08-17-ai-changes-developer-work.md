@@ -11,10 +11,15 @@ tags:
   - "developer-career"
 createdAt: "2026-08-17T02:30:11+09:00"
 representativeImage: "generated-card"
+thumbnail:
+  src: "asset:/developer-life/ai-changes-developer-work/thumbnail-source.png"
+  alt: "본문에서 선택한 포스트 대표 이미지"
 draft: true
 ---
 
 ![AI와 개발자의 역할 변화를 표현한 임시 이미지](https://placehold.org/1200x630/1F2937/F9FAFB?text=AI+Changes+Developer+Work)
+
+::youtube{id="2GNIgiza-m0" title="YouTube 테스트 영상"}
 
 AI가 코드를 쓰는 장면을 보고 있으면 개발자의 자리가 빠르게 줄어드는 것처럼 느껴집니다. 예전에는 한참 걸렸을 구현이 몇 문장 만에 만들어지기도 합니다. 그렇다면 개발자에게 남는 일은 무엇일까요?
 

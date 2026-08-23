@@ -78,6 +78,19 @@ export const postFrontmatterSchema = z
     socialImage: assetRefSchema.optional(),
     thumbnail: assetRefSchema.optional(),
     related: z.array(kebabSchema).optional(),
+    workEvidence: z
+      .object({
+        sortDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/u, "workEvidence.sortDate must be YYYY-MM-DD"),
+        period: z
+          .object({
+            start: z.string().regex(/^\d{4}-\d{2}$/u, "workEvidence.period.start must be YYYY-MM"),
+            end: z.string().regex(/^\d{4}-\d{2}$/u, "workEvidence.period.end must be YYYY-MM"),
+          })
+          .strict()
+          .optional(),
+      })
+      .strict()
+      .optional(),
   })
   .strict();
 
@@ -107,6 +120,17 @@ export function parsePostFrontmatter(value: unknown, sourcePath: string): PostFr
   const description = normalizePostDescription(data.description, data.title, sourcePath);
   if (data.thumbnail) {
     assertThumbnailSource(data.thumbnail.src, data.thumbnail.alt, sourcePath);
+  }
+  if (data.workEvidence) {
+    if (!data.tags.includes("work-evidence")) {
+      throw new Error(`${sourcePath}: workEvidence is allowed only with the work-evidence tag`);
+    }
+    if (Number.isNaN(Date.parse(`${data.workEvidence.sortDate}T00:00:00Z`))) {
+      throw new Error(`${sourcePath}: workEvidence.sortDate must be a real calendar date`);
+    }
+    if (data.workEvidence.period && data.workEvidence.period.end < data.workEvidence.period.start) {
+      throw new Error(`${sourcePath}: workEvidence.period.end must not precede start`);
+    }
   }
   return {
     ...data,

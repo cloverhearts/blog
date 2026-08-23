@@ -12,10 +12,14 @@ tags:
   - research
 createdAt: 2026-08-17T02:30:11+09:00
 representativeImage: generated-card
+thumbnail:
+  src: "asset:/research-lab/llms-txt-for-sdk-docs/thumbnail-source.png"
+  alt: "本文から選択した記事の代表画像"
 draft: true
 ---
 
-![llms.txt文書を表す仮画像](https://placehold.org/1200x630/3F3F46/FAFAFA?text=llms.txt+for+SDK+Docs)
+![コマンドを実行したGNOME端末の画面](https://upload.wikimedia.org/wikipedia/commons/c/c5/GNOME_Terminal_3.32_screenshot.png)
+
 
 SDK文書は人が読みやすいように作られます。長いサイドバー、タブ、折りたたみ例、複数ページへのリンクがあります。人は画面を探索して文脈を復元できますが、AIが必要な部分を安定して取得するには不便な場合があります。
 
@@ -58,3 +62,5 @@ AI向け入口では次の情報が重要です。
 ## 参考資料
 
 - [The /llms.txt file](https://llmstxt.org/)
+
+*テスト画像の出典：[Wikimedia Commons — GNOME Project・VulcanSphere, GPLv3+](https://commons.wikimedia.org/wiki/File:GNOME_Terminal_3.32_screenshot.png)*

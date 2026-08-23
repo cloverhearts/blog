@@ -11,10 +11,15 @@ tags:
   - developer-career
 createdAt: 2026-08-17T02:30:11+09:00
 representativeImage: generated-card
+thumbnail:
+  src: "asset:/developer-life/ai-changes-developer-work/thumbnail-source.png"
+  alt: "本文から選択した記事の代表画像"
 draft: true
 ---
 
 ![AIと開発者の役割変化を表す仮画像](https://placehold.org/1200x630/1F2937/F9FAFB?text=AI+Changes+Developer+Work)
+
+::youtube{id="2GNIgiza-m0" title="YouTubeテスト動画"}
 
 AIがコードを書く様子を見ると、開発者の役割が急速に小さくなるように感じます。以前は時間がかかった実装が数文で作られることもあります。では、速い実装の周囲にどのような仕事が残るのでしょうか。
 

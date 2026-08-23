@@ -44,7 +44,7 @@ body or unsupported structured-data representations.
 Site-baseline conformance covers the production origin, Korean/English UX
 review priority with retained Japanese support, localized static primary
 navigation, GitHub Pages/Pro capacity headroom, invalid budget rejection,
-classless semantic shell/CSS behavior, Pretendard subset size, and static
+named-component semantic shell/CSS behavior, Pretendard subset size, and static
 fallbacks for every primary UX flow.
 
 The current executable scaffolding covers localized route and post-link

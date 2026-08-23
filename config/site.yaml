@@ -1,18 +1,35 @@
 # Shared site values. Production deployment values are injected and validated
 # by the build rather than hard-coded in a package.
-schemaVersion: 6
+schemaVersion: 7
 originEnvironmentVariable: "SITE_ORIGIN"
 basePathEnvironmentVariable: "SITE_BASE_PATH"
 production:
   origin: "https://blog.cloverhearts.com"
   basePath: ""
 identity:
-  name: "CloverHearts Blog"
+  name: "CloverHearts Labs"
   descriptions:
-    en: "A personal blog, portfolio, and showcase of completed work."
-    ko: "개인 블로그, 포트폴리오 및 작업 결과물을 게시합니다."
-    ja: "個人ブログ、ポートフォリオ、制作実績を公開します。"
-  authorName: "CloverHearts"
+    en: "Field notes on verifiable AI workflows, software systems, and everyday life."
+    ko: "검증 가능한 AI 워크플로와 소프트웨어 시스템, 그리고 일상을 기록합니다."
+    ja: "検証可能なAIワークフローとソフトウェアシステム、日々の暮らしを記録します。"
+  owner:
+    displayName: "CloverHearts"
+    shortBios:
+      en: "An AI workflow engineer writing about systems, experiments, and life beyond work."
+      ko: "AI Workflow Engineer로서 시스템과 실험, 일 밖의 삶을 기록합니다."
+      ja: "AI Workflow Engineerとして、システムと実験、仕事の外の暮らしを記録します。"
+    profileRoutes:
+      en: "/en/profile/"
+      ko: "/profile/"
+      ja: "/ja/profile/"
+    contacts:
+      - id: "github"
+        kind: "github"
+        labels:
+          en: "GitHub"
+          ko: "GitHub"
+          ja: "GitHub"
+        href: "https://github.com/cloverhearts"
 languages:
   default: "ko"
   source: "ko"

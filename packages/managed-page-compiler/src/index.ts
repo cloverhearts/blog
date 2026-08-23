@@ -42,6 +42,7 @@ export async function buildManagedPages(options: {
       if (!statSync(pageDirectory).isDirectory()) continue;
       const page = compileManagedPage(pageDirectory, options.config, options.mode, outputDirectory);
       if (options.mode === "production" && page.status !== "published") {
+        rmSync(resolve(outputDirectory, "pages", page.id), { recursive: true, force: true });
         continue;
       }
       pages.push(page);
@@ -143,6 +144,51 @@ function compileManagedPage(
   };
 }
 
+function profileJsonLd(
+  source: ReturnType<typeof parseManagedPageSourceConfig>,
+  config: ProjectConfig,
+): string {
+  const owner = config.site.identity.owner;
+  if (!Object.values(owner.profileRoutes).includes(source.route)) {
+    return "";
+  }
+  const language = source.language;
+  const profileUrl = config.resolvePublicUrl(owner.profileRoutes[language]);
+  const sameAs = owner.contacts.filter((contact) => contact.kind !== "email").map((contact) => contact.href);
+  return `<script type="application/ld+json">${JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "ProfilePage",
+    url: profileUrl,
+    name: source.title,
+    description: source.description,
+    mainEntity: {
+      "@type": "Person",
+      "@id": `${profileUrl}#person`,
+      name: owner.displayName,
+      url: profileUrl,
+      description: owner.shortBios[language],
+      ...(sameAs.length > 0 ? { sameAs } : {}),
+    },
+  })}</script>`;
+}
+
+function profileAlternateLinks(
+  source: ReturnType<typeof parseManagedPageSourceConfig>,
+  config: ProjectConfig,
+): string {
+  const owner = config.site.identity.owner;
+  if (!Object.values(owner.profileRoutes).includes(source.route)) {
+    return `    <link rel="canonical" href="${escapeHtml(config.resolvePublicUrl(source.route))}">`;
+  }
+  const links = (["ko", "en", "ja"] as const)
+    .map(
+      (language) =>
+        `    <link rel="alternate" hreflang="${language}" href="${escapeHtml(config.resolvePublicUrl(owner.profileRoutes[language]))}">`,
+    )
+    .join("\n");
+  return `    <link rel="canonical" href="${escapeHtml(config.resolvePublicUrl(source.route))}">\n${links}\n    <link rel="alternate" hreflang="x-default" href="${escapeHtml(config.resolvePublicUrl(owner.profileRoutes.ko))}">`;
+}
+
 function validateEntryCompatibility(source: ReturnType<typeof parseManagedPageSourceConfig>): void {
   if (source.kind === "application" && source.entry.format !== "typescript") {
     throw new Error(`${source.id}: application pages must use a typescript entry`);
@@ -174,6 +220,8 @@ function renderManagedHtml(
     <meta name="description" content="${escapeHtml(source.description)}">
     <meta name="robots" content="${source.robots === "index" ? "index,follow" : "noindex,follow"}">
     <title>${escapeHtml(source.title)}</title>
+${profileAlternateLinks(source, config)}
+    ${profileJsonLd(source, config)}
     <style>
       :root {
         --managed-return-background: Canvas;

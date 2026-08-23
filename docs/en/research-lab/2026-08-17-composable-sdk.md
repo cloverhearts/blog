@@ -13,10 +13,14 @@ tags:
   - documentation
 createdAt: 2026-08-17T02:30:11+09:00
 representativeImage: generated-card
+thumbnail:
+  src: "asset:/research-lab/composable-sdk/thumbnail-source.png"
+  alt: "Post representative image selected from the article"
 draft: true
 ---
 
-![Temporary illustration of a composable SDK](https://placehold.org/1200x630/164E63/CFFAFE?text=Composable+SDK)
+![Visual Studio Code editing multiple source files](https://upload.wikimedia.org/wikipedia/commons/7/79/Vscode_screenshot.png)
+
 
 Traditional SDK documentation is written for people. A developer reads the table of contents, finds an API, and combines examples into a feature. AI agents may use an SDK differently.
 
@@ -51,3 +55,5 @@ Small examples that can be copied and combined are often more useful than one la
 For human SDK users, a good guide explained the route. For agents, the shape of each material and the rules for combining it must also be explicit.
 
 Composable design is not an AI-only optimization. An SDK that is easy to read, test, and replace for people is also easier for an agent. Agent-friendly design begins by removing ambiguity.
+
+*Test image source: [Wikimedia Commons — Huzaifa abedeen, CC BY-SA 4.0](https://commons.wikimedia.org/wiki/File:Vscode_screenshot.png)*

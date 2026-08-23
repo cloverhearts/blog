@@ -12,10 +12,14 @@ tags:
   - research
 createdAt: 2026-08-17T02:30:11+09:00
 representativeImage: generated-card
+thumbnail:
+  src: "asset:/research-lab/measuring-ax/thumbnail-source.png"
+  alt: "Post representative image selected from the article"
 draft: true
 ---
 
-![Temporary illustration of measuring AI adoption](https://placehold.org/1200x630/1D4ED8/DBEAFE?text=Measuring+AI+Adoption)
+![Grafana dashboard displaying multiple metrics](https://upload.wikimedia.org/wikipedia/commons/5/59/Grafana_screenshot_%282018%29.png)
+
 
 Usage is the easiest number to collect when measuring AI adoption: accounts, prompts, and generated documents. As these numbers rise, it can look as if an organization’s AI transformation is progressing.
 
@@ -48,3 +52,5 @@ AI measurement can easily become individual surveillance. Ranking people by prom
 It is safer to aggregate changes by task type, reusable practices, and the maturity of verification procedures. Collect only the minimum information needed rather than full prompt contents.
 
 Usage volume can be a starting point, but it is not an AX scorecard. The real change appears in how people define, perform, and verify work.
+
+*Test image source: [Wikimedia Commons — Joel Kennedy, Public Domain](https://commons.wikimedia.org/wiki/File:Grafana_screenshot_(2018).png)*

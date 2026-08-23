@@ -84,6 +84,7 @@ export async function compileMarkdown(input: {
   const embeds: ExternalEmbedArtifact[] = [];
   const usedAssetIds = new Set<string>();
   const headingIds = new Set<string>();
+  const embedReplacements = new Map<string, string>();
 
   const rememberAsset = (logical: string): ResolvedAsset => {
     const resolved = resolveContentAsset(logical, input.assetsRoot, input.config, input.assetCache);
@@ -198,11 +199,12 @@ export async function compileMarkdown(input: {
         security: executed.rendered.security,
         outputHash: executed.outputHash,
       });
-      replaceWithHtml(
-        parent,
-        node,
-        `<figure data-embed-id="${escapeHtml(embedId)}" data-embed-plugin="${escapeHtml(executed.pluginId)}">${executed.rendered.staticHtml}<p><a href="${escapeHtml(executed.normalized.canonicalUrl)}">${escapeHtml(executed.normalized.title)}</a></p></figure>`,
+      const placeholder = `BLOGEMBEDPLACEHOLDER${embedReplacements.size}`;
+      embedReplacements.set(
+        `<p>${placeholder}</p>`,
+        `<figure data-embed-id="${escapeHtml(embedId)}" data-embed-plugin="${escapeHtml(executed.pluginId)}">${executed.rendered.staticHtml}<noscript><p><a href="${escapeHtml(executed.normalized.canonicalUrl)}">${escapeHtml(executed.normalized.title)}</a></p></noscript></figure>`,
       );
+      replaceWithParagraphText(parent, node, placeholder);
     }
   });
 
@@ -233,7 +235,13 @@ export async function compileMarkdown(input: {
     .use(rehypeSanitize, sanitizeSchema)
     .use(rehypeStringify)
     .run(tree as never);
-  const bodyHtml = String(await unified().use(rehypeStringify).stringify(file as never));
+  let bodyHtml = String(await unified().use(rehypeStringify).stringify(file as never));
+  for (const [placeholder, replacement] of embedReplacements) {
+    if (!bodyHtml.includes(placeholder)) {
+      throw new Error(`${input.sourcePath}: embed placeholder was lost during sanitization`);
+    }
+    bodyHtml = bodyHtml.replace(placeholder, replacement);
+  }
   if (/<script\b|on[a-z]+\s*=/iu.test(bodyHtml)) {
     throw new Error(`${input.sourcePath}: sanitized HTML still contains executable markup`);
   }
@@ -267,6 +275,14 @@ function replaceWithHtml(parent: MdNode | undefined, node: MdNode, html: string)
   }
   const index = parent.children.indexOf(node);
   parent.children[index] = { type: "html", value: html };
+}
+
+function replaceWithParagraphText(parent: MdNode | undefined, node: MdNode, value: string): void {
+  if (!parent?.children) {
+    throw new Error("Cannot replace a root markdown node");
+  }
+  const index = parent.children.indexOf(node);
+  parent.children[index] = { type: "paragraph", children: [{ type: "text", value }] };
 }
 
 function collectFragments(node: MdNode): readonly string[] {

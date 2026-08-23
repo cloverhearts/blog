@@ -15,9 +15,27 @@ const localizedLabelsSchema = z
   .strict()
   .transform((labels) => labels as Readonly<Record<"en" | "ko" | "ja", string>>);
 
+const ownerContactKindSchema = z.enum([
+  "linkedin",
+  "github",
+  "instagram",
+  "email",
+  "website",
+  "custom",
+]);
+
+export const ownerContactSchema = z
+  .object({
+    id: kebabIdSchema,
+    kind: ownerContactKindSchema,
+    labels: localizedLabelsSchema,
+    href: z.string().min(1),
+  })
+  .strict();
+
 export const siteConfigSchema = z
   .object({
-    schemaVersion: z.literal(6),
+    schemaVersion: z.literal(7),
     originEnvironmentVariable: z.string().min(1),
     basePathEnvironmentVariable: z.string().min(1),
     production: z
@@ -30,7 +48,20 @@ export const siteConfigSchema = z
       .object({
         name: z.string().min(1),
         descriptions: localizedLabelsSchema,
-        authorName: z.string().min(1),
+        owner: z
+          .object({
+            displayName: z.string().min(1),
+            shortBios: localizedLabelsSchema,
+            profileRoutes: z
+              .object({
+                en: z.string().min(1),
+                ko: z.string().min(1),
+                ja: z.string().min(1),
+              })
+              .strict(),
+            contacts: z.array(ownerContactSchema),
+          })
+          .strict(),
       })
       .strict(),
     languages: z
@@ -85,7 +116,7 @@ export const siteConfigSchema = z
 
 export const routesConfigSchema = z
   .object({
-    schemaVersion: z.literal(4),
+    schemaVersion: z.literal(5),
     trailingSlash: z.enum(["always", "never"]),
     paginationSegment: z
       .string()
@@ -98,6 +129,7 @@ export const routesConfigSchema = z
         tags: z.string().min(1),
         archive: z.string().min(1),
         search: z.string().min(1),
+        explore: z.string().min(1),
         notFound: z.string().min(1),
         assets: z.string().min(1),
         contentAssets: z.string().min(1),
@@ -107,10 +139,47 @@ export const routesConfigSchema = z
         llms: z.string().min(1),
       })
       .strict(),
+    curated: z.record(kebabIdSchema, z.string().min(1)),
     reservedPrefixes: z.array(z.string().min(1)),
     reservedFiles: z.array(z.string().min(1)),
   })
   .strict();
+
+export const curatedCollectionDefinitionSchema = z
+  .object({
+    routeKey: kebabIdSchema,
+    labels: localizedLabelsSchema,
+    descriptions: localizedLabelsSchema,
+    selector: z
+      .object({
+        anyTags: z.array(kebabIdSchema),
+        anyCategories: z.array(kebabIdSchema),
+        includeTranslationKeys: z.array(kebabIdSchema),
+        excludeTranslationKeys: z.array(kebabIdSchema),
+      })
+      .strict(),
+    order: z
+      .object({
+        primary: z.enum(["work-evidence-date", "created-at"]),
+        fallback: z.enum(["created-at"]),
+        direction: z.enum(["descending", "ascending"]),
+      })
+      .strict(),
+    presentation: z.enum(["work", "journal"]),
+    robots: z.enum(["index", "noindex"]),
+  })
+  .strict();
+
+export const curatedCollectionsConfigSchema = z
+  .object({
+    schemaVersion: z.literal(1),
+    collections: z.record(kebabIdSchema, curatedCollectionDefinitionSchema),
+  })
+  .strict();
+
+export type CuratedCollectionDefinition = z.infer<typeof curatedCollectionDefinitionSchema>;
+export type CuratedCollectionsConfig = z.infer<typeof curatedCollectionsConfigSchema>;
+export type OwnerContact = z.infer<typeof ownerContactSchema>;
 
 const taxonomyEntrySchema = z
   .object({

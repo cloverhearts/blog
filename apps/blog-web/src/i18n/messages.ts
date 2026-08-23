@@ -26,10 +26,42 @@ export interface BlogMessages {
   readonly revokeAnalytics: string;
   readonly search: string;
   readonly searchEmpty: string;
+  readonly searchHint: string;
+  readonly searchPlaceholder: string;
   readonly searchResultCount: string;
+  readonly searchClose: string;
+  readonly searchDialog: string;
+  readonly imagePreview: string;
+  readonly imagePreviewOpen: string;
+  readonly imagePreviewClose: string;
   readonly skipToContent: string;
   readonly tags: string;
   readonly tableOfContents: string;
+  readonly profile: string;
+  readonly explore: string;
+  readonly exploreDescription: string;
+  readonly recentPosts: string;
+  readonly logicalPostCount: string;
+  readonly pageContext: string;
+  readonly publishedOn: string;
+  readonly workPeriod: string;
+  readonly authorBy: string;
+  readonly heroEyebrow: string;
+  readonly heroTitle: string;
+  readonly heroDescription: string;
+  readonly authorRole: string;
+  readonly featuredPost: string;
+  readonly selectedWork: string;
+  readonly viewAll: string;
+  readonly browseDescription: string;
+  readonly emptyCollection: string;
+  readonly publishedLabel: string;
+  readonly readingTime: string;
+  readonly articleNavigation: string;
+  readonly previousPost: string;
+  readonly nextPost: string;
+  readonly recoveryLinks: string;
+  readonly allPostsCta: string;
 }
 
 export function blogMessages(language: SupportedLanguage): BlogMessages {
@@ -70,10 +102,42 @@ export const BLOG_MESSAGES: Readonly<Record<SupportedLanguage, BlogMessages>> = 
     revokeAnalytics: "Revoke analytics consent",
     search: "Search",
     searchEmpty: "No matching posts were found.",
+    searchHint: "Search titles, article text, and tags.",
+    searchPlaceholder: "Enter a search term",
     searchResultCount: "{n} results",
+    searchClose: "Close search",
+    searchDialog: "Search posts",
+    imagePreview: "Enlarged image",
+    imagePreviewOpen: "Open enlarged image",
+    imagePreviewClose: "Close enlarged image",
     skipToContent: "Skip to main content",
     tags: "Tags",
     tableOfContents: "Table of contents",
+    profile: "Profile",
+    explore: "Explore",
+    exploreDescription: "Browse categories, tags, and curated collections.",
+    recentPosts: "Recent posts",
+    logicalPostCount: "{n} posts",
+    pageContext: "Page {n}",
+    publishedOn: "Published",
+    workPeriod: "Work period",
+    authorBy: "By",
+    heroEyebrow: "Field notes from an AI workflow engineer",
+    heroTitle: "Building verifiable AI workflows",
+    heroDescription: "Notes on AI workflows, software systems, experiments, and the life around them.",
+    authorRole: "AI Workflow Engineer",
+    featuredPost: "Featured post",
+    selectedWork: "Selected work",
+    viewAll: "View all",
+    browseDescription: "Browse essays and experiments about AI workflows, software, data, and everyday life.",
+    emptyCollection: "There is nothing published in this collection yet.",
+    publishedLabel: "Published",
+    readingTime: "{n} min read",
+    articleNavigation: "Article navigation",
+    previousPost: "Previous post",
+    nextPost: "Next post",
+    recoveryLinks: "Where would you like to go?",
+    allPostsCta: "View all posts",
   },
   ko: {
     allowAnalytics: "분석 허용",
@@ -101,10 +165,42 @@ export const BLOG_MESSAGES: Readonly<Record<SupportedLanguage, BlogMessages>> = 
     revokeAnalytics: "분석 동의 철회",
     search: "검색",
     searchEmpty: "일치하는 포스트가 없습니다.",
+    searchHint: "제목, 본문과 태그에서 검색합니다.",
+    searchPlaceholder: "검색어를 입력하세요",
     searchResultCount: "결과 {n}개",
+    searchClose: "검색 닫기",
+    searchDialog: "포스트 검색",
+    imagePreview: "이미지 확대 보기",
+    imagePreviewOpen: "이미지 크게 보기",
+    imagePreviewClose: "이미지 확대 보기 닫기",
     skipToContent: "본문으로 건너뛰기",
     tags: "태그",
     tableOfContents: "목차",
+    profile: "프로필",
+    explore: "둘러보기",
+    exploreDescription: "카테고리, 태그, 큐레이션 모음을 살펴보세요.",
+    recentPosts: "최근 글",
+    logicalPostCount: "{n}편",
+    pageContext: "{n}페이지",
+    publishedOn: "발행일",
+    workPeriod: "작업 기간",
+    authorBy: "글쓴이",
+    heroEyebrow: "AI Workflow Engineer의 필드 노트",
+    heroTitle: "검증 가능한 AI 워크플로를 만듭니다",
+    heroDescription: "AI 워크플로와 소프트웨어 시스템, 직접 해본 실험과 그 곁의 일상을 기록합니다.",
+    authorRole: "AI Workflow Engineer",
+    featuredPost: "추천 글",
+    selectedWork: "주요 작업",
+    viewAll: "모두 보기",
+    browseDescription: "AI 워크플로, 소프트웨어, 데이터와 일상에 대한 실험과 기록을 모았습니다.",
+    emptyCollection: "아직 이 모음에 공개된 글이 없습니다.",
+    publishedLabel: "발행",
+    readingTime: "{n}분 읽기",
+    articleNavigation: "글 탐색",
+    previousPost: "이전 글",
+    nextPost: "다음 글",
+    recoveryLinks: "어디로 이동할까요?",
+    allPostsCta: "전체 글 보기",
   },
   ja: {
     allowAnalytics: "アクセス解析を許可",
@@ -132,9 +228,41 @@ export const BLOG_MESSAGES: Readonly<Record<SupportedLanguage, BlogMessages>> = 
     revokeAnalytics: "アクセス解析の同意を取り消す",
     search: "検索",
     searchEmpty: "一致する記事が見つかりません。",
+    searchHint: "タイトル、本文、タグを検索します。",
+    searchPlaceholder: "検索語を入力してください",
     searchResultCount: "{n}件",
+    searchClose: "検索を閉じる",
+    searchDialog: "記事を検索",
+    imagePreview: "画像の拡大表示",
+    imagePreviewOpen: "画像を拡大して表示",
+    imagePreviewClose: "画像の拡大表示を閉じる",
     skipToContent: "本文へ移動",
     tags: "タグ",
     tableOfContents: "目次",
+    profile: "プロフィール",
+    explore: "探す",
+    exploreDescription: "カテゴリー、タグ、キュレーションを一覧できます。",
+    recentPosts: "最近の記事",
+    logicalPostCount: "{n}件",
+    pageContext: "{n}ページ",
+    publishedOn: "公開日",
+    workPeriod: "実績期間",
+    authorBy: "著者",
+    heroEyebrow: "AI Workflow Engineerのフィールドノート",
+    heroTitle: "検証可能なAIワークフローをつくる",
+    heroDescription: "AIワークフロー、ソフトウェアシステム、実験、そしてその周りの日々を記録します。",
+    authorRole: "AI Workflow Engineer",
+    featuredPost: "注目の記事",
+    selectedWork: "主な実績",
+    viewAll: "すべて見る",
+    browseDescription: "AIワークフロー、ソフトウェア、データ、日々の暮らしに関する実験と記録です。",
+    emptyCollection: "このコレクションには、まだ公開された記事がありません。",
+    publishedLabel: "公開",
+    readingTime: "{n}分で読めます",
+    articleNavigation: "記事ナビゲーション",
+    previousPost: "前の記事",
+    nextPost: "次の記事",
+    recoveryLinks: "どこへ移動しますか？",
+    allPostsCta: "すべての記事を見る",
   },
 };

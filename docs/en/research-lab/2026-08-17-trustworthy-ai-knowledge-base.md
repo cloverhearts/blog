@@ -12,10 +12,14 @@ tags:
   - research
 createdAt: 2026-08-17T02:30:11+09:00
 representativeImage: generated-card
+thumbnail:
+  src: "asset:/research-lab/trustworthy-ai-knowledge-base/thumbnail-source.png"
+  alt: "Post representative image selected from the article"
 draft: true
 ---
 
-![Temporary illustration of a trustworthy AI knowledge base](https://placehold.org/1200x630/172554/DBEAFE?text=Trusted+AI+Knowledge+Base)
+![JupyterLab with notebooks and the file browser visible](https://upload.wikimedia.org/wikipedia/commons/7/74/Sample-jupyterlab-2021-06.png)
+
 
 Personal knowledge tools are often described as a “second brain”: collect everything, connect it later, and retrieve it when needed. This works reasonably well when a person reads the notes and restores their context.
 
@@ -55,3 +59,5 @@ A good knowledge base does not merely help AI sound fluent. It makes unsupported
 Each document can link to its source, while AI summaries begin as “unverified.” After a person reviews one, its state can change to “verified,” allowing later searches and automation to filter by trust level.
 
 If the goal of a second brain is not to forget, the goal of an AI knowledge base is not to remember incorrectly. That difference moves attention from collection volume to provenance and verification.
+
+*Test image source: [Wikimedia Commons — Fuzheado, CC BY-SA 4.0](https://commons.wikimedia.org/wiki/File:Sample-jupyterlab-2021-06.png)*

@@ -1,5 +1,5 @@
 ---
-import "../styles/classless.css";
+import "../styles/blog.css";
 
 interface NavigationLink {
   readonly href: string;
@@ -44,11 +44,11 @@ const {
     <title>{title}</title>
     <slot name="head" />
   </head>
-  <body>
-    <a data-skip-link href="#main">{skipLabel}</a>
-    <header>
-      <a href={homeHref}>{siteName}</a>
-      <nav aria-label={primaryNavigationLabel}>
+  <body class="page">
+    <a class="skip-link" data-skip-link href="#main">{skipLabel}</a>
+    <header class="site-header">
+      <a class="site-brand" href={homeHref}>{siteName}</a>
+      <nav class="primary-navigation" aria-label={primaryNavigationLabel}>
         <ul>
           {primaryNavigation.map((item) => (
             <li>
@@ -59,7 +59,7 @@ const {
           ))}
         </ul>
       </nav>
-      <nav aria-label={languageNavigationLabel}>
+      <nav class="language-navigation" aria-label={languageNavigationLabel}>
         <ul>
           {languageNavigation.map((item) => (
             <li>
@@ -78,7 +78,7 @@ const {
     <main id="main" tabindex="-1">
       <slot />
     </main>
-    <footer>
+    <footer class="site-footer">
       <slot name="footer" />
     </footer>
   </body>

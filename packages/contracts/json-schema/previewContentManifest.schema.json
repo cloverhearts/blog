@@ -7,7 +7,7 @@
       "properties": {
         "schemaVersion": {
           "type": "number",
-          "const": 7
+          "const": 8
         },
         "buildMode": {
           "type": "string",
@@ -266,6 +266,37 @@
             ],
             "additionalProperties": false
           },
+          "workEvidence": {
+            "type": "object",
+            "properties": {
+              "sortDate": {
+                "type": "string",
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+              },
+              "period": {
+                "type": "object",
+                "properties": {
+                  "start": {
+                    "type": "string",
+                    "pattern": "^\\d{4}-\\d{2}$"
+                  },
+                  "end": {
+                    "type": "string",
+                    "pattern": "^\\d{4}-\\d{2}$"
+                  }
+                },
+                "required": [
+                  "start",
+                  "end"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "sortDate"
+            ],
+            "additionalProperties": false
+          },
           "alternates": {
             "type": "array",
             "items": {
@@ -331,6 +362,150 @@
           "representativeImage",
           "alternates",
           "status"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "curatedCollections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "routeKey": {
+            "type": "string",
+            "minLength": 1
+          },
+          "route": {
+            "type": "string",
+            "minLength": 1
+          },
+          "labels": {
+            "type": "object",
+            "properties": {
+              "en": {
+                "type": "string",
+                "minLength": 1
+              },
+              "ko": {
+                "type": "string",
+                "minLength": 1
+              },
+              "ja": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "en",
+              "ko",
+              "ja"
+            ],
+            "additionalProperties": false
+          },
+          "descriptions": {
+            "type": "object",
+            "properties": {
+              "en": {
+                "type": "string",
+                "minLength": 1
+              },
+              "ko": {
+                "type": "string",
+                "minLength": 1
+              },
+              "ja": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "en",
+              "ko",
+              "ja"
+            ],
+            "additionalProperties": false
+          },
+          "presentation": {
+            "type": "string",
+            "enum": [
+              "work",
+              "journal"
+            ]
+          },
+          "robots": {
+            "type": "string",
+            "enum": [
+              "index",
+              "noindex"
+            ]
+          },
+          "count": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "translationKey": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "dateSource": {
+                  "type": "string",
+                  "enum": [
+                    "work-evidence",
+                    "created-at"
+                  ]
+                },
+                "sortDate": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "period": {
+                  "type": "object",
+                  "properties": {
+                    "start": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "end": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "start",
+                    "end"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "translationKey",
+                "dateSource",
+                "sortDate"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "id",
+          "routeKey",
+          "route",
+          "labels",
+          "descriptions",
+          "presentation",
+          "robots",
+          "count",
+          "items"
         ],
         "additionalProperties": false
       }
@@ -799,6 +974,7 @@
     "provenance",
     "languages",
     "posts",
+    "curatedCollections",
     "categories",
     "tags",
     "relatedPostIds",

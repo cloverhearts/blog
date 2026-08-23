@@ -88,6 +88,7 @@ config/
 ├── performance-budgets.yaml     # Pages capacity and route/media/font budgets
 ├── routes.yaml                  # Prefixes, system routes, reserved namespaces
 ├── taxonomy.yaml                # Category/tag labels and aliases
+├── curated-collections.yaml     # Generic curated post-collection registry
 ├── navigation.yaml              # Intentional blog and managed-page links
 ├── redirects.yaml               # Explicit route compatibility rules
 ├── security.yaml                # Static-document and direct page max policy
@@ -225,7 +226,17 @@ Provider plugin responsibilities:
 
 Unknown, disabled, duplicated, or policy-violating directives are content build errors. Network access during builds is denied by default. If a future plugin genuinely requires it, the request must be explicitly enabled, cached or frozen for reproducibility, and included in provenance.
 
-No provider plugin is implemented by this scaffold. Adding Google Maps, Naver Maps, or another provider later must not require changes to embed-core, the content compiler, or blog presentation code; it should require only a provider package, registry/configuration entry, content-rule syntax, and fixtures.
+The first reviewed provider is the local YouTube adapter. It accepts only the
+documented stable ID/title directive, performs no build-time network access,
+uses the privacy-enhanced frame origin, and declares its external-request
+privacy mode, iframe permissions, and normal-link fallback. The provider-neutral
+content compiler places that fallback in `noscript`, preserving no-JavaScript
+access without duplicating a visible link beneath a functioning frame. Adding Google Maps,
+Naver Maps, Vimeo, or another provider later must not require provider-specific
+changes to the content compiler or blog presentation code; it should require a
+provider package, registry/configuration entry, content-rule syntax, and
+fixtures. Embed-core retains provider-neutral validation of safe iframe
+attributes, exact declared origins, and permissions.
 
 ## Boundary ownership
 
@@ -572,18 +583,18 @@ Local development may watch several lanes together, but each command must keep i
 
 ## Change impact
 
-| Changed source | Required work | Must not require |
-| --- | --- | --- |
-| `docs/`, `assets/content/` | Content compile, blog render, search index, discovery, release assembly | Editing blog source |
-| `DESIGN.md`, `apps/blog-web/` | Blog render, search index, discovery, release assembly | Editing posts or managed pages |
-| One `managed-pages/<id>/` package | That managed-page build, discovery, release assembly | Editing or importing blog source |
-| `config/` route or URL policy | All affected validation/build lanes | Duplicating constants in each package |
-| `config/embeds.yaml` | Embed registry validation, content compile, downstream artifacts | Editing content compiler or blog UI |
-| `config/analytics.yaml`, `GA4_MEASUREMENT_ID` | Config validation and blog render | Rebuilding content or changing managed pages |
-| One `plugins/embeds/<id>/` package | That plugin's tests, content compile, downstream artifacts | Editing embed-core or blog UI |
-| `packages/contracts/` | All affected producers, consumers, fixtures | Silent compatibility assumptions |
-| `CONTENT_RULES.md` | Related schemas, validators, examples, provenance | Unsupported documented behavior |
-| `I18N.md` | Locale schemas, routes, UI/search/discovery behavior, provenance | Partial or browser-only localization |
+| Changed source                                | Required work                                                           | Must not require                             |
+| --------------------------------------------- | ----------------------------------------------------------------------- | -------------------------------------------- |
+| `docs/`, `assets/content/`                    | Content compile, blog render, search index, discovery, release assembly | Editing blog source                          |
+| `DESIGN.md`, `apps/blog-web/`                 | Blog render, search index, discovery, release assembly                  | Editing posts or managed pages               |
+| One `managed-pages/<id>/` package             | That managed-page build, discovery, release assembly                    | Editing or importing blog source             |
+| `config/` route or URL policy                 | All affected validation/build lanes                                     | Duplicating constants in each package        |
+| `config/embeds.yaml`                          | Embed registry validation, content compile, downstream artifacts        | Editing content compiler or blog UI          |
+| `config/analytics.yaml`, `GA4_MEASUREMENT_ID` | Config validation and blog render                                       | Rebuilding content or changing managed pages |
+| One `plugins/embeds/<id>/` package            | That plugin's tests, content compile, downstream artifacts              | Editing embed-core or blog UI                |
+| `packages/contracts/`                         | All affected producers, consumers, fixtures                             | Silent compatibility assumptions             |
+| `CONTENT_RULES.md`                            | Related schemas, validators, examples, provenance                       | Unsupported documented behavior              |
+| `I18N.md`                                     | Locale schemas, routes, UI/search/discovery behavior, provenance        | Partial or browser-only localization         |
 
 ## Contract tests and fixtures
 

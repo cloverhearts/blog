@@ -1,279 +1,394 @@
-# CloverHearts Blog Design System
+# CloverHearts Labs Design System
 
 ## Status and scope
 
-- Status: approved classless baseline; branded visual direction is deferred.
-- Scope: the normal blog experience rendered by `apps/blog-web/`.
-- Excluded scope: every package under `managed-pages/`; each managed page owns
-  its own local `DESIGN.md` and does not inherit this file.
-- Runtime role: source specification for people, Open Design, and coding agents.
-  This file is not shipped as page content and is not read in the browser.
+- Status: approved and implemented Open Design “Refined Current 01” direction.
+- Scope: the normal static blog rendered by `apps/blog-web/`.
+- Excluded: every package under `managed-pages/`; each managed page owns its
+  local `DESIGN.md` and never inherits this system.
+- Runtime: this is the Open Design-compatible source of truth for people and
+  implementation agents. Production does not require Open Design software or a
+  network service.
 
-This document follows the portable `DESIGN.md` approach used by Open Design. It
-is intentionally a source-level brand and interface contract rather than a
-framework configuration file. Open Design may create or refine the values in
-this file, but the repository remains buildable without an Open Design daemon,
-CLI, MCP server, account, or network connection.
+The site is a Korean-first editorial technical blog for CloverHearts, an
+**AI Workflow Engineer**. Its identity is “clear engineering notes”: bright,
+precise, calm, and human. The visual system supports real posts and validated
+artifacts; it never invents projects, metrics, testimonials, or publication
+content to fill a layout.
 
-## 1. Visual theme and atmosphere
+## 1. Visual direction
 
-The initial design is a restrained, classless reading interface. Semantic HTML
-receives useful defaults without a component-class visual system. Until a later
-owner-approved brand direction replaces it:
+The normal experience uses a white editorial canvas, clear green accents,
+measured type hierarchy, fine rules, numbered log rows, and generous
+whitespace. It should feel more like a carefully edited technical journal than
+a SaaS landing page. Faint workflow geometry may overlap the hero as atmosphere,
+but the written message always remains the primary visual object.
 
-- optimize first for calm, long-form reading in English, Korean, and Japanese;
-- keep post content visually primary over navigation and decoration;
-- do not introduce a generic AI-product aesthetic, decorative gradients,
-  glassmorphism, excessive cards, or invented brand motifs;
-- keep the blog visually coherent while allowing managed pages to be completely
-  independent experiences;
-- use native system colors, visible underlines, borders, whitespace, and type
-  hierarchy instead of decorative surfaces or brand imagery.
+Use:
 
-## 2. Color palette and semantic roles
+- white space and typographic contrast as the primary hierarchy;
+- one clear-green accent family for actions, status, and identity;
+- pale mint surfaces only for meaningful grouping;
+- restrained technical diagrams or terminal motifs made from local CSS/HTML;
+- straight edges or minimal `4px` rounding.
 
-The classless baseline follows the browser/operating-system light or dark
-preference through `color-scheme: light dark` and CSS system colors. It defines
-no independent brand palette. A later palette must retain these semantic roles.
+Avoid gradients, glassmorphism, decorative blur, excessive cards, large rounded
+containers, generic AI imagery, stock dashboard graphics, and animation that
+competes with reading. A surface is introduced only when a divider or spacing
+cannot communicate the relationship clearly.
 
-| Role          | Value                               | Purpose                           |
-| ------------- | ----------------------------------- | --------------------------------- |
-| `canvas`      | `Canvas`                            | Page background                   |
-| `surface`     | `Canvas`                            | Grouped content without elevation |
-| `text`        | `CanvasText`                        | Primary reading text              |
-| `text-muted`  | `GrayText`                          | Secondary information             |
-| `border`      | `color-mix(CanvasText 22%, Canvas)` | Dividers and controls             |
-| `accent`      | `LinkText`                          | Links and primary actions         |
-| `focus`       | `Highlight`                         | Keyboard focus indicator          |
-| `code-canvas` | `Canvas` + border                   | Code block background             |
-| `danger`      | system error semantics              | Destructive or invalid state      |
+## 2. Color tokens
 
-Every approved combination must meet the accessibility target in
-`QUALITY_GATES.md`. Do not use color as the only carrier of meaning.
+| Token | Light value | Role |
+| --- | --- | --- |
+| `--bg` | `#FFFFFF` | page and article canvas |
+| `--surface` | `#F6FBF8` | quiet grouped region |
+| `--text` | `#17211C` | primary text |
+| `--muted` | `#66736C` | descriptions and secondary UI |
+| `--tertiary` | `#829089` | dates and low-emphasis metadata |
+| `--primary` | `#12B76A` | identity and primary emphasis |
+| `--primary-dark` | `#087A4F` | accessible links and controls |
+| `--mint` | `#36D399` | terminal and small highlights |
+| `--primary-surface` | `#ECFDF3` | featured/quote background |
+| `--border` | `#DDE7E1` | normal rules |
+| `--border-strong` | `#C7D5CD` | controls and strong rules |
+| `--code-bg` | `#101A15` | terminal/code canvas |
+| `--code-text` | `#EAF7EF` | code text |
 
-## 3. Typography rules
+The dark palette follows `prefers-color-scheme: dark` and preserves the same
+semantic roles. Green is never the sole carrier of state. Text, icons, labels,
+or structure must also communicate meaning. Every interactive combination must
+meet WCAG 2.2 AA contrast targets.
 
-- Korean and English are the primary typography and UX review languages.
-- `Pretendard Variable` is the normal blog's primary UI/body family, supplied
-  by the pinned `pretendard` npm package and bundled by the web build. Production
-  HTML does not load a font stylesheet from a public CDN.
-- Use the variable dynamic subset so a document requests only the glyph slices
-  it uses. The initial route font transfer must meet
-  `config/performance-budgets.yaml`.
-- The fallback order is Pretendard, Apple/system UI sans-serif, then generic
-  `sans-serif`. Japanese remains supported and receives Japanese system-font
-  fallbacks before Pretendard where available.
-- Display, body, and UI use the same family in this baseline. Code uses the
-  platform monospace stack.
-- Body line height is `1.65`, heading line height is `1.25`, and the reading
-  measure is at most `48rem`. Browser defaults provide the remaining type scale.
+## 3. Typography
 
-Post body text remains readable with all custom fonts blocked. Pretendard is
-distributed under the SIL Open Font License; its exact package version is
-locked. Any copied font file and license would belong under the blog web layer,
-never `docs/`.
+- Primary UI and reading family: `Pretendard Variable`, bundled from the pinned
+  npm dependency using its dynamic subset; no public font CDN.
+- Fallbacks: Pretendard, Apple/system UI sans-serif, then `sans-serif`.
+- Japanese: Hiragino Sans and Yu Gothic UI precede Pretendard when available.
+- Code: the platform monospace stack.
+- Article body: the selected “spacious journal” hierarchy uses `18px` with
+  `1.82` line height on wide screens, `17px` with `1.78` on compact screens,
+  and a maximum `40rem` measure.
+- General interface: `16px`, approximately `1.7` line height.
+- Display headings: tight `1.06–1.24` line height and modest negative tracking.
+  The home hero uses weight `620`; post, collection, and list titles use `600`
+  so large Korean glyphs retain clear internal space instead of appearing
+  overly dense. Supporting headings generally use `620`.
 
-## 4. Spacing and layout principles
+Korean is the primary readability reference, with English and Japanese treated
+as equal static experiences. Long mixed-script identifiers, paths, and inline
+code must wrap without collapsing the reading column. Body copy remains
+readable when custom fonts fail.
 
-The baseline uses a fluid `1rem`–`1.5rem` page gutter, a `72rem` page frame,
-and a `48rem` reading measure. Navigation wraps naturally without a hamburger
-dependency. It introduces no grid or ornamental spacing scale; a future Open
-Design pass may refine these values without changing `UX_FLOW.md`.
+## 4. Page frame and navigation
 
-Invariant layout requirements:
+The desktop frame is at most `76rem` plus fluid gutters. The header is sticky,
+white, and separated by one fine rule. It contains:
 
-- primary post content follows a single, understandable reading order;
-- navigation remains usable without JavaScript;
-- headings and anchors are not obscured by sticky interface elements;
-- tables, code blocks, media, and embeds do not force page-wide horizontal
-  scrolling;
-- safe-area insets are respected where controls touch viewport edges.
-- target headings use sufficient `scroll-margin-block-start` so fragment
-  navigation is not hidden beneath sticky blog chrome.
+1. `CloverHearts Labs` wordmark link;
+2. All Posts, Selected Work, Daily Notes, Explore, and Search;
+3. explicit KO, EN, and JA links with a non-color current state.
 
-## 5. Components and interaction states
+The footer contains only the site identity, localized description, and optional
+analytics controls; it has no copyright line, Profile navigation, or Archive
+navigation.
+Primary navigation uses real links and works without JavaScript. On compact
+screens it becomes a horizontally scrollable second row; the language links
+remain visible. The DOM reading order is unchanged.
+The wordmark and language selector share a `44px` minimum row and the same
+vertical center. The named inner-header container uses `border-box`, keeping
+its declared width and fluid gutters inside the viewport without styling
+browser-injected controls.
+At the two-row header breakpoint, both controls are centered inside an explicit
+`64px` first grid row. The primary-navigation row follows without an additional
+grid gap, preventing its reserved second row from pulling the first-row content
+above the visible center.
+Every primary and language-navigation link uses the same centered `44px`
+interaction row. The active primary navigation state adds an independently
+positioned `1px` line approximately `5–6px` below the label, so selection never
+changes the label's height or vertical baseline. In the compact second row,
+every link keeps the same `48px` interaction height. Category and tag filter
+group labels share a `1.5` line-height baseline with their selectable items.
+The group labels retain full opacity, while selectable category and tag links
+rest at `50%` opacity and return to `100%` on hover or keyboard focus. Their
+pressed state uses the shared `68%` opacity feedback.
 
-The baseline styles semantic elements directly from
-`apps/blog-web/src/styles/classless.css`; data attributes are reserved for
-state/accessibility hooks such as the skip link and analytics consent. It does
-not create card, stack, grid, or utility class vocabularies. The rendered HTML
-and `UX_FLOW.md` must provide at least:
+## 5. Home page
 
-- global header, skip link, and primary navigation of Posts, Categories,
-  Tags, and Search;
-- a footer secondary Archive link that is not duplicated in the header;
-- post header, metadata, table of contents, body, and related-post links;
-- one optional compact post-language context region that may link the authored
-  original;
-- category, tag, archive, and pagination/list items with the localized
-  `description` and a 16:9 thumbnail (explicit override or representative
-  fallback), using empty image `alt` when the adjacent title shares the
-  same link;
-- search form, results, empty state, and no-JavaScript state;
-- links, buttons, inputs, code blocks, tables, quotes, notices, and downloads;
-- local media and provider-neutral embed containers;
-- 404 and other system states.
-- a persistent language switcher with real `en`, `ko`, and `ja` links, a clear
-  current-language state, and labels understandable without flags alone;
-- visibly and programmatically labeled fallback-language post summaries when a
-  collection cannot link to its active-language variant;
-- deterministic `1200 × 630` post-specific social cards for posts without a
-  user-approved `socialImage` or cover when deterministic card generation was
-  the owner-selected representative-image mode;
-- safe-crop rules for `1:1`, `4:3`, and `16:9` Article image derivatives and a
-  stable square favicon/identity asset.
+The hierarchy is fixed:
 
-Every interactive component documents default, hover, focus-visible, active,
-disabled, loading, empty, and error states when applicable. Hover must not be
-the only way to discover an action.
+1. Hero
+2. horizontal author introduction
+3. featured post
+4. recent posts
+5. selected work
 
-The post table of contents is generated as semantic navigation in the initial
-HTML. It uses normal fragment links supplied by the content artifact and works
-without JavaScript. The approved design must define:
+Desktop hero gives the message roughly `82%` of the frame and lets a pale,
+slightly rotated workflow trace occupy the right side behind it. The supporting
+paragraph remains substantially narrower so the title, description, and single
+underlined all-posts link form one clear reading path. The workflow trace is
+decorative and hidden from assistive technology.
 
-- a localized visible label and accessible name (`Table of contents`, `목차`,
-  or `目次`);
-- nested list treatment that preserves heading hierarchy without relying on
-  indentation alone;
-- desktop placement and a compact small-screen treatment that never hides the
-  only navigation path behind JavaScript;
-- current-section highlighting only as optional progressive enhancement;
-- fragment-link focus, target-heading visibility, long-label wrapping, and
-  print behavior.
+On mobile, the canvas remains white. The workflow trace becomes larger, fainter,
+and partially cropped behind the copy; it never becomes a dark terminal surface
+or an essential source of information. The title, description, and link retain
+their source order and contrast without the visual.
 
-When a post has fewer than two eligible headings, the renderer may omit the TOC
-container while retaining heading IDs and direct fragment navigation. Sticky
-behavior must not cover article content and must not be required to understand
-the hierarchy.
+The author row immediately establishes CloverHearts and the role “AI Workflow
+Engineer,” and keeps `1rem` of trailing space after its Profile action so the
+link does not touch the frame edge. Featured content gets one pale-mint
+editorial feature. Featured,
+Recent Posts, and Selected Work are separated from the preceding content by one
+responsive `3.5rem–5rem` block margin rather than a decorative top divider or
+stacked margin and padding. Recent Posts and Selected Work deliberately share
+one section-heading pattern and the same thin ruled log rows with a two-digit
+sequence, copy, and optional thumbnail. Empty states use localized, honest
+copy; no dummy project is created.
 
-A post may place one compact language-context region after the article body. It
-may identify and link the authored original. It never exposes review status or
-redirects the current route. When present, it must not rely on an icon, tooltip,
-or color alone and must remain legible in print.
+On wide screens the featured post uses an equal two-column composition: the
+approved or generated visual occupies the left half and the editorial summary
+occupies the right half. Both halves share one continuous pale-mint surface and
+the visual fills its half with `object-fit: cover`. At compact widths the visual
+and summary stack in the same source order.
 
-Social cards are presentation assets owned by this design system. The baseline
-uses a plain light canvas, dark text, one neutral border, Pretendard with locale
-fallbacks, a small site/category line, and the localized post title inside a
-fixed safe area. It contains no body excerpt, logo, portrait, illustration,
-gradient, or decorative texture. The renderer wraps without splitting a word
-when possible and truncates only after the tested locale-specific line limit.
-Open Design may later refine these values with approval. Cards remain legible
-at small preview sizes, and identical validated inputs produce identical pixels.
+The hero owns its minimum height and responsive block padding through its named
+`border-box` container, so padding does not create an unintended second band of
+empty space. The home page uses a compact `2.5rem–4rem` final content inset and
+a separate `2.5rem–4rem` footer transition; this preserves section hierarchy
+without producing an oversized blank area before the footer.
 
-Representative-image selection itself is editorial and follows
-`CONTENT_RULES.md`; this design contract only controls rendering after owner
-approval. Derivative crops preserve the approved focal subject, meaningful
-text, and faces. If one source cannot satisfy every required ratio, the design
-provides padding/background treatments or asks for a separately approved source
-rather than applying a misleading crop.
+## 6. Lists, discovery, and recovery
 
-## 6. Depth, elevation, and motion
+Post lists show only validated title, description, category, date, reading time,
+language fallback, and optional approved/derived thumbnail data. Filters contain
+only taxonomy values present in the current artifact; empty links are forbidden.
+All desktop post-list rows—including Home, All Posts, taxonomy, archive,
+curated, and related-post lists—use `44px / fluid copy / 35% thumbnail`
+columns. The right-aligned thumbnail fills the row vertically and crops with
+`object-fit: cover`, giving every collection the same visual rhythm as Home.
+List descriptions use a compact Korean-readable `1.6` line height, and their
+date/reading-time metadata begins `.75rem` below the description. Human-visible
+timestamps use `YYYY. MM. DD HH:mm`; date-only values use `YYYY. MM. DD`, and
+year-month work periods use `YYYY. MM`. Machine-readable `datetime` attributes
+retain the source ISO 8601 value. Mobile uses
+an index/copy row with the thumbnail at `16:9` beneath the copy, keeping each
+post as one semantic list item.
 
-The baseline uses no elevation, shadow, overlay, decorative animation, or
-autoplay motion. Borders and document flow communicate grouping. If a later
-visual direction introduces motion:
+Explore separates its introductory title/description from discovery content
+with a full-width fine rule. Curated collections appear first as two strong
+desktop cards with a green top rule, localized post count, dark title, muted
+description, and directional arrow. Categories and tags follow in two distinct
+columns; each has a dark section rule and full-row links whose dark labels and
+tertiary counts establish clear contrast. Cards and taxonomy columns stack to
+one column on compact screens. This keeps collections, categories, and tags
+visually related without presenting them as one undifferentiated grid.
+Pagination uses ordinary numbered links
+with a programmatic current state. On desktop, previous, numbered, and next
+controls remain in one centered horizontal flex row; compact screens may wrap
+that row without changing its semantic order.
 
-- use the smallest surface hierarchy that communicates structure;
-- define shadows, borders, overlays, and sticky layers as tokens;
-- keep reading and navigation usable when animation is disabled;
-- respect `prefers-reduced-motion` and avoid essential information conveyed
-  only through animation;
-- do not add autoplaying decorative motion to post pages.
+The 404 page is a calm recovery surface with an oversized dark-text “404,” a short
+localized explanation, and working routes back to home, posts, categories,
+tags, archive, and search. Search has a labeled form, result/empty states, a
+dialog enhancement, and a complete no-JavaScript browse fallback. The enhanced
+search uses a centered command-palette surface up to `48rem` wide: a compact
+title/ESC-close header, one large green-outlined query field, a truthful search
+scope hint, and full-row results composed of a small document mark, title,
+excerpt, and arrow. The document mark is a local inline SVG with a fixed
+`24 × 24` view box and current-color strokes; it must not depend on an icon font,
+external sprite, or pseudo-element approximation. Search must not invent or
+persist a “recent search” history.
+The palette becomes nearly full-viewport on mobile without creating horizontal
+overflow.
 
-## 7. Voice, content presentation, and brand behavior
+There is no newsletter or subscription interface.
 
-- The interface voice is concise, calm, and direct.
-- UI labels do not exaggerate, advertise, or invent authority.
-- Post prose remains owned by Markdown content and is not rewritten by the
-  presentation layer.
-- Korean is the default and no-JavaScript fallback language. English and
-  Japanese are equal first-class static experiences. Latin code, paths, and
-  identifiers must remain legible within Korean and Japanese text.
-- Navigation, pagination, search, taxonomy, consent, error, and accessibility
-  copy must come from the active locale; components must not hard-code Korean.
-- Dates, categories, tags, reading time, and related links are presented from
-  validated artifacts rather than inferred in components.
+## 7. Post page and long-form content
 
-## 8. Responsive, accessibility, and print behavior
+The post header is centered on wide screens and contains breadcrumb, category,
+title, description, author, publication date, reading time, and tags. The
+title uses the full `47.5rem` post-header measure so long Korean titles form
+fewer, more natural lines. Explicit `.875rem` top and `1.375rem` bottom margins
+plus a small block inset separate it from the category and description. Its
+responsive scale is `34–48px` on wide layouts and `30px` on compact screens.
+The supporting description uses `16px / 1.7` and the same `40rem` measure as
+the article body so it remains clearly subordinate and aligned. The category link is
+presented without an underline. Header metadata uses the same
+compact `0.75rem` scale as the tags with a lighter weight, while each tag is a
+separate low-contrast outlined chip with enough inset space to scan as an
+individual item. Every tag chip is a normal localized link to that tag's
+listing page. On wide screens the author/date/reading-time row uses the full
+`40rem` reading measure without wrapping; compact screens may wrap the row to
+avoid overflow. The
+article area can use:
 
-The classless baseline is fluid and needs no layout breakpoint: navigation
-wraps and document widths use `min()`/`clamp()`. A richer design must define
-concrete breakpoints and component transformations and satisfy
-`QUALITY_GATES.md`.
+- left: table of contents;
+- center: article body;
+- right: compact author context.
 
-- The site works with keyboard, touch, zoom, and screen readers.
-- Focus is visible and reading order matches DOM order.
-- Post content and primary navigation are present without client-side
-  JavaScript.
-- Small screens retain full post meaning and usable navigation.
-- Language switching remains keyboard/touch accessible and shows the current
-  language without relying on color. Browser language never redirects or
-  replaces the requested document; explicit language changes use normal links.
-- Print output removes nonessential navigation and preserves article hierarchy,
-  URLs, code, tables, and meaningful media.
-- Light/dark follows the operating-system preference through CSS system colors;
-  a branded palette or manual theme control requires later approval.
+The wide article frame uses approximately `132px / 640px / 132px` columns with
+`28px` gaps. The center remains the only primary reading column. At tablet width the author
+context moves below it. On mobile, the TOC is a native `details` region before
+the body and the author context follows the article. TOC fragment links use the
+compiler-emitted anchors verbatim and work without JavaScript. A TOC is omitted
+only when no eligible heading exists.
 
-## 9. Do, do not, and protected decisions
+The post header leaves a clear `3rem` transition into the reading frame. TOC
+and author rails begin with matching inset spacing, while the author identity
+uses explicit internal gaps rather than collapsed paragraph margins. The
+article, original-language reference, previous/next navigation, and related
+posts are separated as distinct reading phases with approximately `4–4.5rem`
+of vertical space on wide screens and `3.5rem` on compact screens. A leading
+article image starts flush with the reading column rather than adding an empty
+top margin.
 
-Do:
+Article images remain ordinary readable media without JavaScript. With the
+post enhancement loaded, an unlinked article image becomes a pointer- and
+keyboard-operable zoom target. It opens in a large native modal dialog with a
+contained image, a transparent dialog surface over a blurred `30%` white
+backdrop, localized top-right close control, and native Escape dismissal;
+closing returns focus to the source image. The caption sits `.75rem` directly
+below the image with `1rem` padding on a `50%` white surface and stable dark
+text. Linked images retain their original link behavior and are not
+intercepted.
 
-- derive implementation tokens from approved values in this file;
-- prefer semantic HTML and CSS over client-side layout logic;
-- use representative English, Korean, and Japanese content—including long
-  labels and mixed-script code—when reviewing layouts;
-- check a post, taxonomy page, search page, and 404 page in all three languages
-  before accepting a system-wide design change.
+Article rules:
 
-Do not:
+- paragraphs, lists, and headings follow the `40rem` measure;
+- wide prose uses `18px` Pretendard at a Korean-readable `1.82` line height,
+  while compact prose uses `17px / 1.78`; both use `1.55em` separation after
+  paragraphs and other prose blocks so line
+  spacing and paragraph spacing remain visually distinct;
+- H2 uses `30px / 1.38`, weight `600`, generous top spacing, and a fine bottom
+  rule; H3 uses `23px / 1.4` at the same weight;
+- code uses a dark, horizontally scrollable surface;
+- inline code uses a pale mint highlight;
+- quotes use a mint surface and green left rule;
+- tables scroll inside their own width rather than the page;
+- images, video, screenshots, diagrams, and embeds are responsive;
+- YouTube/provider embeds preserve `16:9`; their durable normal-link fallback
+  is exposed only inside `noscript`, avoiding a duplicate visible link beneath
+  a working player;
+- captions remain visually secondary but readable;
+- previous/next and related posts follow the article, never interrupt it;
+- each previous/next link places its localized direction label on a separate
+  line above the post title with a small explicit gap;
+- previous and next links occupy separate equal-width bordered regions on wide
+  screens and stack on compact screens. Their compact title uses `0.9375rem`;
+  each region rests at `50%` opacity and transitions to `100%` on hover or
+  keyboard focus, while retaining a visible boundary at rest.
 
-- copy the visual identity or proprietary assets of a third-party brand without
-  authorization;
-- make a downloaded Open Design package authoritative without reviewing its
-  license, provenance, fonts, imagery, and anti-patterns;
-- apply this design automatically to a managed page;
-- introduce a visual token only in component code without recording it here;
-- change content metadata or Markdown authoring rules through a visual change.
+Images are not forced into a decorative crop inside article prose. Screenshots
+may use their intrinsic ratio. Unsupported or missing media falls back to the
+content pipeline’s accessible link/text contract.
 
-Protected decisions requiring owner approval:
+## 8. Interaction, accessibility, and motion
 
-- primary palette and accent;
-- font families and externally hosted fonts;
-- logo, wordmark, portrait, or signature brand imagery;
-- any override of the approved operating-system light/dark behavior;
-- major home-page composition and navigation model.
+All actions have default, hover, focus-visible, active, disabled, loading,
+empty, and error behavior where applicable. Focus uses a visible green outline
+with sufficient offset. Hover is never the only indication of action. Touch
+targets are at least `44px` high where controls are used.
 
-The current classless values are an approved temporary baseline, not approval
-for an agent to invent branded replacements. `UX_FLOW.md` owns the current
-home, discovery, reading, search, recovery, and managed-page transition flow.
+Primary content, navigation, localization, TOC, pagination, recovery, and
+managed-page return links are available in static HTML. JavaScript enhances
+search and optional post-image enlargement without replacing static content.
+Requested routes are never redirected based on browser language.
 
-## 10. Open Design handoff and agent prompt guide
+Motion is limited to native scrolling and tiny state transitions. Links animate
+color, underline color/offset, and opacity over `180ms`; their active state
+briefly lowers opacity to communicate activation without moving surrounding
+content. Enabled buttons and disclosure controls rise by `1px` on hover and
+press by `1px` with a restrained `0.985` scale on activation. Form-field borders
+transition to green on pointer hover. These effects never alter layout, and the
+stylesheet honors `prefers-reduced-motion: reduce`. Decorative autoplay,
+parallax, and essential animated explanations are forbidden.
 
-When using Open Design for the blog:
+Post-list rows expose one full-card link covering the index, category, title,
+description, metadata, and thumbnail instead of limiting activation to the
+title. The index and copy rest at `50%` opacity while the thumbnail rests at
+`85%`; all transition to full opacity on pointer hover or keyboard focus. The
+featured post follows the same one-link pattern, with `50%` copy and `85%`
+visual opacity transitioning to full opacity. Images never scale or change the
+card geometry during interaction, so focus is communicated through contrast
+without spatial motion. Reduced-motion preferences still suppress transition
+duration. Recent Posts and Selected Work place `1rem` of vertical inset between
+each divider and its card so adjacent thumbnails never touch. The hero's
+underlined all-posts action keeps its rule immediately beneath the text rather
+than using control-height padding as visual spacing.
 
-1. Use the repository root as the project and this file as the active design
-   system.
-2. Preserve the status, scope, invariants, accessibility requirements, and
-   protected decisions above.
-3. Fill pending tokens only from an owner-approved direction or supplied brand
-   evidence.
-4. Keep optional Open Design exports under `design/open-design/` until reviewed.
-5. Promote approved runtime tokens to the blog application's style source; do
-   not make production builds call Open Design.
-6. Update this file in the same change as a system-wide visual implementation
-   change.
-7. Record third-party design-system provenance and license in the section below.
+## 9. Responsive and print behavior
 
-For a managed page, open that page directory as the Open Design project and use
-its local `DESIGN.md`; never use this root file as an implicit fallback.
+- Wide: full header, overlapping editorial hero, numbered log rows, and
+  three-region post layout.
+- `≤64rem`: navigation moves to a scrollable second row; post author moves
+  below the reading column.
+- `≤57.5rem`: TOC and article move into a single reading flow and the author
+  context follows the article.
+- `≤38.75rem`: white mobile hero with faint cropped workflow geometry,
+  index/copy post rows with stacked media, centered post header, inline TOC,
+  and stacked search and pagination controls.
+
+At 200% zoom, controls and text reflow without two-dimensional page scrolling.
+Safe-area insets are respected when a future fixed control touches a viewport
+edge.
+
+Print removes site chrome, search UI, TOC, author rail, and article navigation;
+it preserves article hierarchy, code, tables, quotes, meaningful media, and
+readable links. Large semantic blocks avoid breaking across pages when practical.
+
+## 10. Social cards and media identity
+
+Generated post cards use the same white, dark-text, green-rule system with a
+fixed safe area and locale-aware Pretendard fallback. They contain the site or
+category line and localized title, not body excerpts, portraits, gradients, or
+invented illustrations. Output is deterministic and remains legible at small
+preview sizes.
+
+Representative-image selection remains editorial and follows
+`CONTENT_RULES.md`. The renderer may create required `1:1`, `4:3`, and
+`16:9` derivatives only after the source/mode is approved. Crops preserve
+meaningful text, faces, and the selected focal subject.
+
+## 11. Open Design and implementation handoff
+
+Open Design is an authoring aid, not a runtime dependency. The approved
+“Refined Current 01” owner-supplied export is the reference composition for
+this version:
+
+1. open the repository root and use this file for normal blog work;
+2. preserve the semantic HTML and no-JavaScript reading contract;
+3. export unreviewed work under `design/open-design/`;
+4. promote approved tokens and layouts to
+   `apps/blog-web/src/styles/blog.css` and the static renderer;
+5. update this file and tests in the same design change;
+6. use a managed page’s local `DESIGN.md` for that page.
+
+Do not introduce a token only in component code, copy a third-party identity,
+or change content schemas through a visual task. Major changes to palette,
+font, navigation model, home composition, logo/portrait, or OS theme behavior
+require explicit owner approval.
+
+The normal blog uses descriptive component classes such as `site-header`,
+`home-hero`, `post-card`, and `post-layout`. CSS must not use `data-*` hooks as
+component selectors; those attributes are reserved for runtime state,
+enhancement, indexing, and test observability. Presentation remains in the
+external `blog.css` stylesheet, with no generated inline `<style>` blocks or
+`style` attributes. Typography element defaults remain scoped to the blog-owned
+header, `#main`, footer, search dialog, image viewer, consent UI, and skip link.
+Control resets, minimum target sizes, button surfaces, field motion, box-sizing,
+and reduced-motion overrides apply only to explicit `site-control` classes and
+named blog interactions. Descendant universal selectors and generic
+`button`/`input`/`summary` selectors are forbidden because third-party browser
+overlays and annotation controls may be injected inside blog surfaces.
 
 ## Provenance and licenses
 
-- Pretendard `1.3.9`, by Kil Hyung-jin and contributors, is consumed from the
-  pinned npm package under the SIL Open Font License 1.1. The web build imports
-  `dist/web/variable/pretendardvariable-dynamic-subset.css`; no font files are
-  modified and no CDN is contacted at runtime.
-
-No external design system, icon library, or brand asset has been adopted yet.
-Record each future source, version or commit, license, local asset path, and
-material modification here before use.
+- Pretendard `1.3.9`, Kil Hyung-jin and contributors, SIL Open Font License
+  1.1. It is consumed from the pinned npm package and no CDN is contacted.
+- The white/clear-green direction and “Refined Current 01” reference composition
+  were supplied and approved by the repository owner in the 2026-08 Open Design
+  handoff. Its HTML and handoff notes were reviewed as design input only; they
+  are not production code or dependencies.
+- No external design system, icon library, remote image, or third-party brand
+  asset is part of this implementation.

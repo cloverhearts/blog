@@ -1,7 +1,11 @@
 # Build-time embed plugin registry and global safety policy.
-# No provider plugin is installed or enabled yet.
 schemaVersion: 1
-plugins: []
+plugins:
+  - id: "youtube"
+    package: "@cloverhearts/embed-youtube"
+    enabled: true
+    configuration:
+      embedOrigin: "https://www.youtube-nocookie.com"
 policy:
   allowRemotePluginPackages: false
   allowNetworkDuringBuild: false

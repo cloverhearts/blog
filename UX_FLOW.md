@@ -3,9 +3,9 @@
 ## Status and priorities
 
 This is the authoritative interaction and information-architecture baseline for
-the normal blog. The initial visual treatment is deliberately classless and
-minimal; content discovery, reading continuity, localization, accessibility,
-and no-JavaScript behavior take priority over branding.
+the normal blog. The visual treatment uses named presentation classes over
+semantic static HTML; content discovery, reading continuity, localization,
+accessibility, and no-JavaScript behavior take priority over decoration.
 
 Korean and English are the primary UX review languages. Japanese remains a
 fully supported published locale and must pass structural, overflow, navigation,
@@ -18,13 +18,13 @@ Every normal blog document uses the same semantic order in its initial HTML:
 
 1. skip link to `main`;
 2. site header containing a home link;
-3. primary navigation: Posts, Categories, Tags, Search;
+3. primary navigation: All Posts, Selected Work, Daily Notes, Explore, Search;
 4. language navigation with real links and a programmatically identified
    current language;
 5. one `main` landmark containing the route-specific task;
-6. site footer containing one localized Archive link as a secondary
-   chronological index, plus analytics controls only when analytics is
-   configured.
+6. site footer containing identity, localized description, copyright, and
+   analytics controls only when analytics is configured; it contains no
+   Profile or Archive navigation.
 
 The header does not require a hamburger menu for the baseline. Links wrap on
 small screens. A later compact navigation control may enhance the same links,
@@ -44,9 +44,10 @@ but the links remain present and usable when JavaScript or CSS is unavailable.
 
 The home page answers three questions without interaction: what this site is,
 what was published recently, and how to browse all work. It exposes recent
-posts plus direct links to Posts, Categories, Tags, Search, and any
-owner-selected managed page such as a profile. Archive remains a secondary
-chronological index, reachable from the footer and from search/404 recovery.
+posts plus the author introduction and Profile link, then All Posts, Selected
+Work, Daily Notes, Explore, and Search. Categories and Tags remain available
+from Explore and their existing static routes. Archive remains a secondary
+chronological index, reachable from search/404 recovery rather than the footer.
 
 Collection pages follow one pattern:
 
@@ -58,6 +59,10 @@ Collection pages follow one pattern:
   and later pages under `/page/<n>/` using the shared `listings.pageSize` of
   10 logical post groups;
 - empty states that link back to broader discovery surfaces.
+
+Each rendered post row is one normal link across its index, title, description,
+metadata, and thumbnail. Keyboard focus and pointer hover apply to the same
+target, while the initial HTML remains fully navigable without JavaScript.
 
 Each logical post appears at most once in a collection. Its link and summary
 use the current page language when that variant is published, otherwise
@@ -74,7 +79,8 @@ one ambiguous filter interface.
 A post presents, in order:
 
 1. title and localized description;
-2. publication/modification dates, category, tags, and reading time;
+2. publication/modification dates, category, tags, and reading time; every tag
+   chip is a normal localized link to its tag collection;
 3. representative media when approved;
 4. semantic table of contents when at least two eligible headings exist;
 5. article body with stable heading anchors;
@@ -86,6 +92,12 @@ The table of contents and all post navigation are normal links in initial HTML.
 No sticky treatment may cover a fragment target. Reading progress, current-TOC
 highlighting, and similar conveniences are optional enhancements and never
 replace the static structure.
+
+Article images remain visible in initial HTML. When the optional image-viewer
+enhancement loads, unlinked images open a native modal enlargement by pointer,
+Enter, or Space. The dialog provides a localized close button, native Escape
+dismissal, a blurred backdrop, and focus restoration to the originating image.
+Images that are already links keep their authored destination.
 
 The optional language-context region sits after the article body when the
 chosen UX enables it. It may identify and link the authored original. It never
@@ -100,9 +112,15 @@ result list, clear empty state, and keyboard-reachable results. It does not
 search until the user enters a query and does not send queries to a server or
 analytics.
 
-Without JavaScript, the search page explains the limitation and provides normal
-links to Categories, Tags, and Archive. Search never becomes the only route to
-published content.
+The Search primary item is a real `/search/` link. When the client enhancement
+loads, that same control opens an accessible in-page dialog over the current
+document. Without JavaScript, or when enhancement fails, the link opens the
+search route. That route explains the limitation and provides normal links to
+Categories, Tags, and Archive. Search never becomes the only route to
+published content. The dialog initially shows a localized scope hint rather
+than fabricated suggestions or saved query history. After submission, every
+result is one full keyboard-reachable link containing its title and excerpt.
+The close control and native Escape behavior return focus to the Search link.
 
 ## Managed-page flow
 
@@ -114,8 +132,9 @@ otherwise.
 
 ## Error and recovery flow
 
-- A 404 document names the failure plainly and offers Home, Posts, Categories,
-  Tags, Archive, Search, and language links.
+- A 404 document names the failure plainly and offers Home, All Posts, Selected
+  Work, Daily Notes, Explore, Categories, Tags, Archive, Search, and language
+  links.
 - Empty category, tag, archive, related-post, and search states are valid UI
   states rather than rendering errors.
 - Blocked fonts, analytics, embeds, images, or JavaScript never remove primary
