@@ -452,9 +452,14 @@ function renderHome(
   const recent = listed;
   const work = collections.find((collection) => collection.id === "work");
   const selected = work ? postsForCollection(language, posts, work).slice(0, 5) : [];
+  const heroVisualPost = selected[0] ?? featured;
+  const heroThumbnail = heroVisualPost ? presentation.get(heroVisualPost.id)?.thumbnail : undefined;
   const profileHref = withBasePath(config.resolved.basePath, config.site.identity.owner.profileRoutes[language]);
   const postsHref = withBasePath(config.resolved.basePath, config.localizeRoute(language, config.routes.paths.posts));
   const workHref = withBasePath(config.resolved.basePath, config.localizeRoute(language, config.routes.curated.work ?? "/work/"));
+  const heroVisual = heroThumbnail
+    ? `<div class="home-hero__visual" data-home-hero-visual aria-hidden="true"><img class="home-hero__image" src="${escape(heroThumbnail.src)}" srcset="${escape(heroThumbnail.srcset)}" sizes="(max-width: 38.75rem) calc(100vw - 2.5rem), 40rem" width="${heroThumbnail.width}" height="${heroThumbnail.height}" alt="" loading="eager" decoding="async" data-hero-thumbnail="${heroThumbnail.source}"></div>`
+    : "";
   const hero = `<section class="home-hero" data-home-hero>
     <div class="home-hero__copy" data-home-hero-copy>
       <p class="eyebrow" data-eyebrow>${escape(messages.heroEyebrow)}</p>
@@ -462,12 +467,7 @@ function renderHome(
       <p>${escape(messages.heroDescription)}</p>
       <p class="hero-actions" data-hero-actions><a class="primary-action" data-primary-action href="${postsHref}">${escape(messages.allPostsCta)} <span aria-hidden="true">→</span></a></p>
     </div>
-    <div class="home-hero__visual" data-home-hero-visual aria-hidden="true">
-      <span><b>INPUT</b><code>context.collect()</code></span>
-      <span><b>PROCEDURE</b><code>workflow.execute()</code></span>
-      <span><b>OUTPUT</b><code>artifact.render()</code></span>
-      <span><b>VERIFY</b><code>result.check()</code></span>
-    </div>
+    ${heroVisual}
   </section>`;
   const author = `<section class="author-intro" data-author-intro>
     <div class="author-monogram" data-author-monogram aria-hidden="true">CH</div>
@@ -475,7 +475,7 @@ function renderHome(
     <a href="${profileHref}" rel="author">${escape(messages.profile)} <span aria-hidden="true">→</span></a>
   </section>`;
   const featuredHtml = featured
-    ? `<section class="home-section home-featured" data-home-featured><div class="section-heading" data-section-heading><div><p class="eyebrow" data-eyebrow>${escape(messages.featuredPost)}</p><h2>${escape(featured.title)}</h2></div><a href="${postsHref}">${escape(messages.viewAll)} <span aria-hidden="true">→</span></a></div>${renderFeaturedPost(config, language, featured, presentation)}</section>`
+    ? `<section class="home-section home-featured" data-home-featured><div class="section-heading" data-section-heading><h2>${escape(messages.featuredPost)}</h2><a href="${postsHref}">${escape(messages.viewAll)} <span aria-hidden="true">→</span></a></div>${renderFeaturedPost(config, language, featured, presentation)}</section>`
     : `<section class="home-section home-featured" data-home-featured><h2>${escape(messages.featuredPost)}</h2><p class="empty-state" data-empty-state>${escape(messages.emptyCollection)}</p></section>`;
   const recentHtml = `<section class="home-section home-recent" data-home-recent><div class="section-heading" data-section-heading><h2>${escape(messages.recentPosts)}</h2><a href="${postsHref}">${escape(messages.viewAll)} <span aria-hidden="true">→</span></a></div>${renderPostList(config, language, recent, presentation, false, undefined, { headingLevel: 3, wideThumbnail: true })}</section>`;
   const workHtml = `<section class="home-section home-work" data-home-work><div class="section-heading" data-section-heading><h2>${escape(work ? localizedText(work.labels, language) : messages.selectedWork)}</h2><a href="${workHref}">${escape(messages.viewAll)} <span aria-hidden="true">→</span></a></div>${renderPostList(config, language, selected, presentation, false, undefined, { headingLevel: 3, wideThumbnail: true })}</section>`;

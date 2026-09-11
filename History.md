@@ -4,6 +4,164 @@ This file records non-routine changes to the blog project. Entries are ordered
 newest first and use the `Asia/Seoul` timezone. Routine post authoring is omitted
 unless it changes shared content behavior, routes, schemas, or project rules.
 
+## 2026-09-11T17:41:11+09:00 — Production deployment checkpoint
+
+- Change type: Owner-authorized commit, push, and deployment checkpoint.
+- Scope: All pending tracked home/design, Applied AI Engineer branding,
+  responsive article-spacing, Pages/Quality workflow, documentation, and test
+  changes recorded below. Temporary `outputs/` authoring copies remain local.
+- Validation: The preceding completed validation passed 95/95 tests, type
+  checking, and root plus `/blog` production builds and Pages verification;
+  the pre-commit whitespace check passed. No source behavior changed since
+  those checks. All source posts remain drafts under existing publication rules.
+- Deployment state at checkpoint: Remote main matches the local parent commit.
+  GitHub Pages uses workflow deployment. Custom-domain registration was retried
+  and again rejected as already taken. None of the accessible Pages-enabled
+  repositories returned that domain. The live HTTPS domain currently returns
+  GitHub's 404. CI and deployment results will be verified after push; this entry
+  does not claim a successful release or completed custom-domain association.
+
+## 2026-09-11T17:36:22+09:00 — Custom-domain deployment prepared
+
+- Change type: Pages workflow configuration, CI portability correction,
+  test-fixture lifecycle correction, bilingual deployment documentation, and
+  policy traceability.
+- Reason: The owner requested GitHub deployment configuration for
+  `https://blog.cloverhearts.com`. The origin and main-branch Pages workflow
+  already existed, but the README incorrectly described deployment as absent.
+  Quality CI rebuilt only the web lane for `/blog` before checking the old root
+  release. The latest remote Quality run also timed out while constructing the
+  shared pagination fixture inside the first two 5-second test windows.
+- Scope/result: Pages explicitly verifies `dist/` before upload and grants
+  deployment write permissions only to the deployment job. Quality builds root
+  and `/blog` variants in separate matrix jobs through every production lane.
+  The shared pagination fixture now builds in a bounded 30-second `beforeAll`
+  hook; all existing assertions and individual test limits remain intact.
+  README deployment instructions now include domain registration, DNS, HTTPS,
+  and draft exclusion. Workflow contracts are mapped in policy coverage.
+- Validation: Focused implementation-stack, pagination-navigation,
+  site-baseline, and policy-governance suites passed 25/25; type checking
+  passed; the full suite passed 95/95 across 20 files. Complete root and `/blog`
+  production builds and their matching `verify:pages` commands passed. The
+  root build was run last and contains zero published posts. The added case is
+  `deploys only a verified custom-domain release and isolates portability builds`.
+- External result / follow-up: GitHub reports `cloverhearts/blog` as a public
+  repository using workflow Pages, with no custom domain. Setting the requested
+  domain returned HTTP 400 because it is already taken by another Pages site;
+  the attempted update did not succeed. DNS A records resolve to GitHub Pages.
+  Domain ownership verification or release of the existing association remains
+  necessary. No DNS mutation, commit, push, or deployment was performed.
+
+## 2026-09-11T17:36:22+09:00 — Post sidebar spacing made responsive
+
+- Change type: Owner-requested presentation adjustment and design alignment.
+- Reason: The fixed 28px gaps made the table of contents and author profile
+  feel crowded against the article on wide screens.
+- Scope/result: The shared post grid now distributes available width equally
+  into 28–80px side gaps while preserving the 640px desktop reading column.
+  At 1024px and below the two-column layout restores 28px spacing, and the
+  existing single-column breakpoint remains. Updated DESIGN and policy hashes.
+- Validation: Preview web build wrote 172 files; the existing site-baseline
+  cases passed in the focused and full suites above. Browser measurements on
+  `/posts/building-ai-skills/` found 640px body width with 80px gaps at 1440px,
+  77px gaps at 1137px, and a 28px left gap at 1024px with author below the body.
+  At 768px and 390px the layout was one column with 707px and 335px body widths.
+  No tested viewport overflowed horizontally; the temporary viewport was reset.
+- Compatibility: This reversible spacing change reuses the existing structural
+  tests and direct responsive measurements. Content contracts, routes, article
+  typography, and managed pages are unchanged.
+
+## 2026-09-04T01:44:04+09:00 — Public role rebranded as Applied AI Engineer
+
+- Change type: Owner-directed identity copy change, localized UI/configuration
+  update, design-contract alignment, regression coverage, and governed
+  policy-hash refresh.
+- Reason: The owner selected “Applied AI Engineer” as the public professional
+  identity and asked to replace the previous “AI Workflow Engineer” wording
+  throughout the normal blog.
+- Scope: English, Korean, and Japanese home-page eyebrow and author-role copy;
+  localized owner biographies; `DESIGN.md`; i18n regression coverage; and
+  policy traceability. Hero title, article content, routes, layout, assets,
+  managed pages, and publication state are unchanged.
+- Result: Every localized home page now identifies CloverHearts as an “Applied
+  AI Engineer,” and each localized owner biography uses the same role while
+  preserving its existing description of systems, experiments, and life beyond
+  work. The design source of truth now names the same public identity.
+- Validation: The focused i18n suite passed 11 of 11 cases, including `keeps
+  Applied AI Engineer branding consistent across localized owner copy`; the
+  final policy-governance run passed 1 of 1 case after an initial duplicate
+  test-mapping registration was removed; `npm run typecheck` and `npm run
+  validate:config` passed; `npm test` passed 94 of 94 cases across 20 files;
+  preview content and web builds wrote 60 post artifacts and 172 web files;
+  generated Korean, English, and Japanese home pages each contained three
+  “Applied AI Engineer” occurrences; and `git diff --check` passed.
+- Compatibility / follow-up: This is a localized identity-copy change only.
+  Static HTML, no-JavaScript reading, SEO page descriptions, responsive layout,
+  and existing workflow-focused subject matter remain compatible. No browser
+  visual QA or production deployment was requested or performed.
+
+## 2026-09-04T01:28:21+09:00 — Home hierarchy and hero media refined
+
+- Change type: Owner-commented home-page hierarchy correction, shared list
+  divider refinement, approved hero-composition change, design-contract update,
+  renderer/CSS regression coverage, and governed policy-hash refresh.
+- Reason: The Featured Post heading repeated the same article title shown in
+  its card, while Recent Posts and Selected Work rendered a pale first-row rule
+  beneath the dark section rule and still read as a double divider. The pale
+  workflow trace in the hero also looked like a placeholder rather than a real
+  technical visual.
+- Scope: Normal-blog home renderer, shared section/list boundary CSS, responsive
+  hero composition, `DESIGN.md`, site-baseline and curated-discovery assertions,
+  and policy traceability. Post sources, asset files, publication state, routes,
+  localization values, and managed pages are unchanged.
+- Result: The Featured Post header now contains only its localized section
+  label and the article title appears once inside the feature card. A post list
+  directly following a shared section heading omits only its first pale top
+  rule; later row separators remain. The hero now reuses the content-pipeline
+  thumbnail for the first Selected Work item, producing the requested dark
+  terminal visual without duplicating the post-owned asset. Desktop uses a
+  `48% / 50%` editorial split and compact layouts stack the image at `16:9`.
+- Validation: The focused site-baseline, curated-discovery, and
+  policy-governance run passed 17 of 17 cases; `npm run typecheck` passed; the
+  preview web build wrote 172 files; `npm test` passed 93 of 93 cases across 20
+  files; and `git diff --check` passed. Browser inspection at `1512px` wide
+  measured a `610 × 424px` absolute hero image, `0px` first-row top borders,
+  the single “추천 글” heading, and zero horizontal overflow. At `390 × 844`,
+  the image was a `337 × 188px` relative `16:9` block, both first-row borders
+  remained `0px`, and horizontal overflow was zero.
+- Compatibility / follow-up: Static HTML, no-JavaScript reading, full-card
+  links, later row dividers, and content-asset provenance remain intact. The
+  public role is still “AI Workflow Engineer”; choosing a replacement is a
+  separate owner identity decision and was not silently applied. No production
+  deployment was requested or performed.
+
+## 2026-09-04T01:15:19+09:00 — Home section boundary rhythm aligned
+
+- Change type: Owner-reported normal-blog spacing correction, CSS regression
+  coverage, and governed policy-hash refresh.
+- Reason: The dark section-heading rule and the first post row's pale rule were
+  separated by only `6px`, so Recent Posts and Selected Work read as stacked
+  double dividers instead of a heading followed by content.
+- Scope: The shared normal-blog `section-heading` boundary spacing,
+  site-baseline assertions, and policy traceability. Markup, content, routes,
+  localization, post-row dimensions, and managed pages are unchanged.
+- Result: Every shared section heading now leaves `1rem` (`16px`) before its
+  following feature, post list, or related-post content. Featured, Recent
+  Posts, and Selected Work therefore use the same boundary rhythm already
+  required by `DESIGN.md`.
+- Validation: The focused site-baseline and policy-governance run passed 13 of
+  13 cases; `npm run typecheck` passed; the preview web build wrote 172 files;
+  `npm test` passed 93 of 93 cases across 20 files; and `git diff --check`
+  passed. In-app browser inspection at `1280 × 720` and `390 × 844` measured a
+  `16px` heading-to-content gap for Featured, Recent Posts, and Selected Work
+  with zero horizontal overflow.
+- Compatibility / follow-up: This is a presentation-only correction that
+  brings CSS back into alignment with the existing design contract, so
+  `DESIGN.md`, `CONTENT_RULES.md`, static HTML, and no-JavaScript behavior remain
+  accurate. A production-mode `npm run build:web` attempt was not a valid local
+  preview check because `SITE_ORIGIN` was absent; the explicit preview-mode
+  build passed instead. No production deployment was requested or performed.
+
 ## 2026-08-23T22:45:14+09:00 — Blog implementation checkpoint prepared
 
 - Change type: Source-control checkpoint and cumulative implementation record.

@@ -2,6 +2,27 @@
   "schemaVersion": 1,
   "policies": [
     {
+      "id": "github-pages-workflow",
+      "sources": [
+        {
+          "path": ".github/workflows/pages.yml",
+          "sha256": "2f44c0716d4e6d542f42c0c08c5a0e8f9eb68c9e1aa6022be1a15de7e9e364cd"
+        },
+        {
+          "path": ".github/workflows/quality.yml",
+          "sha256": "7e51d5e154dbaec1f439a04bac0115d7c679456016446426abc8ac03fbaaaa0a"
+        }
+      ],
+      "tests": [
+        {
+          "path": "tests/contracts/implementation-stack.test.ts",
+          "cases": [
+            "deploys only a verified custom-domain release and isolates portability builds"
+          ]
+        }
+      ]
+    },
+    {
       "id": "change-to-test-governance",
       "sources": [
         {
@@ -237,7 +258,7 @@
         },
         {
           "path": "config/site.yaml",
-          "sha256": "64a80c430503fe4a2fb4b1ec98a52af4183f86bccfca1c8be449d083f2a8a9d1"
+          "sha256": "fbabe589a8e4cb5e57bd96a958ef5c48543d826d2fba766777fdac301b1c86f5"
         },
         {
           "path": "packages/project-config/src/i18n.ts",
@@ -253,7 +274,7 @@
         },
         {
           "path": "apps/blog-web/src/i18n/messages.ts",
-          "sha256": "46e4f59d65f51a4228dcee111d506897cfa9c1eee4130cc236e4d9f8196e0c19"
+          "sha256": "93ea91dc9f5799c0c032482720b8cb4999c6e4fa989d524cb05034704397dff6"
         }
       ],
       "tests": [
@@ -266,6 +287,7 @@
             "publishes reviewed translation variants independently",
             "rejects publication before the authored original or owner review",
             "provides the same non-empty UI message set for every language",
+            "keeps Applied AI Engineer branding consistent across localized owner copy",
             "identifies translated variants and links them to the original",
             "rejects translation metadata when the declared original is absent",
             "renders an optional original reference from validated metadata",
@@ -312,7 +334,7 @@
         },
         {
           "path": "DESIGN.md",
-          "sha256": "e2c5f5abae3c440323a49afe556f98ceac5c6065012921c798e4e3c67514c3f7"
+          "sha256": "9ab5dd4e2ad15add299ac4c719a5e89d7d4a7ab35e527a8389f1667a3bc2c234"
         },
         {
           "path": "UX_FLOW.md",
@@ -340,7 +362,7 @@
         },
         {
           "path": "apps/blog-web/src/styles/blog.css",
-          "sha256": "191d19085a1877617989a57c4ab39502d573cb8dc28acd7913756c29d52a31f4"
+          "sha256": "05b52d277f6500b6f0e017358361844d7066c4e66c60c5a998b6790710f011bd"
         },
         {
           "path": "apps/blog-web/src/layouts/BlogShell.astro",

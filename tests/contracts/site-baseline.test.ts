@@ -175,6 +175,8 @@ test("ships named component CSS with resilient Pretendard fallbacks", () => {
   assert.match(css, /\.language-navigation[^}]*display: flex[^}]*align-items: center[^}]*min-height: 2\.75rem/u);
   assert.match(css, /@media \(max-width: 64rem\)[\s\S]*\.site-header__inner[^}]*grid-template-columns: auto 1fr[^}]*grid-template-rows: 4rem auto[^}]*row-gap: 0/u);
   assert.match(css, /\.home-hero h1[^}]*font-weight: 620/u);
+  assert.match(css, /\.home-hero__copy[^}]*width: 48%/u);
+  assert.match(css, /\.home-hero__image[^}]*width: 100%[^}]*height: 100%[^}]*object-fit: cover/u);
   assert.match(css, /\.page--home main[^}]*padding-block: 0 clamp\(2\.5rem, 5vw, 4rem\)/u);
   assert.match(css, /\.home-hero \{[^}]*box-sizing: border-box[^}]*min-height: 25rem/u);
   assert.match(css, /\.page--home \.site-footer[^}]*margin-block-start: clamp\(2\.5rem, 6vw, 4rem\)/u);
@@ -209,7 +211,9 @@ test("ships named component CSS with resilient Pretendard fallbacks", () => {
   assert.match(css, /\.featured-post__image,\s*\.featured-post__placeholder[^}]*opacity: \.85[^}]*transition: opacity \.24s ease/u);
   assert.match(css, /\.featured-post__copy[^}]*opacity: \.5[^}]*transition: opacity \.24s ease/u);
   assert.match(css, /\.featured-post-link:hover \.featured-post__image,[^}]*\.featured-post-link:focus-visible \.featured-post__copy[^}]*opacity: 1/u);
+  assert.match(css, /\.section-heading \{[^}]*margin-block-end: 1rem[^}]*border-block-end: 1px solid var\(--text\)/u);
   assert.match(css, /\.post-list > li[^}]*padding-block: 1rem/u);
+  assert.match(css, /\.section-heading \+ \.post-list > li:first-child[^}]*border-block-start: 0/u);
   assert.match(css, /\.post-card[^}]*grid-template-columns: 2\.75rem minmax\(0, 1fr\) 35%[^}]*min-height: 15rem/u);
   assert.match(css, /\.post-card__index,\s*\.post-card__copy[^}]*opacity: \.5[^}]*transition: opacity \.24s ease/u);
   assert.match(css, /\.post-card__thumbnail[^}]*position: absolute[^}]*width: 35%[^}]*height: 100%[^}]*object-fit: cover[^}]*opacity: \.85[^}]*transition: opacity \.24s ease/u);
@@ -259,6 +263,7 @@ test("ships named component CSS with resilient Pretendard fallbacks", () => {
   assert.match(css, /\.search-result__icon[^}]*display: grid[^}]*place-items: center[^}]*color: var\(--primary-dark\)/u);
   assert.match(css, /\.search-result__icon svg[^}]*width: 1\.375rem[^}]*fill: none[^}]*stroke: currentColor[^}]*stroke-width: 1\.5/u);
   assert.match(css, /@media \(max-width: 38\.75rem\)/u);
+  assert.match(css, /@media \(max-width: 38\.75rem\)[\s\S]*\.home-hero__visual \{[^}]*position: relative[^}]*width: 100%[^}]*aspect-ratio: 16 \/ 9[^}]*margin-block-start: 2rem/u);
   for (const selector of [
     "body > header",
     "body > main",

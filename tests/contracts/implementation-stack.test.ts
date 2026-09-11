@@ -3,6 +3,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { test } from "vitest";
+import { parse } from "yaml";
 
 const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 
@@ -132,4 +133,29 @@ test("records the approved production and classless UX baseline", () => {
   assert.match(specification, /Pretendard Variable/u);
   assert.match(specification, /`UX_FLOW\.md`/u);
   assert.match(specification, /`config\/performance-budgets\.yaml`/u);
+});
+
+test("deploys only a verified custom-domain release and isolates portability builds", () => {
+  const pages = parse(read(".github/workflows/pages.yml"));
+  assert.deepEqual(pages.on.push.branches, ["main"]);
+  assert.ok(Object.hasOwn(pages.on, "workflow_dispatch"));
+  assert.equal(pages.on.pull_request, undefined);
+  assert.equal(pages.env.SITE_ORIGIN, "https://blog.cloverhearts.com");
+  assert.equal(pages.env.SITE_BASE_PATH, "");
+  assert.equal(pages.jobs.deploy.needs, "build");
+  assert.equal(pages.jobs.deploy.environment.name, "github-pages");
+  assert.equal(pages.jobs.build.permissions.pages, "read");
+  assert.equal(pages.jobs.deploy.permissions.pages, "write");
+  const steps = pages.jobs.build.steps as Array<{ run?: string; uses?: string; with?: { path?: string } }>;
+  const build = steps.findIndex((step) => step.run === "npm run build");
+  const verify = steps.findIndex((step) => step.run === "npm run verify:pages");
+  const upload = steps.findIndex((step) => step.uses?.startsWith("actions/upload-pages-artifact@"));
+  assert.ok(build >= 0 && verify > build && upload > verify);
+  assert.equal(steps[upload]?.with?.path, "dist");
+  const quality = parse(read(".github/workflows/quality.yml"));
+  assert.deepEqual(quality.jobs.contracts.strategy.matrix["base-path"], ["", "/blog"]);
+  assert.equal(quality.jobs.contracts.env.SITE_BASE_PATH, "${{ matrix.base-path }}");
+  const variant = quality.jobs.contracts.steps.find((step: { name: string }) => step.name === "Build and verify isolated variant");
+  assert.equal(variant.run.trim(), "npm run build\nnpm run verify:pages");
+  assert.doesNotMatch(read(".github/workflows/quality.yml"), /deploy-pages|pages: write/u);
 });

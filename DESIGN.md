@@ -11,7 +11,7 @@
   network service.
 
 The site is a Korean-first editorial technical blog for CloverHearts, an
-**AI Workflow Engineer**. Its identity is “clear engineering notes”: bright,
+**Applied AI Engineer**. Its identity is “clear engineering notes”: bright,
 precise, calm, and human. The visual system supports real posts and validated
 artifacts; it never invents projects, metrics, testimonials, or publication
 content to fill a layout.
@@ -21,7 +21,7 @@ content to fill a layout.
 The normal experience uses a white editorial canvas, clear green accents,
 measured type hierarchy, fine rules, numbered log rows, and generous
 whitespace. It should feel more like a carefully edited technical journal than
-a SaaS landing page. Faint workflow geometry may overlap the hero as atmosphere,
+a SaaS landing page. A dark, content-owned technical image may anchor the hero,
 but the written message always remains the primary visual object.
 
 Use:
@@ -29,7 +29,7 @@ Use:
 - white space and typographic contrast as the primary hierarchy;
 - one clear-green accent family for actions, status, and identity;
 - pale mint surfaces only for meaningful grouping;
-- restrained technical diagrams or terminal motifs made from local CSS/HTML;
+- restrained technical diagrams or approved content-pipeline terminal imagery;
 - straight edges or minimal `4px` rounding.
 
 Avoid gradients, glassmorphism, decorative blur, excessive cards, large rounded
@@ -124,27 +124,33 @@ The hierarchy is fixed:
 4. recent posts
 5. selected work
 
-Desktop hero gives the message roughly `82%` of the frame and lets a pale,
-slightly rotated workflow trace occupy the right side behind it. The supporting
-paragraph remains substantially narrower so the title, description, and single
-underlined all-posts link form one clear reading path. The workflow trace is
-decorative and hidden from assistive technology.
+Desktop hero uses a balanced editorial split: the message owns approximately
+`48%` of the frame and a dark technical thumbnail from the first Selected Work
+item occupies the right `50%`. The supporting paragraph remains narrower than
+the copy column so the title, description, and single underlined all-posts link
+form one clear reading path. The reused thumbnail is decorative, has empty alt
+text, and remains available without JavaScript through the normal content
+artifact pipeline.
 
-On mobile, the canvas remains white. The workflow trace becomes larger, fainter,
-and partially cropped behind the copy; it never becomes a dark terminal surface
-or an essential source of information. The title, description, and link retain
-their source order and contrast without the visual.
+On mobile, the canvas remains white and the technical thumbnail becomes a
+full-width `16:9` block after the hero copy rather than sitting behind the text.
+The title, description, and link retain their source order and contrast without
+the visual.
 
-The author row immediately establishes CloverHearts and the role “AI Workflow
+The author row immediately establishes CloverHearts and the role “Applied AI
 Engineer,” and keeps `1rem` of trailing space after its Profile action so the
 link does not touch the frame edge. Featured content gets one pale-mint
-editorial feature. Featured,
+editorial feature. Its section heading contains only the localized Featured
+Post label; the featured article title appears once inside the feature card.
+Featured,
 Recent Posts, and Selected Work are separated from the preceding content by one
 responsive `3.5rem–5rem` block margin rather than a decorative top divider or
 stacked margin and padding. Recent Posts and Selected Work deliberately share
 one section-heading pattern and the same thin ruled log rows with a two-digit
-sequence, copy, and optional thumbnail. Empty states use localized, honest
-copy; no dummy project is created.
+sequence, copy, and optional thumbnail. The dark section-heading rule is the
+sole opening divider, so the first list row omits its pale top rule while later
+rows retain theirs. Empty states use localized, honest copy; no dummy project
+is created.
 
 On wide screens the featured post uses an equal two-column composition: the
 approved or generated visual occupies the left half and the editorial summary
@@ -227,9 +233,12 @@ article area can use:
 - center: article body;
 - right: compact author context.
 
-The wide article frame uses approximately `132px / 640px / 132px` columns with
-`28px` gaps. The center remains the only primary reading column. At tablet width the author
-context moves below it. On mobile, the TOC is a native `details` region before
+The wide article frame uses approximately `132px / 640px / 132px` columns.
+Equal side gaps use the remaining frame width, growing from `28px` to `80px`
+without narrowing the `640px` reading column to make room for extra spacing.
+At `64rem` and below, the two-column layout restores its compact `28px` gap
+and the author context moves below the article. The center remains the only
+primary reading column. On mobile, the TOC is a native `details` region before
 the body and the author context follows the article. TOC fragment links use the
 compiler-emitted anchors verbatim and work without JavaScript. A TOC is omitted
 only when no eligible heading exists.
@@ -312,8 +321,10 @@ featured post follows the same one-link pattern, with `50%` copy and `85%`
 visual opacity transitioning to full opacity. Images never scale or change the
 card geometry during interaction, so focus is communicated through contrast
 without spatial motion. Reduced-motion preferences still suppress transition
-duration. Recent Posts and Selected Work place `1rem` of vertical inset between
-each divider and its card so adjacent thumbnails never touch. The hero's
+duration. Shared section headings leave `1rem` before their content, and a
+following post list omits the first row's top rule so the heading boundary is
+not rendered as a double line. Subsequent list rows retain `1rem` of vertical
+inset around their dividers so adjacent thumbnails never touch. The hero's
 underlined all-posts action keeps its rule immediately beneath the text rather
 than using control-height padding as visual spacing.
 
@@ -325,7 +336,7 @@ than using control-height padding as visual spacing.
   below the reading column.
 - `≤57.5rem`: TOC and article move into a single reading flow and the author
   context follows the article.
-- `≤38.75rem`: white mobile hero with faint cropped workflow geometry,
+- `≤38.75rem`: white mobile hero with a stacked `16:9` technical thumbnail,
   index/copy post rows with stacked media, centered post header, inline TOC,
   and stacked search and pagination controls.
 
@@ -390,5 +401,8 @@ overlays and annotation controls may be injected inside blog surfaces.
   were supplied and approved by the repository owner in the 2026-08 Open Design
   handoff. Its HTML and handoff notes were reviewed as design input only; they
   are not production code or dependencies.
+- The home hero reuses the thumbnail emitted for the first Selected Work item;
+  its source and license stay with that post-owned asset and the content
+  artifact pipeline rather than being duplicated into the web application.
 - No external design system, icon library, remote image, or third-party brand
   asset is part of this implementation.

@@ -75,19 +75,42 @@ npm run dev
 
 Production `build` requires `SITE_ORIGIN=https://blog.cloverhearts.com`.
 
-> 아직 사이트 개발 서버, 전체 빌드 또는 배포 명령은 구현되지 않았습니다.
+> 운영 빌드에는 `SITE_ORIGIN=https://blog.cloverhearts.com`이 필요합니다.
 
 The production target is GitHub Pages through a custom GitHub Actions workflow.
-The future workflow publishes only a verified `dist/` release; `docs/` remains
+The Pages workflow publishes only a verified `dist/` release; `docs/` remains
 an unpublished build input rather than a Pages source directory. The canonical
-production origin is `https://blog.cloverhearts.com`. The repository currently
-has only a quality workflow, not the Pages deployment workflow.
+production origin is `https://blog.cloverhearts.com`. `.github/workflows/pages.yml`
+deploys pushes to `main` and supports manual dispatch. Quality checks build the
+root and `/blog` variants in separate jobs.
 
 > 운영 목표는 사용자 정의 GitHub Actions 워크플로를 통한 GitHub Pages
-> 배포입니다. 향후 워크플로는 검증된 `dist/` 릴리스만 게시하며, `docs/`는
+> 배포입니다. Pages 워크플로는 검증된 `dist/` 릴리스만 게시하며, `docs/`는
 > Pages 게시 디렉터리가 아니라 비공개 빌드 입력으로 유지합니다. 운영
-> canonical 주소는 `https://blog.cloverhearts.com`입니다. 현재 저장소에는
-> Pages 배포가 아닌 품질 검사 워크플로만 있습니다.
+> canonical 주소는 `https://blog.cloverhearts.com`입니다.
+> `.github/workflows/pages.yml`은 `main`에 push할 때 또는 수동 실행으로
+> 배포합니다. 품질 검사는 루트와 `/blog` 경로를 각각 별도 작업에서 빌드합니다.
+
+Before the first deployment, open [repository Pages settings](https://github.com/cloverhearts/blog/settings/pages),
+select **GitHub Actions**, and save **blog.cloverhearts.com** as the custom
+domain. If GitHub reports that the domain is already taken, release its existing
+Pages association or complete GitHub domain ownership verification first.
+Then configure a DNS CNAME record `blog` pointing to `cloverhearts.github.io`
+and enable **Enforce HTTPS** once the certificate is available. Actions-based
+publishing does not require a repository `CNAME` file. See
+[GitHub's custom-domain guide](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site).
+Draft posts and draft profiles remain excluded from production even when visible
+in the local preview.
+
+> 최초 배포 전 [저장소 Pages 설정](https://github.com/cloverhearts/blog/settings/pages)에서
+> **GitHub Actions**를 선택하고 커스텀 도메인으로 **blog.cloverhearts.com**을
+> 저장합니다. 이미 사용 중이라는 오류가 나오면 기존 Pages 연결을 해제하거나
+> GitHub 도메인 소유권 검증을 먼저 완료해야 합니다. 그다음 DNS에
+> `blog` → `cloverhearts.github.io` CNAME 레코드를 설정하고, 인증서가 준비되면
+> **Enforce HTTPS**를 활성화합니다. Actions 배포에는 저장소의 `CNAME` 파일이
+> 필요하지 않습니다. 자세한 내용은
+> [GitHub 커스텀 도메인 안내](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site)를 참고합니다.
+> 로컬 미리보기에 보이는 초안 포스트와 초안 프로필은 운영 배포에서 제외됩니다.
 
 Korean is the blog's unprefixed default and no-JavaScript fallback. English is
 published under `/en/` and Japanese under `/ja/`. Requested documents never

@@ -3,7 +3,7 @@ import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, symlinkSync, 
 import { tmpdir } from "node:os";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { test } from "vitest";
+import { beforeAll, test } from "vitest";
 
 import { buildWeb } from "../../apps/blog-web/src/build.ts";
 import { compileContent } from "../../packages/content-compiler/src/compile.ts";
@@ -13,7 +13,11 @@ import { buildDiscovery } from "../../packages/site-discovery/src/build.ts";
 
 const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 
-const paginationSite = buildPaginationSite();
+let paginationSite: Awaited<ReturnType<typeof buildPaginationSite>>;
+
+beforeAll(async () => {
+  paginationSite = await buildPaginationSite();
+}, 30_000);
 
 test("omits footer navigation while keeping localized archive routes", async () => {
   const { root } = await paginationSite;

@@ -1,5 +1,9 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import { test } from "vitest";
+import { parse } from "yaml";
 
 import { BLOG_MESSAGES } from "../../apps/blog-web/src/i18n/messages.ts";
 import {
@@ -11,6 +15,8 @@ import {
   resolveLocalizedRoute,
   resolvePostNavigationLink,
 } from "../../packages/project-config/src/i18n.ts";
+
+const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 
 const alternates = [
   { language: "en" as const, route: "/en/posts/example/" },
@@ -154,6 +160,42 @@ test("provides the same non-empty UI message set for every language", () => {
       true,
     );
   }
+});
+
+test("keeps Applied AI Engineer branding consistent across localized owner copy", () => {
+  const design = readFileSync(resolve(repositoryRoot, "DESIGN.md"), "utf8");
+  const site = parse(
+    readFileSync(resolve(repositoryRoot, "config/site.yaml"), "utf8"),
+  ) as {
+    readonly identity: {
+      readonly owner: {
+        readonly shortBios: Readonly<Record<"en" | "ko" | "ja", string>>;
+      };
+    };
+  };
+
+  assert.deepEqual(
+    Object.fromEntries(
+      (["en", "ko", "ja"] as const).map((language) => [
+        language,
+        BLOG_MESSAGES[language].authorRole,
+      ]),
+    ),
+    {
+      en: "Applied AI Engineer",
+      ko: "Applied AI Engineer",
+      ja: "Applied AI Engineer",
+    },
+  );
+  assert.match(BLOG_MESSAGES.en.heroEyebrow, /Applied AI Engineer/u);
+  assert.match(BLOG_MESSAGES.ko.heroEyebrow, /Applied AI Engineer/u);
+  assert.match(BLOG_MESSAGES.ja.heroEyebrow, /Applied AI Engineer/u);
+  for (const bio of Object.values(site.identity.owner.shortBios)) {
+    assert.match(bio, /Applied AI Engineer/u);
+    assert.doesNotMatch(bio, /AI Workflow Engineer/iu);
+  }
+  assert.match(design, /CloverHearts, an\s+\*\*Applied AI Engineer\*\*/u);
+  assert.doesNotMatch(design, /AI Workflow Engineer/iu);
 });
 
 test("identifies translated variants and links them to the original", () => {

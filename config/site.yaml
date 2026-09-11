@@ -15,9 +15,9 @@ identity:
   owner:
     displayName: "CloverHearts"
     shortBios:
-      en: "An AI workflow engineer writing about systems, experiments, and life beyond work."
-      ko: "AI Workflow Engineer로서 시스템과 실험, 일 밖의 삶을 기록합니다."
-      ja: "AI Workflow Engineerとして、システムと実験、仕事の外の暮らしを記録します。"
+      en: "An Applied AI Engineer writing about systems, experiments, and life beyond work."
+      ko: "Applied AI Engineer로서 시스템과 실험, 일 밖의 삶을 기록합니다."
+      ja: "Applied AI Engineerとして、システムと実験、仕事の外の暮らしを記録します。"
     profileRoutes:
       en: "/en/profile/"
       ko: "/profile/"

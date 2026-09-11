@@ -97,6 +97,12 @@ test("derives curated membership, work chronology, and configuration-only extra 
   assert.match(home, /data-search-trigger/u);
   assert.match(home, /<dialog class="search-dialog" data-search-dialog/u);
   assert.match(home, /전체 보기[\s\S]*주요 작업[\s\S]*일상 기록[\s\S]*둘러보기[\s\S]*검색/u);
+  const homeHero = home.match(/<section class="home-hero" data-home-hero>([\s\S]*?)<\/section>/u)?.[1] ?? "";
+  assert.match(homeHero, /class="home-hero__visual"[^>]*><img class="home-hero__image"[^>]+alt=""[^>]+data-hero-thumbnail=/u);
+  assert.doesNotMatch(homeHero, /context\.collect\(\)|workflow\.execute\(\)/u);
+  const homeFeatured = home.match(/<section class="home-section home-featured" data-home-featured>([\s\S]*?)<\/section>/u)?.[1] ?? "";
+  assert.match(homeFeatured, /<div class="section-heading" data-section-heading><h2>추천 글<\/h2>/u);
+  assert.doesNotMatch(homeFeatured, /data-eyebrow/u);
   const homeWork = home.match(/<section class="home-section home-work" data-home-work>([\s\S]*?)<\/section>/u)?.[1] ?? "";
   assert.equal((homeWork.match(/<article class="post-card" data-post-card>/g) ?? []).length, 5);
   assert.doesNotMatch(homeWork, /data-eyebrow/u);
