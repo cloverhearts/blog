@@ -219,7 +219,23 @@
         },
         {
           "path": "package.json",
-          "sha256": "b77d1a7a5a05b69ca93d208eb7b3b4931c7d2b0ec1158421036a94324af4cc2a"
+          "sha256": "2978862c4d74f3d8473759b3caeb5d66f214ada6aba7464a7d57723465a4873d"
+        },
+        {
+          "path": "package-lock.json",
+          "sha256": "1d2849e06aa8787060676c174cac2e77d10e02439b12cd00aeb67b8fdf1797f8"
+        },
+        {
+          "path": "apps/blog-web/package.json",
+          "sha256": "b8ced643658a783b58ebae624c6cddbf997943e11d41f2dd8286dcd58f5cad0f"
+        },
+        {
+          "path": "packages/content-compiler/package.json",
+          "sha256": "0b6facb035df0eb08ef873102077fd76671bca26d844a33490418115afc92d41"
+        },
+        {
+          "path": "packages/managed-page-compiler/package.json",
+          "sha256": "4d1ba51bda2ca87b45b43087d8a6cfcd00c4a71b5e6065e85d24d4278ea88483"
         },
         {
           "path": ".nvmrc",
@@ -241,6 +257,15 @@
             "runs contract and policy suites with Vitest",
             "declares every architecture lane as an npm workspace package",
             "records the approved production and classless UX baseline"
+          ]
+        },
+        {
+          "path": "tests/contracts/dependency-security.test.ts",
+          "cases": [
+            "locks patched versions of all security-reviewed dependencies including nested copies",
+            "accepts fixed release boundaries and later stable patch releases",
+            "rejects every previously vulnerable version even in a nested dependency",
+            "rejects missing dependencies and unreviewed prerelease versions"
           ]
         }
       ]

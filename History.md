@@ -4,6 +4,34 @@ This file records non-routine changes to the blog project. Entries are ordered
 newest first and use the `Asia/Seoul` timezone. Routine post authoring is omitted
 unless it changes shared content behavior, routes, schemas, or project rules.
 
+## 2026-09-11T18:02:47+09:00 — Dependency security remediation
+
+- Change type: Owner-requested dependency patches, security regression tests,
+  policy traceability, and redeployment preparation.
+- Reason: GitHub reported eight open Dependabot alerts covering Astro, Sharp,
+  js-yaml, SVGO, Vitest, and its mocker package. Reviewed advisory fixed-version
+  ranges and registry metadata before updating the existing approved stack.
+- Scope/result: Raised declared minimums and locked Astro 7.2.8, Sharp 0.35.4
+  in all three consumers, Vitest/@vitest/mocker 4.1.11, js-yaml 4.3.2, and
+  SVGO 4.1.0 with their required transitive updates. No alert was dismissed,
+  install-script permissions expanded, or production/content policy changed.
+  Added reviewed dependency manifests and the lockfile to stack-policy coverage.
+- New regression suite: `dependency-security.test.ts` checks every locked copy,
+  including nested dependencies; accepts fixed and later stable patch releases;
+  rejects the previously vulnerable versions; and rejects missing dependencies
+  or unreviewed prereleases. Existing behavioral and policy tests are unchanged.
+- Validation: Node 24.19.0/npm 11.17.0 clean `npm ci` passed; `npm audit --json`
+  reported zero vulnerabilities across all severities; type checking passed.
+  Focused dependency-security, implementation-stack, and policy-governance
+  suites passed 13/13; the full suite passed 99/99 across 21 files with no
+  failures or skips. Complete `/blog` and root production builds plus matching
+  Pages verification passed; root was built last. Whitespace validation passed.
+- Compatibility/follow-up: No source post, managed-page content, route, design,
+  or publication status changed. Temporary authoring output remains local.
+  The preceding release `9892392` is already live over verified HTTPS; this
+  security release still requires push, CI/deployment confirmation, and GitHub's
+  post-push alert rescan. This entry does not claim those external gates passed.
+
 ## 2026-09-11T17:41:11+09:00 — Production deployment checkpoint
 
 - Change type: Owner-authorized commit, push, and deployment checkpoint.
