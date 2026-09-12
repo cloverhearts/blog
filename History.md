@@ -4,6 +4,342 @@ This file records non-routine changes to the blog project. Entries are ordered
 newest first and use the `Asia/Seoul` timezone. Routine post authoring is omitted
 unless it changes shared content behavior, routes, schemas, or project rules.
 
+## 2026-09-13T00:06:33+09:00 — Finalize design and clear layout-review content
+
+- Change type/reason: Owner accepted the blog design and requested a clean
+  starting point for real posts and profiles, committed locally.
+- Scope/result: Removed 20 sample translation groups (60 draft Markdown files),
+  20 sample thumbnails, 20 layout-note copies, five sample categories and 18
+  topical tags. Removed sample collection inclusions/category selectors;
+  permanent Work/Daily routes and their two marker tags remain. Empty taxonomy
+  and post lists do not expose sample routes. All removed material and previous
+  profile drafts were backed up outside the repository before removal; tracked
+  samples also remain recoverable from earlier Git history.
+- Profiles: Preserved `/profile/`, `/en/profile/` and `/ja/profile/` as published
+  document shells with empty content, truthful identity metadata, the existing
+  local design and required return links. They are noindex and excluded from
+  sitemap, RSS and search. No biography, projects or placeholder prose was
+  published. CONTENT_RULES documents this use of the existing empty Markdown
+  entry; no schema or post publication rule changed.
+- Tests/contracts: Added `publishes empty noindex profiles without sample
+  discovery at root and subpath`. Existing rich-Markdown and draft-profile
+  checks now create their own explicit fixtures instead of depending on the
+  live biography. Curated fixtures retain their synthetic taxonomy; the live
+  selector baseline intentionally changes from sample keys to empty selectors.
+  Corrected the pipeline test to build managed routes before web profile links,
+  matching release orchestration. Reviewed affected policy mappings/hashes.
+- Validation: Focused suites: 14 passed; full Vitest: 126 passed in 23 files;
+  typecheck and configuration validation passed. Production builds at the root
+  and `/blog` base passed, followed by a restored root build and `verify:pages`.
+  Actual preview/production manifests contain zero posts and three profiles;
+  production profiles have empty bodies and working author links. Local HTTP
+  checks returned 200 for home, Explore and all profiles, and 404 for removed
+  sample post/category routes. Whitespace checks passed. Interactive visual,
+  assistive-technology and live deployment checks were not performed.
+- Compatibility/follow-up: This commit also preserves the previously approved,
+  uncommitted design, avatar, search, language-selection, security and README
+  work recorded in earlier entries. Author real content separately; no sample drafts were
+  promoted. Commit only: no push or deployment was requested.
+
+## 2026-09-12T23:47:53+09:00 — Replace the author monogram with the approved avatar
+
+- Change type/reason: Owner supplied their GitHub avatar URL to replace the CH
+  author icon after the earlier image attachment lacked an accessible file.
+- Scope/result: Home introductions and post author rails now show the unchanged
+  192px PNG at the existing 48px square size, without cropping, tinting or a
+  green background. The image is decorative beside the author name. The web
+  layer bundles it locally under a content-addressed URL and includes its hash
+  in build provenance; CI and visitors make no avatar request to GitHub.
+  Root DESIGN records the authorized source and display treatment.
+- Validation: Added `bundles the approved author avatar for localized homes
+  and posts at both bases` (static markup, locale/root/subpath URLs, exact PNG
+  bytes and dimensions) and `preserves the author avatar square and colors
+  across themes`. Fixed an initially overbroad test selector that also counted
+  the existing post-rail margin rule. Full Vitest: 125 passed in 23 files;
+  typecheck and `git diff --check` passed. Reviewed DESIGN/CSS/renderer policy
+  hashes. Local home and sample post returned HTTP 200 with the new avatar;
+  both image responses matched the approved local PNG exactly. Source image
+  inspected visually; interactive page and high-density device review not run.
+- Compatibility/follow-up: No post metadata, authoring contract, routes,
+  publication state, dependencies, favicon or standalone managed profile
+  changed. Existing layout and source content remain intact. No production
+  deployment or commit performed.
+
+## 2026-09-12T23:44:21+09:00 — Reuse the green highlight on Explore collections
+
+- Change type/reason: Owner-requested refinement of the preceding Explore
+  design change: replace the separate neutral hover wash with the established
+  green highlight color.
+- Scope/result: Collection hover and keyboard focus now use `--primary-surface`
+  directly, matching taxonomy links and search results in light and dark modes.
+  Removed the redundant gray hover token. Transparent resting backgrounds,
+  borderless layout, neutral text, focus outlines and reduced motion remain.
+- Validation: Updated `keeps explore collections transparent with the shared
+  green hover surface` to intentionally replace the previous gray-color
+  expectations, while retaining geometry, text and accessibility assertions;
+  reviewed the DESIGN/CSS policy mappings and hashes. Focused suite: 15 passed;
+  full Vitest: 123 passed in 23 files. `git diff --check` passed. Confirmed the
+  regenerated preview CSS uses the shared light/dark highlight values.
+  Interactive browser visual review was not performed.
+- Compatibility/follow-up: CSS-only behavior change; no content authoring,
+  routes, publication, dependencies or managed-page changes. No commit or
+  deployment performed.
+
+## 2026-09-12T23:39:00+09:00 — Quiet transparent collection links on Explore
+
+- Change type/reason: Owner-requested removal of the prominent card treatment
+  from Explore's curated collection links.
+- Scope/result: Both collections now have transparent resting backgrounds and
+  no enclosing border or green top highlight. Counts/arrows use neutral muted
+  text. Hover/focus adds a near-white gray wash at 30% opacity without dimming
+  text, shadows, motion, or underlines. Dark mode uses a neutral 6% white wash
+  to retain contrast. Keyboard focus outlines and responsive columns remain;
+  reduced-motion handling includes these links.
+- Validation: Added `keeps explore collections transparent with a subtle neutral
+  hover wash` covering rest/hover/focus styling, absence of green accents and
+  elevation, dark mode, reduced motion and responsive layout. Intentionally
+  replaced the old green-top-border baseline assertion to match this explicit
+  design change; reviewed DESIGN/CSS policy hashes. Focused tests: 16 passed;
+  full Vitest: 123 passed in 23 files; `git diff --check` passed. Confirmed the
+  updated neutral-wash rules in the regenerated preview stylesheet. Interactive
+  browser visual review was not performed.
+- Compatibility/follow-up: Presentation-only change; content, destinations,
+  publication, taxonomy links and managed profiles remain unchanged. No new
+  dependencies, commit or deployment.
+
+## 2026-09-12T22:58:53+09:00 — Link the home hero title and remove Read More underline
+
+- Change type/reason: Owner-selected browser feedback on the home hero h1 and
+  the featured card's Read More label.
+- Scope/result: Read More has no underline at rest or on hover. The hero h1 is
+  now a static, keyboard-accessible link to the post supplying its visual:
+  first Selected Work, otherwise featured. The accessible name includes the
+  destination title; cross-language fallback is labeled. Empty homes keep a
+  plain h1. The separate All Posts action and article-body links are unchanged.
+- Contracts: Updated DESIGN, UX_FLOW and the presentation note in CONTENT_RULES;
+  no new author fields or publication/selection changes. Reviewed corresponding
+  policy mappings/hashes. The previous persistent Read More underline test
+  expectation changed intentionally to match this new explicit request.
+- Validation: Added `links the hero title to its featured fallback across
+  languages and deployment bases`, extended curated-image target and empty-home
+  regressions, and updated underline/focus CSS coverage. Focused suites: 31
+  passed; full Vitest: 122 passed in 23 files; typecheck and `git diff --check`
+  passed. Restarted preview and confirmed the served hero points to
+  `/posts/building-ai-skills/` with HTTP 200 and the served Read More rule is
+  `text-decoration: none`. Interactive browser testing was not performed.
+- Compatibility/follow-up: Links work without JavaScript and honor root/subpath
+  deployments and existing locale selection. No commit or deployment performed.
+
+## 2026-09-12T22:55:00+09:00 — Remove hover-added link underlines
+
+- Change type/reason: Owner-requested interaction refinement; hovering a link
+  must not add a new underline.
+- Scope/result: Featured/list titles and category/tag filters use dark-green
+  feedback without hover/focus underlines. Keyboard focus outlines, fully opaque
+  text, persistent prose-link underlines and the hero action rule remain intact.
+  Updated the root design contract and reviewed its policy coverage hashes.
+- Validation: Added `keeps hover links free of new underlines while preserving
+  keyboard focus`; intentionally changed the baseline filter expectation to
+  match the owner's new contract. Focused baseline/policy tests: 15 passed.
+  Full Vitest suite: 121 passed across 23 files. `git diff --check` passed.
+  Confirmed both new rules in the regenerated preview stylesheet. Interactive
+  browser testing was not performed.
+- Compatibility/follow-up: Presentation only; no content, routes, dependencies,
+  managed-page design or publication changes. No commit or deployment performed.
+
+## 2026-09-12T21:52:00+09:00 — Harden preview and metadata; build evidence-based profile drafts
+
+- Change type/reason: Owner-requested remediation of the security/readability
+  review and a grounded Applied AI Engineer introduction.
+- Security scope/result: Preview decodes request paths once, rejects malformed
+  requests with 400, and refuses lexical or symlink escapes with 403. Blog and
+  managed JSON-LD escape HTML script boundaries while preserving JSON values.
+  These address a local-development file exposure and a build-time metadata
+  injection risk; they are not evidence of an exploited production incident.
+- Design scope/result: Post, featured, filter and previous/next text remains
+  opaque. Metadata/text-link tokens meet AA contrast on normal light/dark
+  surfaces. Empty homes use a compact text-only hero and one empty state.
+  Profile actions and profile alternates omit unavailable locale routes.
+- Profile scope/result: Created Korean source and English/Japanese draft
+  introductions around connected workflows, explicit execution boundaries,
+  review criteria, and two grounded examples. Read the owner's Drive knowledge
+  base: the LUI Skills development record and the Guro IT Guy Vlog planning
+  documents. Omitted employers, internal system details, private destinations,
+  unverified metrics and unsupported career claims. Local sample AI posts were
+  explicitly not used as career evidence. The page remains draft/noindex in all
+  locales for biography and translation review; no sample post was published.
+- Implementation: Added static sanitized managed Markdown and optional
+  `entry.stylesheet` with network-free CSS validation, package/symlink bounds,
+  deterministic stylesheet provenance and page-local responsive/print design.
+  The web lane reads validated managed route availability, not source files.
+  Managed builds precede web rendering; preview copies standalone pages after
+  search indexing. Corrected the status matrix: interactive TypeScript and
+  presentation adapters remain partial rather than implemented.
+- Validation: `security-profile.test.ts` adds six named cases covering JSON-LD
+  escaping, safe Markdown/CSS, draft/static/deterministic profiles, root/subpath
+  route availability and empty states, managed path/symlink bounds, and AA
+  text-token contrast. `dev-preview.test.ts` adds traversal/symlink and malformed
+  request regressions and extends managed-source rebuild coverage. Updated the
+  baseline dimming and draft-link expectations intentionally because this user
+  request changes those contracts; no tests were skipped. Reviewed governed
+  mappings and refreshed affected policy hashes. Full Vitest: 120 passed in
+  23 files; typecheck passed; root and `/blog` production builds including Pages
+  verification passed; `git diff --check` passed. Restarted the preview server
+  and verified HTTP 200 for all three profiles, 403 for encoded traversal,
+  400 for malformed encoding, 404 for a missing route, and continued home 200.
+- Compatibility/follow-up: `entry.stylesheet` is optional; source schema 1 and
+  existing routes remain compatible. No dependencies, DNS, commits, pushes or
+  deployments changed. Profile source HTML is readable without JavaScript;
+  interactive browser, screen-reader and printed-page visual review were not
+  performed. Owner review and production publication remain explicit gates.
+
+## 2026-09-11T18:34:10+09:00 — Select browser language only on root entry
+
+- Change type/reason: Owner-requested routing exception. The exact deployment
+  root chooses the first supported browser preference; English and Japanese
+  enter their static homes, while Korean or unavailable/unsupported preferences
+  retain Korean. Other URIs are never redirected by this enhancement.
+- Scope/result: Added the blog-owned root entry module, configuration-derived
+  home destinations, schema-8 `root-only` configuration, and normal Korean home
+  menu links with `?lang=ko` so explicit selection survives reload without
+  cookies/storage. Query/fragment survive automatic `location.replace`.
+  Canonical, hreflang, x-default, and no-JavaScript Korean HTML stay unchanged.
+  ADR 0009 supersedes only ADR 0008's blanket browser-selection prohibition;
+  updated the related guides and all three README languages consistently.
+- Validation: Added i18n cases `selects the first supported browser language
+  only at the root`, `preserves explicit Korean choice query fragments and
+  base-path boundaries`, `redirects with replace and keeps static fallback when
+  preferences are unavailable`, and `requires site schema eight and the
+  explicit root-only routing policy`. Added the rendered/base-path regression
+  `emits root language enhancement without changing direct documents or
+  canonical alternates`. The existing configuration expectation intentionally
+  changes from manual-only/schema 7 to owner-approved root-only/schema 8.
+  Reviewed mapped policy coverage and refreshed hashes; no existing valid
+  publication or post-navigation test was removed or weakened.
+- Checks: Focused i18n/navigation/baseline/README suites passed 37/37; full
+  contract suite passed 112/112 across 22 files; type checking passed. Root
+  production build and Pages verification passed, then `/blog` build and Pages
+  verification passed; regenerated the final release with the root base path.
+  Preview content and web builds passed. An initial preview command supplied
+  an HTTP origin and was correctly rejected; it was rerun with the configured
+  HTTPS origin. Whitespace validation passed.
+- Browser checks: Local English and Japanese homes retained their languages
+  without the root helper. Explicit Korean selection and reload retained
+  Korean; a direct Korean post retained its URI language and omitted the helper.
+  Browser preference combinations were covered by automated injected-runtime
+  tests; device language settings were not changed. Live production rollout
+  and external cross-browser checks were not performed.
+- Compatibility/follow-up: CONTENT_RULES remains accurate after documenting
+  this presentation-only entry exception; no author fields, post publication,
+  managed-page behavior, search eligibility, or content artifact contract
+  changed. Preserved prior local README, typography, and search work. No commit,
+  push, or deployment was performed in this task.
+
+## 2026-09-11T18:22:01+09:00 — Refine search dialog controls and dismissal
+
+- Change type: Owner-requested search interaction, icon, and visual refinement.
+- Scope/result: The close control now uses a 44px target and flat hover/focus/
+  press feedback with heavier text and green highlighting, without the generic
+  button shadow or transform. Keyboard focus outlines remain. Backdrop gestures
+  close the native dialog through the existing focus-restoration path; interior
+  clicks, border clicks, right clicks, cancelled gestures, and drags originating
+  inside do not dismiss it. Native Escape and the close button are preserved.
+- Icon provenance: Replaced the CSS-drawn lens with Lucide's Search SVG at
+  commit `6bbe5ddb07525b0d0056c622c550517f727d08b4`. Reviewed the official SVG
+  and ISC/Feather MIT notices; retained both complete notices in source and
+  emitted HTML. The decorative, nonfocusable inline SVG needs no external
+  request, runtime icon package, new dependency, or content-owned asset.
+- Contracts: Updated DESIGN, UX_FLOW, and reviewed policy mappings/hashes.
+  No authoring syntax, content search eligibility, index ownership, or query
+  behavior changed; the existing CONTENT_RULES search contract still applies.
+- Validation: Added `dismisses search only for completed backdrop gestures`,
+  `keeps search close feedback flat with visible keyboard focus`, and
+  `embeds the licensed Lucide search SVG without a runtime icon dependency`.
+  Search tests passed 8/8; type checking passed; the full suite passed 107/107
+  across 22 files; preview web output wrote 172 files; production build and
+  Pages verification passed; whitespace checks passed.
+- Browser validation: Desktop interior click preserved the open dialog;
+  backdrop, close button, and Escape each closed it and restored Search-link
+  focus. Actual hovered close-button styles reported no shadow/transform and
+  weight 750. At 390px the icon was 24px wide, neither dialog nor page overflowed,
+  and backdrop dismissal restored focus. Desktop/mobile visuals were inspected
+  and the viewport was reset afterward.
+- Compatibility/follow-up: No post, publication, locale, managed-page, or
+  analytics change. Prior uncommitted README/typography changes remain intact.
+  This task did not commit, push, or deploy the changes.
+
+## 2026-09-11T18:15:35+09:00 — Use natural letter spacing for identity labels
+
+- Change type: Owner-directed typography follow-up.
+- Reason/result: The owner preferred zero letter spacing for the English
+  labels. Changed shared eyebrow tracking from `.04em` to `0`, retaining
+  `.12em` additional word spacing and all other typography and layout rules.
+- Scope: Shared blog CSS, DESIGN, the existing eyebrow regression assertion,
+  and reviewed design-policy hashes. The assertion intentionally changes to
+  match the new owner-approved value and rejects both previous tracking values.
+- Validation: Focused site-baseline/governance suites passed 14/14; the full
+  suite passed 104/104 across 22 files; preview web build wrote 172 files;
+  whitespace validation passed. Browser inspection of both home labels reports
+  natural letter spacing (`normal`, the browser serialization of zero) while
+  retaining the prior word spacing.
+- Compatibility: Local preview only; no commit or deployment. Existing README
+  changes and all content, publication, routing, and managed pages are untouched.
+
+## 2026-09-11T18:14:47+09:00 — Improve uppercase identity word spacing
+
+- Change type: Owner-commented typography refinement and regression coverage.
+- Reason: The hero and author role looked like separated letters instead of
+  clear English words. Browser measurement found `.12em` tracking with no
+  additional word spacing on both shared eyebrow labels.
+- Scope/result: Shared eyebrow tracking is now `.04em`, with `.12em` additional
+  word spacing. Hero, author introduction/rail, and collection labels stay
+  consistent; text, uppercase treatment, weight, size, ordinary prose, display
+  headings, and the existing responsive wrapping rules remain unchanged.
+  Updated DESIGN and reviewed the mapped cases before refreshing policy hashes.
+- Validation: The new `keeps eyebrow letters grouped with distinct word spacing`
+  case protects the spacing and rejects the old tracking and forced no-wrap or
+  break-all behavior. Focused site-baseline/governance tests passed 14/14;
+  all 104 tests passed across 22 files. Preview web build wrote 172 files and
+  whitespace validation passed. Browser checks at 1137px measured hero/author
+  tracking of 0.4992/0.5888px and additional word spacing of 1.4976/1.7664px.
+  At 390px, Korean mixed-script and English home labels fit on single lines
+  without horizontal overflow. Visually inspected desktop and Korean mobile
+  views; restored the normal viewport and Korean home afterward.
+- Compatibility/follow-up: No content, locale, route, or managed-page changes.
+  Earlier uncommitted README changes remain intact. This task updated the local
+  preview only; no commit, production build, or deployment was performed.
+
+## 2026-09-11T18:10:45+09:00 — Separate localized README documents
+
+- Change type: Owner-requested documentation organization, agent-rule update,
+  and documentation-navigation regression coverage.
+- Reason: Interleaved English and Korean sections made the README difficult
+  to read. The owner requested an English default and separate translations
+  with reciprocal language navigation, extensible to Japanese and other languages.
+- Scope/result: `README.md` now contains English prose; `README.ko.md` preserves
+  the Korean companion content, and `README.ja.md` adds the matching Japanese
+  translation. Each has a dedicated top selector identifying the current
+  language and linking to the other two files. All versions retain the same
+  commands, sections, and reference destinations. Stale implementation and
+  deployment descriptions were corrected using the executable repository and
+  previously verified HTTPS deployment as evidence.
+- Policy: Replaced the superseded inline English/Korean rule in `AGENTS.md`
+  with separate `README.<language-code>.md` files, synchronized translations,
+  and links only to existing files. README locales do not change blog locales.
+  Reviewed the existing governance cases and added the README tests before
+  refreshing the agent-instruction hash in policy coverage.
+- Validation: New `readme-localization.test.ts` cases verify reciprocal top
+  navigation, reject missing/nonreciprocal language links, check separated
+  prose plus section/command/reference parity and relative-link existence,
+  and enforce aligned agent rules. Focused README/governance tests passed 5/5;
+  type checking passed; the full suite passed 103/103 across 22 files with no
+  failures or skips. Whitespace checks passed; the old inline-translation
+  instruction no longer appears in active project guides.
+- Compatibility/follow-up: Documentation and tests only; no content contract,
+  post, route, runtime behavior, dependency, or deployment configuration changed.
+  Production build, external-link checks, commit, and deployment were not run
+  for this documentation-only task. Existing temporary output remains untouched.
+
 ## 2026-09-11T18:02:47+09:00 — Dependency security remediation
 
 - Change type: Owner-requested dependency patches, security regression tests,

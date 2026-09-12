@@ -35,7 +35,7 @@ export const ownerContactSchema = z
 
 export const siteConfigSchema = z
   .object({
-    schemaVersion: z.literal(7),
+    schemaVersion: z.literal(8),
     originEnvironmentVariable: z.string().min(1),
     basePathEnvironmentVariable: z.string().min(1),
     production: z
@@ -69,7 +69,7 @@ export const siteConfigSchema = z
         default: supportedLanguageSchema,
         source: supportedLanguageSchema,
         primaryExperience: z.array(supportedLanguageSchema).min(1),
-        browserSelection: z.literal("manual-only"),
+        browserSelection: z.literal("root-only"),
         postNavigationFallback: z.array(supportedLanguageSchema).min(1),
         supported: z
           .array(

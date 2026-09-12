@@ -72,9 +72,10 @@ The full rationale and replacement rules are in
 - Korean: `/` and other unprefixed routes; default and no-JavaScript fallback.
 - English: `/en/`.
 - Japanese: `/ja/`.
-- A requested route never redirects or changes content based on browser
-  language or stored preference. Language changes use published static
-  alternate links only.
+- Only the exact deployment root may redirect to a supported browser language
+  using `location.replace`; other routes keep their language. Korean home menu
+  links use `?lang=ko` to preserve explicit selection. No stored preference is
+  read or written; complete static alternate documents remain authoritative.
 - Every post artifact carries its current language, original language, and
   published validated alternates. A post UX may optionally use them after the
   body to link the original; review state remains artifact metadata.
@@ -82,7 +83,7 @@ The full rationale and replacement rules are in
   group to the active language, then English, then Korean, omitting a group
   with no eligible published target and labeling every cross-language fallback.
 
-See ADR 0008 and `I18N.md`.
+See ADR 0008, ADR 0009, and `I18N.md`.
 See ADR 0006, `DESIGN.md`, `UX_FLOW.md`, and
 `config/performance-budgets.yaml` for the production/UX baseline.
 

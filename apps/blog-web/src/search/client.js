@@ -248,8 +248,35 @@ export function bindSearchDialog(root) {
     });
   }
   close?.addEventListener("click", () => dialog.close());
+  bindDialogBackdrop(dialog);
   dialog.addEventListener("close", restore);
   dialog.addEventListener("cancel", restore);
+}
+
+/**
+ * Close only a gesture that starts and ends on the backdrop, not a drag
+ * originating in the input, results, padding, or scrollbar.
+ * @param {HTMLDialogElement} dialog
+ */
+export function bindDialogBackdrop(dialog) {
+  let startedOutside = false;
+  const outside = (/** @type {MouseEvent} */ event) => {
+    const rect = dialog.getBoundingClientRect();
+    return event.target === dialog && (
+      event.clientX < rect.left || event.clientX > rect.right ||
+      event.clientY < rect.top || event.clientY > rect.bottom
+    );
+  };
+  dialog.addEventListener("pointerdown", (event) => {
+    startedOutside = event.button === 0 && outside(event);
+  });
+  dialog.addEventListener("pointercancel", () => { startedOutside = false; });
+  dialog.addEventListener("close", () => { startedOutside = false; });
+  dialog.addEventListener("click", (event) => {
+    const dismiss = startedOutside && outside(event);
+    startedOutside = false;
+    if (dismiss) dialog.close();
+  });
 }
 
 if (typeof document !== "undefined") {

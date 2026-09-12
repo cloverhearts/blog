@@ -8,7 +8,9 @@ import { test } from "vitest";
 import sharp from "sharp";
 
 import { buildWeb } from "../../apps/blog-web/src/build.ts";
+import { searchIcon } from "../../apps/blog-web/src/lib/search-icon.ts";
 import {
+  bindDialogBackdrop,
   formatResultCount,
   normalizeQuery,
   publicResultUrl,
@@ -21,6 +23,67 @@ import { loadProjectConfig } from "../../packages/project-config/src/index.ts";
 import { buildSearch } from "../../packages/search-indexer/src/index.ts";
 
 const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
+
+test("dismisses search only for completed backdrop gestures", () => {
+  class DialogStub extends EventTarget {
+    closed = 0;
+    getBoundingClientRect() { return { left: 100, top: 100, right: 500, bottom: 400 }; }
+    close() { this.closed += 1; this.dispatchEvent(new Event("close")); }
+  }
+  const dialog = new DialogStub();
+  bindDialogBackdrop(dialog as unknown as HTMLDialogElement);
+  const send = (type: string, x: number, y: number, target: EventTarget = dialog, button = 0) => {
+    const event = Object.assign(new Event(type), { clientX: x, clientY: y, button });
+    Object.defineProperty(event, "target", { value: target });
+    dialog.dispatchEvent(event);
+  };
+  send("pointerdown", 50, 200);
+  send("click", 50, 200);
+  assert.equal(dialog.closed, 1);
+  for (const [x, y] of [[100, 100], [500, 400], [300, 250]]) {
+    send("pointerdown", x!, y!);
+    send("click", x!, y!);
+  }
+  send("pointerdown", 250, 200, new EventTarget());
+  send("click", 50, 200); // Selection dragged out of the dialog.
+  send("pointerdown", 50, 200);
+  send("click", 250, 200); // Pointer moves into the dialog.
+  send("click", 50, 200); // No matching pointerdown.
+  send("pointerdown", 50, 200, dialog, 2);
+  send("click", 50, 200, dialog, 2);
+  send("pointerdown", 50, 200);
+  dialog.dispatchEvent(new Event("pointercancel"));
+  send("click", 50, 200);
+  assert.equal(dialog.closed, 1);
+  for (const [x, y] of [[501, 200], [300, 99], [300, 401]]) {
+    send("pointerdown", x!, y!);
+    send("click", x!, y!);
+  }
+  assert.equal(dialog.closed, 4);
+});
+
+test("keeps search close feedback flat with visible keyboard focus", () => {
+  const css = readFileSync(resolve(repositoryRoot, "apps/blog-web/src/styles/blog.css"), "utf8");
+  const interaction = css.match(/\.search-dialog \.search-dialog__header \.search-dialog__close:is\(:hover, :focus-visible, :active\)\s*\{([^}]+)\}/u)?.[1];
+  assert.ok(interaction);
+  assert.match(interaction, /box-shadow: none;/u);
+  assert.match(interaction, /transform: none;/u);
+  assert.match(interaction, /font-weight: 750;/u);
+  assert.match(interaction, /color: var\(--primary-dark\);/u);
+  assert.doesNotMatch(interaction, /outline: (?:0|none)/u);
+  assert.match(css, /:focus-visible \{ outline: \.2rem solid var\(--primary\)/u);
+  assert.doesNotMatch(css, /\.search-dialog__icon::after/u);
+});
+
+test("embeds the licensed Lucide search SVG without a runtime icon dependency", () => {
+  assert.match(searchIcon, /ISC License[\s\S]*Copyright \(c\) 2026 Lucide/u);
+  assert.match(searchIcon, /The MIT License \(MIT\)[\s\S]*Copyright \(c\) 2013-present Cole Bemis/u);
+  assert.match(searchIcon, /<svg class="search-dialog__icon" aria-hidden="true" focusable="false"/u);
+  assert.match(searchIcon, /viewBox="0 0 24 24"/u);
+  assert.match(searchIcon, /stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/u);
+  assert.match(searchIcon, /<path d="m21 21-4\.34-4\.34"\/><circle cx="11" cy="11" r="8"\/>/u);
+  assert.doesNotMatch(searchIcon, /<script|<use|\shref=|\ssrc=|\son[a-z]+=/u);
+});
 
 test("does not search until the reader enters a query", () => {
   assert.equal(shouldRunSearch(""), false);
@@ -89,6 +152,7 @@ test("indexes published language-isolated HTML and keeps C++ tokens searchable",
   assert.match(searchPage, /data-search-index="\/_assets\/search\/ko\/"/u);
   assert.match(searchPage, /class="search-dialog__header"/u);
   assert.match(searchPage, /class="search-dialog__field"/u);
+  assert.ok(searchPage.includes(searchIcon), "Keep icon geometry and both license notices in the emitted document");
   assert.match(searchPage, /placeholder="검색어를 입력하세요"/u);
   assert.match(searchPage, /data-search-hint/u);
   assert.match(searchPage, /aria-labelledby="search-dialog-title"/u);

@@ -56,8 +56,10 @@ merely because it compiles or looks correct in one browser.
   sticky UI.
 - The language switcher announces its purpose/current language, uses text rather
   than flags alone, and remains usable with keyboard, touch, and JavaScript off.
-- Browser language never redirects or replaces a requested document. Language
-  changes use persistent, keyboard-accessible normal links only.
+- Browser-language selection is restricted to the exact deployment root;
+  direct localized/deep links stay unchanged. Explicit Korean home selection
+  survives entry/reload, and language links remain keyboard-accessible and
+  usable without JavaScript (ADR 0009).
 - Content remains usable at 200% zoom and does not require horizontal scrolling
   for normal prose.
 - Touch targets, color contrast, reduced motion, and forced/system color modes

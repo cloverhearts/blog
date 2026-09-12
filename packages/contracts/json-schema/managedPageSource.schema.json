@@ -35,6 +35,10 @@
         "path": {
           "type": "string",
           "minLength": 1
+        },
+        "stylesheet": {
+          "type": "string",
+          "minLength": 1
         }
       },
       "required": [

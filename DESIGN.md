@@ -9,6 +9,9 @@
 - Runtime: this is the Open Design-compatible source of truth for people and
   implementation agents. Production does not require Open Design software or a
   network service.
+- Owner acceptance: the refined blog design was finalized on 2026-09-13.
+  Layout-review sample posts, taxonomy and thumbnails are removed; the same
+  components remain available for future real content and honest empty states.
 
 The site is a Korean-first editorial technical blog for CloverHearts, an
 **Applied AI Engineer**. Its identity is “clear engineering notes”: bright,
@@ -45,7 +48,7 @@ cannot communicate the relationship clearly.
 | `--surface` | `#F6FBF8` | quiet grouped region |
 | `--text` | `#17211C` | primary text |
 | `--muted` | `#66736C` | descriptions and secondary UI |
-| `--tertiary` | `#829089` | dates and low-emphasis metadata |
+| `--tertiary` | `#66736c` | readable dates and low-emphasis metadata |
 | `--primary` | `#12B76A` | identity and primary emphasis |
 | `--primary-dark` | `#087A4F` | accessible links and controls |
 | `--mint` | `#36D399` | terminal and small highlights |
@@ -71,6 +74,11 @@ meet WCAG 2.2 AA contrast targets.
   `1.82` line height on wide screens, `17px` with `1.78` on compact screens,
   and a maximum `40rem` measure.
 - General interface: `16px`, approximately `1.7` line height.
+- Small uppercase eyebrow labels use `0` letter spacing and an additional
+  `.12em` word spacing. This keeps Latin letters grouped into words while
+  preserving clear word boundaries in English and mixed-script identity copy.
+  Hero, author introduction, author rail, and collection labels share this rule;
+  normal prose and display-heading tracking remain unchanged.
 - Display headings: tight `1.06–1.24` line height and modest negative tracking.
   The home hero uses weight `620`; post, collection, and list titles use `600`
   so large Korean glyphs retain clear internal space instead of appearing
@@ -110,9 +118,9 @@ positioned `1px` line approximately `5–6px` below the label, so selection neve
 changes the label's height or vertical baseline. In the compact second row,
 every link keeps the same `48px` interaction height. Category and tag filter
 group labels share a `1.5` line-height baseline with their selectable items.
-The group labels retain full opacity, while selectable category and tag links
-rest at `50%` opacity and return to `100%` on hover or keyboard focus. Their
-pressed state uses the shared `68%` opacity feedback.
+Group labels and selectable category/tag links remain fully opaque. Hover and
+keyboard focus use an accessible dark-green color without adding an underline
+or dimming the text. Keyboard focus keeps the shared visible outline.
 
 ## 5. Home page
 
@@ -132,10 +140,30 @@ form one clear reading path. The reused thumbnail is decorative, has empty alt
 text, and remains available without JavaScript through the normal content
 artifact pipeline.
 
+The hero h1 is a normal, non-underlined link to the post supplying its visual
+(first Selected Work item, otherwise the featured post). Its accessible name
+includes the destination post title; a cross-language destination receives a
+visible language label. With no eligible post the h1 remains plain text. The
+featured card's Read More label has no underline, including at rest; its
+single full-card link and keyboard focus outline remain unchanged.
+
+When no eligible thumbnail exists, the hero uses a text-only variant with no
+minimum height and a copy width up to `48rem`. Empty home content is represented
+once under Recent Posts; empty Featured and Selected Work sections are omitted.
+The author Profile action is shown only when the matching managed-page manifest
+contains that locale's route. Draft profiles remain visible in preview only.
+
 On mobile, the canvas remains white and the technical thumbnail becomes a
 full-width `16:9` block after the hero copy rather than sitting behind the text.
 The title, description, and link retain their source order and contrast without
 the visual.
+
+The home author row and post author rail use the owner-supplied GitHub avatar
+in the existing `48 × 48px` square. Preserve the original colors and complete
+image with `object-fit: contain`, without a green backing, crop, or theme filter.
+It is decorative beside the visible author name (empty alt text). The approved
+PNG is bundled locally with a content-addressed URL; builds and page views
+must not request GitHub to display it.
 
 The author row immediately establishes CloverHearts and the role “Applied AI
 Engineer,” and keeps `1rem` of trailing space after its Profile action so the
@@ -182,9 +210,14 @@ an index/copy row with the thumbnail at `16:9` beneath the copy, keeping each
 post as one semantic list item.
 
 Explore separates its introductory title/description from discovery content
-with a full-width fine rule. Curated collections appear first as two strong
-desktop cards with a green top rule, localized post count, dark title, muted
-description, and directional arrow. Categories and tags follow in two distinct
+with a full-width fine rule. Curated collections appear first as two quiet
+desktop link regions: transparent backgrounds, no borders or green top rule,
+neutral post counts/arrows, dark titles and muted descriptions. Hover/focus
+adds only the existing green highlight background (`--primary-surface`), shared
+with taxonomy links and search results, without an extra opacity layer. Text
+stays fully opaque and no shadow, lift, or underline appears. Dark mode uses
+the same token's existing dark-green value. Keyboard outlines and reduced-motion
+preferences remain supported. Categories and tags follow in two distinct
 columns; each has a dark section rule and full-row links whose dark labels and
 tertiary counts establish clear contrast. Cards and taxonomy columns stack to
 one column on compact screens. This keeps collections, categories, and tags
@@ -207,6 +240,13 @@ external sprite, or pseudo-element approximation. Search must not invent or
 persist a “recent search” history.
 The palette becomes nearly full-viewport on mobile without creating horizontal
 overflow.
+The close control stays flat on hover, keyboard focus, and press: no shadow,
+translation, or scale; only its text weight and green highlight change, with
+the normal visible keyboard focus outline retained. Backdrop clicks dismiss
+the search dialog, while interior clicks and outward text-selection drags do not.
+The input uses the single Lucide Search SVG with a `24 × 24` view box, rounded
+`2px` strokes, and inherited color. It is decorative and locally embedded;
+no icon font, runtime package, external request, or CSS-drawn lens is used.
 
 There is no newsletter or subscription interface.
 
@@ -285,8 +325,8 @@ Article rules:
   line above the post title with a small explicit gap;
 - previous and next links occupy separate equal-width bordered regions on wide
   screens and stack on compact screens. Their compact title uses `0.9375rem`;
-  each region rests at `50%` opacity and transitions to `100%` on hover or
-  keyboard focus, while retaining a visible boundary at rest.
+  text and boundaries remain fully opaque at rest. Hover/focus change the
+  surface and border, preserving readable contrast.
 
 Images are not forced into a decorative crop inside article prose. Screenshots
 may use their intrinsic ratio. Unsupported or missing media falls back to the
@@ -302,12 +342,15 @@ targets are at least `44px` high where controls are used.
 Primary content, navigation, localization, TOC, pagination, recovery, and
 managed-page return links are available in static HTML. JavaScript enhances
 search and optional post-image enlargement without replacing static content.
-Requested routes are never redirected based on browser language.
+Only the exact deployment root may select English or Japanese from browser
+preferences (ADR 0009). Other paths retain their language. The Korean home
+language-menu link adds `?lang=ko` to preserve explicit selection; static Korean
+remains the no-JavaScript fallback. No visual layout or typography changes.
 
 Motion is limited to native scrolling and tiny state transitions. Links animate
-color, underline color/offset, and opacity over `180ms`; their active state
-briefly lowers opacity to communicate activation without moving surrounding
-content. Enabled buttons and disclosure controls rise by `1px` on hover and
+color and underline color/offset over `180ms`; their active state changes the
+underline offset without reducing text opacity or moving surrounding content.
+Enabled buttons and disclosure controls rise by `1px` on hover and
 press by `1px` with a restrained `0.985` scale on activation. Form-field borders
 transition to green on pointer hover. These effects never alter layout, and the
 stylesheet honors `prefers-reduced-motion: reduce`. Decorative autoplay,
@@ -315,10 +358,15 @@ parallax, and essential animated explanations are forbidden.
 
 Post-list rows expose one full-card link covering the index, category, title,
 description, metadata, and thumbnail instead of limiting activation to the
-title. The index and copy rest at `50%` opacity while the thumbnail rests at
-`85%`; all transition to full opacity on pointer hover or keyboard focus. The
-featured post follows the same one-link pattern, with `50%` copy and `85%`
-visual opacity transitioning to full opacity. Images never scale or change the
+title. The index and copy remain at `100%` opacity while thumbnails rest at
+`85%` and transition to full opacity on pointer hover or keyboard focus. The
+featured post follows the same pattern, with fully opaque copy and an `85%`
+visual. Titles use an accessible dark-green color on hover/focus without adding
+an underline. Hover must not introduce new link underlines; persistent article
+link underlines and the hero action's existing rule remain unchanged.
+Normal text, muted metadata,
+tertiary labels, and text links meet `4.5:1` against their light/dark surfaces.
+Images never scale or change the
 card geometry during interaction, so focus is communicated through contrast
 without spatial motion. Reduced-motion preferences still suppress transition
 duration. Shared section headings leave `1rem` before their content, and a
@@ -404,5 +452,15 @@ overlays and annotation controls may be injected inside blog surfaces.
 - The home hero reuses the thumbnail emitted for the first Selected Work item;
   its source and license stay with that post-owned asset and the content
   artifact pipeline rather than being duplicated into the web application.
-- No external design system, icon library, remote image, or third-party brand
-  asset is part of this implementation.
+- The search input uses Lucide's Search SVG from commit
+  `6bbe5ddb07525b0d0056c622c550517f727d08b4`, under ISC and the inherited Feather
+  MIT license. Both notices are retained in `src/lib/search-icon.ts` in the blog
+  application and in emitted HTML. The SVG geometry is unchanged; only its
+  presentation class and decorative accessibility attributes are added.
+- The owner authorized their GitHub avatar from
+  `https://avatars.githubusercontent.com/u/10525473?s=40&v=4` on 2026-09-12.
+  The same image's `s=192` variant is retained unchanged in
+  `apps/blog-web/src/assets/author-avatar.png` for high-density display.
+  This permission is for the owner's blog identity, not a general reuse license.
+- No external design system, runtime icon library, runtime remote image, or
+  unrelated third-party brand asset is part of this implementation.

@@ -316,6 +316,13 @@ Responsibilities:
 
 It may import inferred types and validators from `packages/contracts/`, read validated `.artifacts/content/<mode>/`, and consume validated shared configuration. It must not traverse `docs/`, parse Markdown, resolve source asset paths, or import managed-page source.
 
+For intentional author-to-profile actions only, the web lane may consume the
+same-mode validated managed manifest's available routes. It never consumes
+managed source or presentation. Release orchestration builds managed artifacts
+before the web lane; absent/mismatched manifests suppress profile actions.
+The sorted available routes participate in web provenance. A managed publication
+change therefore rerenders these actions, without coupling either design system.
+
 The analytics adapter is not an embed plugin and is not part of content
 compilation. It receives only the validated public Measurement ID. In basic
 consent mode it must not request `gtag.js` until the reader grants analytics
@@ -457,6 +464,10 @@ and implementation source. Each managed-page `sourceHash` includes its
 `page.yaml`, local `DESIGN.md`, declared entry graph, security declarations, and
 page-owned assets. A design change therefore invalidates only its owning build
 lane and downstream artifacts.
+
+The controlled managed Markdown adapter includes optional `entry.stylesheet`
+bytes in `sourceHash`; its page-owned inline CSS must be network-free. Markdown
+is statically rendered and sanitized rather than escaped as literal source.
 
 Content-addressed assets use stable artifact-relative paths and asset IDs. Contracts do not store deployment-specific public URLs or producer filesystem output directories. The web renderer resolves a public URL from shared route configuration; the release assembler maps artifact-relative paths into `dist/`.
 

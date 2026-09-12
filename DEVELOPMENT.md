@@ -70,12 +70,20 @@ being described as passed.
 
 ## Local preview
 
-- `npm run dev` performs the initial preview content, web, and search build,
-  serves `http://127.0.0.1:4321`, and then watches normal-blog sources.
+- `npm run dev` builds preview content, managed pages, web, and search, serves
+  `http://127.0.0.1:4321`, and watches blog and managed-page sources. Managed
+  preview HTML is copied to its declared route after search indexing, keeping
+  standalone pages out of the blog index.
 - Changes under `apps/blog-web/`, `packages/search-indexer/`, or the root
   `DESIGN.md` rebuild the web and search lanes. Changes under `docs/`,
   `assets/content/`, `config/`, content/config/contracts/embed packages, or
   reviewed embed plugins rebuild content, web, and search in dependency order.
+- Managed-page source/compiler changes trigger a full preview rebuild. The
+  managed lane precedes web rendering so available profile actions are current.
+- Preview requests are decoded once. Malformed encodings receive 400; paths or
+  symlinks outside the preview site receive 403; missing files remain 404.
+  Restart `npm run dev` after changing server/compiler implementation modules;
+  the source watcher does not replace already imported modules in memory.
 - Generated output, Open Design's `.od/` state, staged `design/open-design/`
   concepts, dependencies, and unrelated documents are ignored so they cannot
   cause rebuild loops. A staged concept affects the live blog only after its

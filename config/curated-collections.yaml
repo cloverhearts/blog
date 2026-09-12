@@ -15,12 +15,7 @@ collections:
     selector:
       anyTags: ["work-evidence"]
       anyCategories: []
-      includeTranslationKeys:
-        - "building-ai-skills"
-        - "composable-sdk"
-        - "llms-txt-for-sdk-docs"
-        - "measuring-ax"
-        - "trustworthy-ai-knowledge-base"
+      includeTranslationKeys: []
       excludeTranslationKeys: []
     order:
       primary: "work-evidence-date"
@@ -40,7 +35,7 @@ collections:
       ja: "子どもたちと過ごした時間や趣味など、日々の暮らしを記録します。"
     selector:
       anyTags: ["daily-record"]
-      anyCategories: ["life-notes", "family-life", "everyday-lab"]
+      anyCategories: []
       includeTranslationKeys: []
       excludeTranslationKeys: []
     order:

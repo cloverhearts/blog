@@ -1,6 +1,12 @@
-import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
-import { dirname, relative, resolve, sep } from "node:path";
+import { existsSync, mkdirSync, readdirSync, readFileSync, realpathSync, rmSync, statSync, writeFileSync } from "node:fs";
+import { isAbsolute, relative, resolve, sep } from "node:path";
 import { parse } from "yaml";
+import { unified } from "unified";
+import remarkParse from "remark-parse";
+import remarkGfm from "remark-gfm";
+import remarkRehype from "remark-rehype";
+import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
+import rehypeStringify from "rehype-stringify";
 
 import {
   parseManagedPageSourceConfig,
@@ -36,11 +42,18 @@ export async function buildManagedPages(options: {
 
   const pages: PreviewManagedPageArtifact[] = [];
   const routes: RouteClaimArtifact[] = [];
+  const availableRoutes = new Set<string>();
   if (existsSync(pagesRoot)) {
+    for (const entry of readdirSync(pagesRoot)) {
+      const yaml = resolve(pagesRoot, entry, "page.yaml");
+      if (!existsSync(yaml)) continue;
+      const source = parseManagedPageSourceConfig(parse(readFileSync(yaml, "utf8")));
+      if (options.mode === "preview" || source.status === "published") availableRoutes.add(source.route);
+    }
     for (const entry of readdirSync(pagesRoot)) {
       const pageDirectory = resolve(pagesRoot, entry);
       if (!statSync(pageDirectory).isDirectory()) continue;
-      const page = compileManagedPage(pageDirectory, options.config, options.mode, outputDirectory);
+      const page = compileManagedPage(pageDirectory, options.config, options.mode, outputDirectory, availableRoutes);
       if (options.mode === "production" && page.status !== "published") {
         rmSync(resolve(outputDirectory, "pages", page.id), { recursive: true, force: true });
         continue;
@@ -82,6 +95,7 @@ function compileManagedPage(
   config: ProjectConfig,
   mode: BuildMode,
   outputDirectory: string,
+  availableRoutes: ReadonlySet<string>,
 ): PreviewManagedPageArtifact {
   const id = pageDirectory.split(sep).at(-1) ?? "";
   const yamlPath = resolve(pageDirectory, "page.yaml");
@@ -99,6 +113,15 @@ function compileManagedPage(
   if (!existsSync(entryPath)) {
     throw new Error(`${id}: missing entry ${source.entry.path}`);
   }
+  assertInside(realpathSync(pageDirectory), realpathSync(entryPath), `${id}: entry symlink escapes the page package`);
+  const stylesheetPath = source.entry.stylesheet ? resolve(pageDirectory, source.entry.stylesheet) : undefined;
+  let stylesheet = "";
+  if (stylesheetPath) {
+    assertInside(pageDirectory, stylesheetPath, `${id}: stylesheet path escapes the page package`);
+    assertInside(realpathSync(pageDirectory), realpathSync(stylesheetPath), `${id}: stylesheet symlink escapes the page package`);
+    stylesheet = readFileSync(stylesheetPath, "utf8");
+    validateManagedStylesheet(stylesheet);
+  }
   const requested = source.security.externalOrigins;
   const allowed = config.security.managedPages.approvedExternalOrigins;
   for (const key of Object.keys(requested) as Array<keyof typeof requested>) {
@@ -114,12 +137,12 @@ function compileManagedPage(
     }
   }
 
-  const html = renderManagedHtml(source, readFileSync(entryPath, "utf8"), config);
+  const html = renderManagedHtml(source, readFileSync(entryPath, "utf8"), config, stylesheet, availableRoutes);
   const artifactDirectory = resolve(outputDirectory, "pages", source.id);
   mkdirSync(artifactDirectory, { recursive: true });
   writeFileSync(resolve(artifactDirectory, "index.html"), html);
   const sourceHash = sha256Hex(
-    `${sha256File(yamlPath)}\n${sha256File(designPath)}\n${sha256File(entryPath)}`,
+    `${sha256File(yamlPath)}\n${sha256File(designPath)}\n${sha256File(entryPath)}${stylesheetPath ? `\n${sha256File(stylesheetPath)}` : ""}`,
   );
   return {
     id: source.id,
@@ -169,24 +192,42 @@ function profileJsonLd(
       description: owner.shortBios[language],
       ...(sameAs.length > 0 ? { sameAs } : {}),
     },
-  })}</script>`;
+  }).replaceAll("<", "\\u003c")}</script>`;
 }
 
 function profileAlternateLinks(
   source: ReturnType<typeof parseManagedPageSourceConfig>,
   config: ProjectConfig,
+  availableRoutes: ReadonlySet<string>,
 ): string {
   const owner = config.site.identity.owner;
   if (!Object.values(owner.profileRoutes).includes(source.route)) {
     return `    <link rel="canonical" href="${escapeHtml(config.resolvePublicUrl(source.route))}">`;
   }
   const links = (["ko", "en", "ja"] as const)
+    .filter((language) => availableRoutes.has(owner.profileRoutes[language]))
     .map(
       (language) =>
         `    <link rel="alternate" hreflang="${language}" href="${escapeHtml(config.resolvePublicUrl(owner.profileRoutes[language]))}">`,
     )
     .join("\n");
-  return `    <link rel="canonical" href="${escapeHtml(config.resolvePublicUrl(source.route))}">\n${links}\n    <link rel="alternate" hreflang="x-default" href="${escapeHtml(config.resolvePublicUrl(owner.profileRoutes.ko))}">`;
+  return `    <link rel="canonical" href="${escapeHtml(config.resolvePublicUrl(source.route))}">\n${links}${availableRoutes.has(owner.profileRoutes.ko) ? `\n    <link rel="alternate" hreflang="x-default" href="${escapeHtml(config.resolvePublicUrl(owner.profileRoutes.ko))}">` : ""}`;
+}
+
+export function validateManagedStylesheet(css: string): void {
+  // This adapter supports only local, network-free styles. Escaped identifiers
+  // are deliberately unsupported so origin restrictions cannot be disguised.
+  const normalized = css.replace(/\/\*[\s\S]*?\*\//gu, "");
+  if (/[<\\]/u.test(css) || /@\s*(?:import|namespace)|url\s*\(|image-set\s*\(/iu.test(normalized)) {
+    throw new Error("Managed stylesheet must not contain markup, escapes, imports or network/resource URLs");
+  }
+}
+
+export function renderManagedMarkdown(markdown: string, basePath: string): string {
+  const schema = { ...defaultSchema, tagNames: defaultSchema.tagNames?.filter((tag) => !["img", "input"].includes(tag)) };
+  const html = String(unified().use(remarkParse).use(remarkGfm).use(remarkRehype)
+    .use(rehypeSanitize, schema).use(rehypeStringify).processSync(markdown));
+  return html.replace(/href="\/(?!\/)([^"]*)"/gu, (_match, path: string) => `href="${basePath}/${path}"`);
 }
 
 function validateEntryCompatibility(source: ReturnType<typeof parseManagedPageSourceConfig>): void {
@@ -206,11 +247,13 @@ function renderManagedHtml(
   source: ReturnType<typeof parseManagedPageSourceConfig>,
   entrySource: string,
   config: ProjectConfig,
+  stylesheet: string,
+  availableRoutes: ReadonlySet<string>,
 ): string {
   const returnHref = `${config.resolved.basePath}${source.returnTo}`;
   const body =
     source.entry.format === "markdown"
-      ? `<article>${escapeHtml(entrySource).replaceAll("\n\n", "</p><p>").replace(/^/, "<p>").replace(/$/, "</p>")}</article>`
+      ? `<article>${renderManagedMarkdown(entrySource, config.resolved.basePath)}</article>`
       : `<p>${escapeHtml(source.description)}</p><p>This application requires JavaScript for its interactive features. The title, description, and return link remain available.</p>`;
   return `<!doctype html>
 <html lang="${source.language}">
@@ -220,7 +263,7 @@ function renderManagedHtml(
     <meta name="description" content="${escapeHtml(source.description)}">
     <meta name="robots" content="${source.robots === "index" ? "index,follow" : "noindex,follow"}">
     <title>${escapeHtml(source.title)}</title>
-${profileAlternateLinks(source, config)}
+${profileAlternateLinks(source, config, availableRoutes)}
     ${profileJsonLd(source, config)}
     <style>
       :root {
@@ -246,6 +289,7 @@ ${profileAlternateLinks(source, config)}
         [data-managed-page-return] { display: none; }
       }
     </style>
+    ${stylesheet ? `<style data-managed-page-style>${stylesheet}</style>` : ""}
   </head>
   <body>
     <a data-managed-page-return href="${escapeHtml(returnHref)}">${RETURN_LABELS[source.language]}</a>
@@ -260,7 +304,7 @@ ${profileAlternateLinks(source, config)}
 
 function assertInside(root: string, candidate: string, message: string): void {
   const relativePath = relative(root, candidate);
-  if (relativePath.startsWith("..") || relativePath.includes(`..${sep}`)) {
+  if (relativePath === ".." || relativePath.startsWith(`..${sep}`) || isAbsolute(relativePath)) {
     throw new Error(message);
   }
 }
@@ -272,5 +316,3 @@ function escapeHtml(value: string): string {
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;");
 }
-
-void dirname;

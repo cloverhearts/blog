@@ -2,18 +2,21 @@ import { createServer, type ServerResponse } from "node:http";
 import {
   cpSync,
   existsSync,
+  mkdirSync,
   readFileSync,
+  realpathSync,
   rmSync,
   statSync,
   watch,
   type FSWatcher,
 } from "node:fs";
-import { extname, resolve } from "node:path";
+import { extname, isAbsolute, relative, resolve, sep } from "node:path";
 
 import { buildWeb } from "../apps/blog-web/src/build.ts";
 import { compileContent } from "../packages/content-compiler/src/compile.ts";
 import { loadProjectConfig } from "../packages/project-config/src/index.ts";
 import { buildSearch } from "../packages/search-indexer/src/index.ts";
+import { buildManagedPages } from "../packages/managed-page-compiler/src/index.ts";
 
 const LIVE_RELOAD_ENDPOINT = "/__preview/live-reload";
 const LIVE_RELOAD_MARKER = "data-preview-live-reload";
@@ -32,6 +35,34 @@ const types: Record<string, string> = {
   ".wasm": "application/wasm",
   ".pagefind": "application/octet-stream",
 };
+
+export function previewPath(requestTarget: string): string | null {
+  try {
+    if (!requestTarget.startsWith("/") || requestTarget.startsWith("//")) return null;
+    const path = decodeURIComponent(new URL(requestTarget, "http://127.0.0.1").pathname);
+    return /[\u0000\\]/u.test(path) ? null : path;
+  } catch {
+    return null;
+  }
+}
+
+export function resolvePreviewFile(root: string, pathname: string):
+  { status: 200; file: string } | { status: 403 } | { status: 404 } {
+  const inside = (parent: string, child: string) => {
+    const path = relative(parent, child);
+    return path !== ".." && !path.startsWith(`..${sep}`) && !isAbsolute(path);
+  };
+  const candidate = resolve(root, pathname.slice(1));
+  if (!inside(root, candidate)) return { status: 403 };
+  for (const path of [resolve(candidate, "index.html"), candidate]) {
+    try {
+      const actual = realpathSync(path);
+      if (!inside(realpathSync(root), actual)) return { status: 403 };
+      if (statSync(actual).isFile()) return { status: 200, file: actual };
+    } catch { /* Missing files fall through to the normal 404 document. */ }
+  }
+  return { status: 404 };
+}
 
 export type PreviewRebuildScope = "web" | "full";
 
@@ -59,6 +90,8 @@ export function classifyPreviewChange(path: string): PreviewRebuildScope | null 
       "assets/content/",
       "config/",
       "docs/",
+      "managed-pages/",
+      "packages/managed-page-compiler/",
       "packages/content-compiler/",
       "packages/contracts/",
       "packages/embed-core/",
@@ -108,9 +141,15 @@ async function rebuildPreview(
   if (scope === "full") {
     await compileContent({ config, mode: "preview" });
   }
+  const managed = await buildManagedPages({ config, mode: "preview" });
   await buildWeb({ config, mode: "preview" });
   await buildSearch({ config, mode: "preview" });
   copyPreviewSearchIndex(repositoryRoot);
+  for (const page of managed.pages) {
+    const target = resolve(repositoryRoot, ".artifacts/web/preview/site", page.route.slice(1), "index.html");
+    mkdirSync(resolve(target, ".."), { recursive: true });
+    cpSync(resolve(repositoryRoot, ".artifacts/managed/preview", page.entryArtifactPath), target);
+  }
 }
 
 function sendReload(clients: Set<ServerResponse>, revision: number): void {
@@ -135,8 +174,12 @@ export async function startPreview(repositoryRoot = process.cwd()): Promise<void
   let pendingPath = "";
 
   const server = createServer((request, response) => {
-    const url = new URL(request.url ?? "/", "http://127.0.0.1");
-    const pathname = decodeURIComponent(url.pathname);
+    const pathname = previewPath(request.url ?? "/");
+    if (pathname === null) {
+      response.writeHead(400, { "content-type": "text/plain; charset=utf-8" });
+      response.end("Bad request");
+      return;
+    }
     if (pathname === LIVE_RELOAD_ENDPOINT) {
       response.writeHead(200, {
         "cache-control": "no-cache, no-transform",
@@ -149,18 +192,13 @@ export async function startPreview(repositoryRoot = process.cwd()): Promise<void
       return;
     }
 
-    const candidates = [
-      resolve(root, pathname.slice(1), "index.html"),
-      resolve(root, pathname.slice(1)),
-    ];
-    const file = candidates.find((candidate) => {
-      try {
-        return statSync(candidate).isFile();
-      } catch {
-        return false;
-      }
-    });
-    if (!file) {
+    const resolved = resolvePreviewFile(root, pathname);
+    if (resolved.status === 403) {
+      response.writeHead(403, { "content-type": "text/plain; charset=utf-8" });
+      response.end("Forbidden");
+      return;
+    }
+    if (resolved.status === 404) {
       try {
         const fallback = injectPreviewLiveReload(
           readFileSync(resolve(root, "404.html"), "utf8"),
@@ -176,7 +214,7 @@ export async function startPreview(repositoryRoot = process.cwd()): Promise<void
       }
       return;
     }
-
+    const file = resolved.file;
     const contentType = types[extname(file)] ?? "application/octet-stream";
     response.writeHead(200, {
       "cache-control": "no-store",

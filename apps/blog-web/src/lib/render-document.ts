@@ -1,6 +1,7 @@
 import type { SupportedLanguage } from "../../../../packages/contracts/src/index.ts";
 import { blogMessages } from "../i18n/messages.ts";
 import { escapeHtml, withBasePath } from "./html.ts";
+import { searchIcon } from "./search-icon.ts";
 
 export interface DocumentLink {
   readonly href: string;
@@ -21,6 +22,10 @@ export interface RenderDocumentInput {
   readonly authorName: string;
   readonly searchIndex: string;
   readonly basePath: string;
+  readonly rootLanguageSelection?: {
+    readonly defaultLanguage: SupportedLanguage;
+    readonly homes: Readonly<Record<string, string>>;
+  } | undefined;
   readonly primaryNavigation: readonly DocumentLink[];
   readonly languageNavigation: readonly DocumentLink[];
   readonly head: string;
@@ -44,7 +49,7 @@ export function renderDocument(input: RenderDocumentInput): string {
     .join("\n");
   const xDefault = input.languageNavigation.find((item) => item.hreflang === "ko") ?? input.languageNavigation[0];
   const jsonLd = (input.jsonLd ?? [])
-    .map((block) => `    <script type="application/ld+json">${block}</script>`)
+    .map((block) => `    <script type="application/ld+json">${block.replaceAll("<", "\\u003c")}</script>`)
     .join("\n");
 
   return `<!doctype html>
@@ -63,6 +68,7 @@ ${languageLinks}
 ${xDefault ? `    <link rel="alternate" hreflang="x-default" href="${escapeHtml(absoluteOrKeep(xDefault.href, input.canonicalUrl))}">` : ""}
 ${input.head}
 ${jsonLd}
+${input.rootLanguageSelection ? `    <script type="module" src="${escapeHtml(withBasePath(input.basePath, "/_assets/app/root-language.js"))}" data-root-language-selection data-default-language="${input.rootLanguageSelection.defaultLanguage}" data-language-homes="${escapeHtml(JSON.stringify(input.rootLanguageSelection.homes))}"></script>` : ""}
   </head>
   <body class="page page--${input.pageKind}" data-page-kind="${input.pageKind}">
     <a class="skip-link" data-skip-link href="#main">${escapeHtml(messages.skipToContent)}</a>
@@ -76,7 +82,7 @@ ${input.primaryNavigation.map((item) => `          <li><a href="${escapeHtml(ite
       </nav>
       <nav class="language-navigation" data-language-navigation aria-label="${escapeHtml(messages.language)}">
         <ul>
-${input.languageNavigation.map((item) => `          <li><a href="${escapeHtml(item.href)}"${item.hreflang ? ` hreflang="${item.hreflang}"` : ""}${item.current ? ' aria-current="page"' : ""}>${escapeHtml(item.label)}</a></li>`).join("\n")}
+${input.languageNavigation.map((item) => `          <li><a href="${escapeHtml(item.href === withBasePath(input.basePath, "/") ? `${item.href}?lang=ko` : item.href)}"${item.hreflang ? ` hreflang="${item.hreflang}"` : ""}${item.current ? ' aria-current="page"' : ""}>${escapeHtml(item.label)}</a></li>`).join("\n")}
         </ul>
       </nav>
       </div>
@@ -96,7 +102,7 @@ ${input.footer}
         <form class="search-dialog__form" role="search" method="dialog" data-search-dialog-form>
           <label class="search-dialog__label" for="dialog-search-query">${escapeHtml(messages.search)}</label>
           <div class="search-dialog__field">
-            <span class="search-dialog__icon" aria-hidden="true"></span>
+            ${searchIcon}
             <input class="site-control site-control--field search-dialog__input" id="dialog-search-query" name="q" type="search" autocomplete="off" enterkeyhint="search" inputmode="search" placeholder="${escapeHtml(messages.searchPlaceholder)}">
             <button class="site-control site-control--button search-dialog__submit" type="submit">${escapeHtml(messages.search)}</button>
           </div>

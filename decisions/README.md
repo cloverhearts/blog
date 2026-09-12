@@ -15,6 +15,8 @@ Accepted records:
 - `0004-implementation-stack.md`
 - `0006-production-ux-and-capacity-baseline.md`
 - `0008-multilingual-publication-and-link-fallback.md`
+- `0009-root-only-browser-language-selection.md` — supersedes only ADR 0008's
+  blanket browser-selection prohibition; other ADR 0008 decisions remain active
 
 Superseded records:
 

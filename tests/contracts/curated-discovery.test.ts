@@ -93,13 +93,14 @@ test("derives curated membership, work chronology, and configuration-only extra 
 
   const home = readFileSync(resolve(root, ".artifacts/web/production/site/index.html"), "utf8");
   assert.match(home, /data-author-intro/u);
-  assert.match(home, /href="\/profile\/"/u);
+  assert.doesNotMatch(home, /href="\/profile\/"/u, "Draft profiles must not receive live links");
   assert.match(home, /data-search-trigger/u);
   assert.match(home, /<dialog class="search-dialog" data-search-dialog/u);
   assert.match(home, /전체 보기[\s\S]*주요 작업[\s\S]*일상 기록[\s\S]*둘러보기[\s\S]*검색/u);
   const homeHero = home.match(/<section class="home-hero" data-home-hero>([\s\S]*?)<\/section>/u)?.[1] ?? "";
   assert.match(homeHero, /class="home-hero__visual"[^>]*><img class="home-hero__image"[^>]+alt=""[^>]+data-hero-thumbnail=/u);
   assert.doesNotMatch(homeHero, /context\.collect\(\)|workflow\.execute\(\)/u);
+  assert.match(homeHero, /<h1><a class="home-hero__title-link" href="\/posts\/led-project\/" hreflang="ko"/u, "Hero follows its Selected Work image, not an unrelated recent post");
   const homeFeatured = home.match(/<section class="home-section home-featured" data-home-featured>([\s\S]*?)<\/section>/u)?.[1] ?? "";
   assert.match(homeFeatured, /<div class="section-heading" data-section-heading><h2>추천 글<\/h2>/u);
   assert.doesNotMatch(homeFeatured, /data-eyebrow/u);
@@ -123,7 +124,7 @@ test("derives curated membership, work chronology, and configuration-only extra 
   assert.match(profile, /#person/u);
 });
 
-test("adds a third curated container from configuration only", () => {
+test("keeps permanent curated routes without layout-review sample selectors", () => {
   const config = loadProjectConfig({
     repositoryRoot,
     env: { SITE_ORIGIN: "https://blog.cloverhearts.com" },
@@ -132,13 +133,10 @@ test("adds a third curated container from configuration only", () => {
   assert.equal(config.routes.curated.work, "/work/");
   assert.equal(config.routes.curated.daily, "/daily/");
   assert.equal(config.curatedCollections.collections.work?.presentation, "work");
-  assert.deepEqual(config.curatedCollections.collections.work?.selector.includeTranslationKeys, [
-    "building-ai-skills",
-    "composable-sdk",
-    "llms-txt-for-sdk-docs",
-    "measuring-ax",
-    "trustworthy-ai-knowledge-base",
-  ]);
+  assert.deepEqual(config.curatedCollections.collections.work?.selector.includeTranslationKeys, []);
+  assert.deepEqual(config.curatedCollections.collections.daily?.selector.anyCategories, []);
+  assert.deepEqual(config.taxonomy.categories, {});
+  assert.deepEqual(Object.keys(config.taxonomy.tags).sort(), ["daily-record", "work-evidence"]);
   assert.equal(config.site.identity.owner.displayName, "CloverHearts");
   assert.equal(config.site.identity.owner.contacts[0]?.kind, "github");
 });
@@ -166,6 +164,16 @@ function createCuratedWorkspace(): string {
   const routes = parse(readFileSync(resolve(root, "config/routes.yaml"), "utf8")) as {
     curated: Record<string, string>;
   };
+  // Synthetic taxonomy belongs to this fixture, never to live sample content.
+  const taxonomyPath = resolve(root, "config/taxonomy.yaml");
+  const taxonomy = parse(readFileSync(taxonomyPath, "utf8"));
+  for (const id of ["research-lab", "family-life"]) {
+    taxonomy.categories[id] = { labels: { en: id, ko: id, ja: id } };
+  }
+  for (const id of ["research", "ai", "family"]) {
+    taxonomy.tags[id] = { labels: { en: id, ko: id, ja: id } };
+  }
+  writeFileSync(taxonomyPath, yamlFrom(taxonomy));
   routes.curated.notes = "/notes/";
   writeFileSync(resolve(root, "config/routes.yaml"), yamlFrom(routes));
   const curated = parse(readFileSync(resolve(root, "config/curated-collections.yaml"), "utf8")) as {
@@ -219,6 +227,10 @@ function createCuratedWorkspace(): string {
   daily.collections.daily.selector.excludeTranslationKeys = ["excluded-note"];
   writeFileSync(resolve(root, "config/curated-collections.yaml"), yamlFrom(daily));
   cpSync(resolve(repositoryRoot, "managed-pages/profile"), resolve(root, "managed-pages/profile"), { recursive: true });
+  const profilePath = resolve(root, "managed-pages/profile/page.yaml");
+  const profile = parse(readFileSync(profilePath, "utf8"));
+  profile.status = "draft";
+  writeFileSync(profilePath, yamlFrom(profile));
   return root;
 }
 

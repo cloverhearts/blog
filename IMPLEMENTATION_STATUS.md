@@ -37,10 +37,10 @@ remain follow-up work.
 | Embed core           | Implemented | Runtime schemas, explicit registry, safe iframe validation, deterministic execution, synthetic test plugin, and reviewed local YouTube provider                         | Additional providers only after separate review                                                                        |
 | Blog web             | Implemented | Static renderer, localized routes, named-component external CSS, Open Design refined white/green editorial shell, full-link post cards with restrained thumbnail transitions, overlapping workflow hero, numbered ruled lists, 132/704/132 post layout, mobile white hero, TOC, Open Graph, description summaries, 16:9 list thumbnails, dark/print modes, GA4-off default | Ongoing populated-corpus cross-browser and device visual regression checks                                             |
 | Search               | Implemented | Pagefind per-language indexes, labeled search form, no-JS fallback, and language-isolated client enhancement                                                           | Field ranking checks against a larger published corpus                                                                 |
-| Managed pages        | Implemented | `page.yaml` loader, document/presentation/application adapters, return control, preview/production manifests                                                           | First real managed-page package                                                                                        |
+| Managed pages        | Partial | Static sanitized Markdown documents, optional network-free page-local CSS, route-aware profile links, return control, preview/production manifests; three published, empty noindex profile shells | Real profile content and owner review; TypeScript applications and interactive presentations remain fallback-only, not complete adapters |
 | Site discovery       | Implemented | Config/artifact ingestion, sitemap, robots, llms.txt, per-language RSS, discovery manifest                                                                             | None until indexable managed pages exist                                                                               |
 | Release assembly     | Implemented | Production-only merge, collision checks, `dist/`, `verify:pages`, release manifest and diagnostic report                                                               | Isolated `/blog` portability build in CI after Pages environment exists                                                |
-| Content/plugins      | Partial     | Twenty temporary draft groups across English, Korean, and Japanese for development-preview testing plus one reviewed local YouTube provider                            | Owner review or later removal of temporary groups; first reviewed production content                                    |
+| Content/plugins      | Partial     | Empty authoring workspace after removal of design-review samples; one reviewed local YouTube provider remains available | First reviewed real posts, categories and topical tags |
 | Delivery             | Partial     | Quality workflow plus Pages upload/deploy workflow                                                                                                                     | Custom-domain DNS, HTTPS enforcement, Search Console, rollback drill                                                   |
 
 ## Commands that exist now
@@ -79,7 +79,7 @@ The implementation agent must preserve these lane boundaries:
 | -------------------------------- | ------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
 | `packages/project-config`        | `config/*.yaml`, declared public environment values                       | Validated immutable configuration and normalized route/URL services        |
 | `packages/content-compiler`      | `docs/<language>/`, `assets/content/`, validated config, embed core       | `.artifacts/content/<mode>/`                                               |
-| `apps/blog-web`                  | Validated content artifact, shared config, root `DESIGN.md`               | `.artifacts/web/<mode>/`                                                   |
+| `apps/blog-web`                  | Validated content artifact, matching managed route availability, shared config, root `DESIGN.md` | `.artifacts/web/<mode>/` |
 | `packages/search-indexer`        | Eligible final blog HTML plus exact web/content provenance                | `.artifacts/search/<mode>/`                                                |
 | `packages/managed-page-compiler` | `managed-pages/<id>/`, its local `DESIGN.md`, validated config/embed core | `.artifacts/managed/<mode>/`                                               |
 | `packages/site-discovery`        | Matching production content/web/managed manifests and crawler config      | `.artifacts/discovery/production/`                                         |
@@ -103,7 +103,7 @@ The executable phases are present. Remaining work is content and operations:
    item. Archive routes and discovery remain.
 4. Completed: shared `listings.pageSize` is 10 for home and pageable
    collections, with `10 / 10 / 1` boundary coverage.
-5. Completed: public author identity, draft managed profile packages, All
+5. Completed: public author identity, reachable empty managed profile shells, All
    Posts / Selected Work / Daily Notes / Explore / Search navigation, generic
    curated collections, and in-place search-dialog enhancement.
 6. Add the first reviewed Korean source post and independently reviewed
@@ -156,18 +156,24 @@ record. Primary navigation is All Posts, Selected Work, Daily Notes, Explore,
 and Search. `/work/`, `/daily/`, and `/explore/` exist. Collection membership
 is compiler-derived from `config/curated-collections.yaml`. Content artifacts
 are schema 8 and include presentation-neutral curated records and optional
-`workEvidence`. Three managed profile packages exist as drafts and stay out of
-production until the owner reviews biography and destinations. Search remains a
+`workEvidence`. Three managed profile packages are published as empty noindex
+shells at the owner's request; real biography content awaits authoring. Search remains a
 real `/search/` route and opens an in-page dialog when enhancement loads.
 
-The published profile remains draft. Temporary posts were not auto-promoted
-into Selected Work. Playwright visual and assistive-technology checks for the
-new surfaces were not run.
+The owner finalized the blog design on 2026-09-13. All 20 sample translation
+groups, their thumbnails, and sample category/topical-tag definitions have been
+removed from authoring sources. Work and Daily retain only their generic marker
+selectors. Profiles keep their stable routes, title, return control and local
+design, but no biography. Playwright and assistive-technology checks remain
+separate manual gates.
 
 ## High-risk rules the implementation must not reinterpret
 
 - Korean is unprefixed. English uses `/en/`; Japanese uses `/ja/`.
-- Requested URLs never change because of browser language or stored preference.
+- Only exact-root entry can select a browser language (ADR 0009); all other
+  URLs retain their language. Explicit Korean home selection uses `?lang=ko`.
+  No stored preference is used. The root-only enhancement is implemented in
+  the blog renderer with preference, direct-link, and base-path regression tests.
 - Post navigation target order is active language, English, then Korean. A
   missing target produces no link; a cross-language fallback is labeled.
 - The authored original publishes before translations. Reviewed translations

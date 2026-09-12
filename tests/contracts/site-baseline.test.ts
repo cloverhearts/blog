@@ -60,9 +60,9 @@ interface NavigationConfiguration {
   }>;
 }
 
-test("pins production origin, Korean defaults, manual language selection, and fallback order", () => {
+test("pins production origin, Korean defaults, root-only language selection, and fallback order", () => {
   const site = readYaml<SiteConfiguration>("config/site.yaml");
-  assert.equal(site.schemaVersion, 7);
+  assert.equal(site.schemaVersion, 8);
   assert.deepEqual(site.production, {
     origin: "https://blog.cloverhearts.com",
     basePath: "",
@@ -70,7 +70,7 @@ test("pins production origin, Korean defaults, manual language selection, and fa
   assert.equal(site.languages.default, "ko");
   assert.equal(site.languages.source, "ko");
   assert.deepEqual(site.languages.primaryExperience, ["ko", "en"]);
-  assert.equal(site.languages.browserSelection, "manual-only");
+  assert.equal(site.languages.browserSelection, "root-only");
   assert.deepEqual(site.languages.postNavigationFallback, ["en", "ko"]);
   assert.equal(site.listings.pageSize, 10);
 });
@@ -157,6 +157,59 @@ test("rejects budgets that consume a Pages service ceiling", () => {
   );
 });
 
+test("keeps hover links free of new underlines while preserving keyboard focus", () => {
+  const css = read("apps/blog-web/src/styles/blog.css");
+  const hoverRules = [...css.matchAll(/([^{}]+)\{([^{}]*)\}/gu)]
+    .filter(([, selector]) => selector!.includes(":hover"));
+  assert.ok(hoverRules.length > 0);
+  for (const [rule, , declarations] of hoverRules) {
+    assert.doesNotMatch(declarations!, /text-decoration(?:-line)?\s*:[^;]*\bunderline\b/u, rule);
+  }
+  assert.match(css, /\.featured-post-link:is\(:hover, :focus-visible\) h3,\s*\.post-card-link:is\(:hover, :focus-visible\) :is\(h2, h3\)\s*\{[^}]*color: var\(--primary-dark\); text-decoration: none/u);
+  assert.match(css, /\.post-filters a:hover, \.post-filters a:focus-visible[^}]*text-decoration: none/u);
+  assert.match(css, /:focus-visible\s*\{\s*outline: \.2rem solid var\(--primary\); outline-offset: \.2rem/u);
+  assert.match(css, /\.hero-actions a[^}]*border-block-end: 1px solid var\(--text\)/u);
+  assert.match(css, /\.featured-post__copy \.text-link[^}]*text-decoration: none/u);
+  assert.match(css, /\.home-hero__title-link\s*\{[^}]*color: inherit; text-decoration: none/u);
+  assert.match(css, /\.home-hero__title-link:hover\s*\{[^}]*text-decoration: none/u);
+});
+
+test("keeps explore collections transparent with the shared green hover surface", () => {
+  const css = read("apps/blog-web/src/styles/blog.css");
+  const resting = css.match(/\.explore-collection-card a\s*\{([^}]+)\}/u)?.[1];
+  const feedback = css.match(/\.explore-collection-card a:hover, \.explore-collection-card a:focus-visible\s*\{([^}]+)\}/u)?.[1];
+  assert.ok(resting && feedback);
+  assert.match(resting, /background: transparent;\s*border: 0;/u);
+  assert.match(feedback, /color: var\(--text\); background: var\(--primary-surface\);/u);
+  for (const rules of [resting, feedback]) assert.doesNotMatch(rules, /border-block-start|box-shadow|transform|opacity:/u);
+  assert.doesNotMatch(css, /--explore-hover/u);
+  assert.match(css, /--primary-surface: #ecfdf3/u);
+  assert.match(css, /@media \(prefers-color-scheme: dark\)[\s\S]*--primary-surface: #123525/u);
+  assert.match(css, /\.explore-taxonomy-list a:hover, \.explore-taxonomy-list a:focus-visible[^}]*background: var\(--primary-surface\)/u);
+  assert.match(css, /\.search-result:hover, \.search-result:focus-visible[^}]*background: var\(--primary-surface\)/u);
+  for (const element of ["small", "b"]) {
+    const block = css.match(new RegExp(`\\.explore-collection-card ${element}\\s*\\{([^}]+)\\}`, "u"))?.[1];
+    assert.ok(block);
+    assert.match(block, /color: var\(--muted\)/u);
+    assert.doesNotMatch(block, /--primary/u);
+  }
+  assert.match(css, /:focus-visible\s*\{\s*outline: \.2rem solid/u);
+  assert.match(css, /@media \(prefers-reduced-motion: reduce\)[\s\S]*\.explore-collection-card a\)[^}]*transition-duration: \.01ms !important/u);
+  assert.match(css, /\.explore-collection-list[^}]*grid-template-columns: repeat\(2, minmax\(0, 1fr\)\)/u);
+  assert.match(css, /\.explore-collection-list, \.explore-grid\s*\{ grid-template-columns: 1fr/u);
+});
+
+test("preserves the author avatar square and colors across themes", () => {
+  const css = read("apps/blog-web/src/styles/blog.css");
+  const frame = css.match(/\.author-monogram\s*\{([^}]+)\}/u)?.[1];
+  assert.ok(frame);
+  assert.match(frame, /inline-size: 3rem;\s*block-size: 3rem;/u);
+  assert.match(frame, /background: transparent/u);
+  assert.match(css, /\.author-avatar\s*\{[^}]*inline-size: 100%; block-size: 100%; object-fit: contain/u);
+  assert.equal([...css.matchAll(/^\s*\.author-monogram\s*\{/gmu)].length, 1);
+  assert.doesNotMatch(css, /\.author-avatar[^}]*\b(?:filter|opacity|transform):/u);
+});
+
 test("ships named component CSS with resilient Pretendard fallbacks", () => {
   const css = read("apps/blog-web/src/styles/blog.css");
   assert.match(css, /pretendardvariable-dynamic-subset\.css/u);
@@ -166,7 +219,8 @@ test("ships named component CSS with resilient Pretendard fallbacks", () => {
   assert.match(css, /--reading-width: 40rem/u);
   assert.match(css, /--motion-fast: \.18s[^}]*--motion-ease: cubic-bezier\(\.2, \.8, \.2, 1\)/u);
   assert.match(css, /\.skip-link\) a \{[^}]*transition: color var\(--motion-fast\) var\(--motion-ease\)[^}]*text-underline-offset var\(--motion-fast\) var\(--motion-ease\)/u);
-  assert.match(css, /a:active[^}]*opacity: \.68[^}]*text-underline-offset: \.12em/u);
+  assert.match(css, /a:active[^}]*text-underline-offset: \.12em/u);
+  assert.doesNotMatch(css, /a:active[^}]*opacity: \.68/u);
   assert.match(css, /\.site-control--button, \.site-control--summary[^}]*transform var\(--motion-fast\) var\(--motion-ease\)/u);
   assert.match(css, /:is\(\.site-control--button:not\(:disabled\):active, \.site-control--summary:active\)[^}]*opacity: \.82[^}]*translateY\(\.0625rem\) scale\(\.985\)/u);
   assert.match(css, /@media \(hover: hover\)[\s\S]*:is\(\.site-control--button:not\(:disabled\):hover, \.site-control--summary:hover\)[^}]*translateY\(-\.0625rem\)/u);
@@ -195,27 +249,26 @@ test("ships named component CSS with resilient Pretendard fallbacks", () => {
   assert.doesNotMatch(css, /\.primary-navigation a\[aria-current="page"\][^}]*padding-block/u);
   assert.match(css, /\.post-filters > div[^}]*align-items: baseline/u);
   assert.match(css, /\.post-filters strong[^}]*line-height: 1\.5/u);
-  assert.match(css, /\.post-filters a[^}]*line-height: 1\.5[^}]*opacity: \.5/u);
-  assert.match(css, /\.post-filters a:hover, \.post-filters a:focus-visible[^}]*opacity: 1/u);
-  assert.match(css, /\.post-filters a:active[^}]*opacity: \.68/u);
+  assert.match(css, /\.post-filters a[^}]*line-height: 1\.5[^}]*opacity: 1/u);
+  assert.match(css, /\.post-filters a:hover, \.post-filters a:focus-visible[^}]*color: var\(--primary-dark\)[^}]*text-decoration: none/u);
   assert.match(css, /\.pagination \{[^}]*display: flex[^}]*flex-wrap: wrap[^}]*align-items: center[^}]*justify-content: center/u);
   assert.match(css, /\.pagination > p, \.pagination > span[^}]*display: flex[^}]*gap: \.5rem[^}]*margin: 0/u);
   assert.match(css, /\.explore-intro[^}]*padding-block-end: clamp\(2\.5rem, 5vw, 3\.5rem\)[^}]*border-block-end: 1px solid var\(--border-strong\)/u);
   assert.match(css, /\.explore-collection-list[^}]*grid-template-columns: repeat\(2, minmax\(0, 1fr\)\)/u);
-  assert.match(css, /\.explore-collection-card a[^}]*background: var\(--surface\)[^}]*border-block-start: 3px solid var\(--primary\)/u);
+  assert.match(css, /\.explore-collection-card a[^}]*background: transparent[^}]*border: 0/u);
   assert.match(css, /\.explore-grid[^}]*grid-template-columns: repeat\(2, minmax\(0, 1fr\)\)/u);
   assert.match(css, /\.explore-taxonomy-list a[^}]*justify-content: space-between[^}]*color: var\(--text\)/u);
   assert.match(css, /\.post-tags li[^}]*padding: 0[^}]*background: var\(--surface\)[^}]*border: 1px solid var\(--border\)[^}]*font: 600 \.75rem\/1\.4 var\(--font-mono\)/u);
   assert.match(css, /\.post-tags a[^}]*display: block[^}]*padding: \.25rem \.625rem/u);
   assert.match(css, /\.featured-post[^}]*grid-template-columns: repeat\(2, minmax\(0, 1fr\)\)/u);
   assert.match(css, /\.featured-post__image,\s*\.featured-post__placeholder[^}]*opacity: \.85[^}]*transition: opacity \.24s ease/u);
-  assert.match(css, /\.featured-post__copy[^}]*opacity: \.5[^}]*transition: opacity \.24s ease/u);
+  assert.match(css, /\.featured-post__copy[^}]*opacity: 1/u);
   assert.match(css, /\.featured-post-link:hover \.featured-post__image,[^}]*\.featured-post-link:focus-visible \.featured-post__copy[^}]*opacity: 1/u);
   assert.match(css, /\.section-heading \{[^}]*margin-block-end: 1rem[^}]*border-block-end: 1px solid var\(--text\)/u);
   assert.match(css, /\.post-list > li[^}]*padding-block: 1rem/u);
   assert.match(css, /\.section-heading \+ \.post-list > li:first-child[^}]*border-block-start: 0/u);
   assert.match(css, /\.post-card[^}]*grid-template-columns: 2\.75rem minmax\(0, 1fr\) 35%[^}]*min-height: 15rem/u);
-  assert.match(css, /\.post-card__index,\s*\.post-card__copy[^}]*opacity: \.5[^}]*transition: opacity \.24s ease/u);
+  assert.match(css, /\.post-card__index,\s*\.post-card__copy[^}]*opacity: 1/u);
   assert.match(css, /\.post-card__thumbnail[^}]*position: absolute[^}]*width: 35%[^}]*height: 100%[^}]*object-fit: cover[^}]*opacity: \.85[^}]*transition: opacity \.24s ease/u);
   assert.match(css, /\.post-card-link:hover \.post-card__thumbnail,[^}]*\.post-card-link:focus-visible \.post-card__thumbnail[^}]*opacity: 1/u);
   assert.match(css, /\.post-card-link:hover \.post-card__index,[^}]*\.post-card-link:focus-visible \.post-card__copy[^}]*opacity: 1/u);
@@ -252,7 +305,7 @@ test("ships named component CSS with resilient Pretendard fallbacks", () => {
   assert.match(imageViewer, /dialog\.showModal\(\)/u);
   assert.match(imageViewer, /activeTrigger\?\.focus\(\)/u);
   assert.match(css, /\.post-navigation small[^}]*\.post-navigation span[^}]*display: block/u);
-  assert.match(css, /\.post-navigation__link[^}]*opacity: \.5[^}]*transition: opacity \.24s ease/u);
+  assert.match(css, /\.post-navigation__link[^}]*opacity: 1[^}]*transition: background-color \.24s ease/u);
   assert.match(css, /\.post-navigation__link:hover, \.post-navigation__link:focus-visible[^}]*opacity: 1/u);
   assert.match(css, /\.post-navigation small[^}]*margin-block-end: \.5rem[^}]*font-size: \.6875rem/u);
   assert.match(css, /\.post-navigation span[^}]*font-size: \.9375rem[^}]*line-height: 1\.55/u);
@@ -295,6 +348,17 @@ test("ships named component CSS with resilient Pretendard fallbacks", () => {
   }
   assert.match(shell, /data-skip-link/u);
   assert.match(shell, /class=/u);
+});
+
+test("keeps eyebrow letters grouped with distinct word spacing", () => {
+  const css = read("apps/blog-web/src/styles/blog.css");
+  const rule = css.match(/\.eyebrow\s*\{([^}]+)\}/u)?.[1];
+  assert.ok(rule);
+  assert.match(rule, /letter-spacing: 0;/u);
+  assert.match(rule, /word-spacing: \.12em;/u);
+  assert.match(rule, /text-transform: uppercase;/u);
+  assert.doesNotMatch(rule, /letter-spacing: \.(?:04|12)em|white-space: nowrap|word-break: break-all/u);
+  assert.match(css, /word-break: keep-all;\s*overflow-wrap: break-word;/u);
 });
 
 test("keeps blog element defaults out of injected browser UI", () => {

@@ -47,8 +47,10 @@ Changing this application may rerender the site, but must not require edits to p
 The completed application must render the required static route set for `en`,
 `ko`, and `ja`.
 `src/i18n/messages.ts` owns framework UI copy, while artifacts/config own post
-text and taxonomy/navigation labels. Requested documents never redirect or
-replace content based on browser language or stored preference. Every page
+text and taxonomy/navigation labels. Only the exact deployment root selects a
+browser language through `src/i18n/root-language.js` (ADR 0009). Other paths
+keep their language; Korean home menu links use `?lang=ko` for explicit choice.
+No stored preference or runtime body replacement is used. Every page
 includes real published alternate links and Korean remains the unprefixed
 no-JavaScript fallback. Post navigation uses the shared active-language,
 English, then Korean resolver and labels a cross-language fallback.

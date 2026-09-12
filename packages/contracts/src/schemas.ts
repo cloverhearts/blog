@@ -459,6 +459,7 @@ export const managedPageEntrySourceConfigSchema = z
   .object({
     format: managedPageEntryFormatSchema,
     path: z.string().min(1),
+    stylesheet: z.string().min(1).optional(),
   })
   .strict();
 

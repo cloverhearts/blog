@@ -63,7 +63,7 @@ exits. A later branded design remains optional and cannot delay semantic UX.
 - Infer all public TypeScript types from those schemas.
 - Implement `packages/project-config/` for `config/*.yaml` validation and normalized route registration.
 - Validate supported/source/default languages, locale prefixes, localized
-  navigation/taxonomy completeness, pagination segment, manual-only language
+  navigation/taxonomy completeness, pagination segment, root-only browser-language
   selection, and active-language/English/Korean post-link fallback.
 - Validate the project-wide document/direct-managed-page security maximum in `config/security.yaml`.
 - Validate `config/analytics.yaml` and resolve the optional public
@@ -149,8 +149,8 @@ Exit criteria:
   request before consent, and keep advertising signals and personalization off.
 - Ensure primary post content and navigation links exist in initial HTML.
 - Emit real published language-switcher links, localized framework copy, self
-  canonicals, and reciprocal `hreflang` alternates without browser-language
-  navigation.
+  canonicals, and reciprocal `hreflang` alternates. Browser-language navigation
+  is restricted to the exact deployment root (ADR 0009).
 - Resolve collection and related-post links to the active-language variant,
   then English, then Korean; omit unmatched groups and label every
   cross-language fallback.
@@ -189,7 +189,7 @@ Exit criteria:
   navigation behavior; analytics events omit raw searches, identifiers, URL
   queries, and fragments.
 - JavaScript-disabled visits retain the requested complete static document;
-  browser language never changes the route or article content.
+  browser language never changes a non-root route or article content.
 
 ## Phase 4 — final-HTML search pipeline
 

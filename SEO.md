@@ -137,10 +137,12 @@ they must not introduce a second authoring source.
   canonical URLs.
 - Every localized page contains one visible language and same-language chrome;
   translated text is never hidden in one combined document.
-- All variants are reachable through normal `<a>` links. The requested URL is
-  never redirected or replaced based on browser language, stored preference,
-  location, or analytics state. Readers change language only through explicit
-  links as specified in `I18N.md`.
+- All variants are reachable through normal `<a>` links. Only exact-root entry
+  may redirect from browser preferences as specified in ADR 0009 and `I18N.md`.
+  Other requested URLs keep their document. No stored preference, location, or
+  analytics state controls language. Explicit Korean home links add `?lang=ko`;
+  root canonical and x-default stay query-free Korean. Without JavaScript the
+  complete Korean root remains readable; no HTTP or meta-refresh redirect is added.
 - Missing translations are valid. `hreflang`, Open Graph alternate locales,
   structured-data translation relations, and sitemap entries include only
   published variants and remain reciprocal among that available set.
@@ -265,7 +267,7 @@ A production check verifies:
 - valid structured data referencing the visible record;
 - sitemap/RSS XML parseability and only eligible canonical URLs;
 - reciprocal available-language/`x-default` alternate links, self canonicals,
-  valid document language, no browser-language navigation, and no
+  valid document language, root-only browser-language navigation, and no
   mixed-language page chrome except an explicitly labeled fallback post
   summary;
 - `originalLanguage` parity across each group, an existing original canonical,

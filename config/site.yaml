@@ -1,6 +1,6 @@
 # Shared site values. Production deployment values are injected and validated
 # by the build rather than hard-coded in a package.
-schemaVersion: 7
+schemaVersion: 8
 originEnvironmentVariable: "SITE_ORIGIN"
 basePathEnvironmentVariable: "SITE_BASE_PATH"
 production:
@@ -36,7 +36,7 @@ languages:
   primaryExperience:
     - "ko"
     - "en"
-  browserSelection: "manual-only"
+  browserSelection: "root-only"
   postNavigationFallback:
     - "en"
     - "ko"

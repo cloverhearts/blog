@@ -5,11 +5,20 @@ This package transforms self-contained packages in `managed-pages/` into `.artif
 Run it through `npm run build:managed`. An empty `managed-pages/` directory
 produces a valid empty production manifest.
 
+The current document adapter renders static Markdown using unified/remark and
+rehype sanitization. An optional `entry.stylesheet` declares a page-local,
+network-free CSS file, inlined into that standalone document and included in
+source provenance. Root-relative Markdown links honor the deployment base path.
+Images/forms/raw HTML are not emitted by this text-document adapter. TypeScript
+entries currently retain only the static description fallback; interactive
+application/presentation bundling and provider-directive integration remain
+future work, not completed capabilities. See `IMPLEMENTATION_STATUS.md`.
+
 It owns managed-page runtime validation, Open Design-compatible page-local `DESIGN.md` ingestion, declared entrypoint adapters, standalone documents or bundles, page-local assets, security declarations, the invariant return control, no-script fallbacks, print behavior, route claims, deterministic provenance, and separate preview/production manifests.
 
-Provider directives in a managed Markdown entry are delegated through
+Provider directives in a managed Markdown entry must eventually be delegated through
 `packages/embed-core/`; this package never imports an individual provider.
-Approved provider requirements are combined with direct page capabilities that
+Approved provider requirements will be combined with direct page capabilities that
 survive the `config/security.yaml` intersection, then recorded in the emitted
 artifact.
 

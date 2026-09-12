@@ -6,6 +6,8 @@ import { test } from "vitest";
 import { parse } from "yaml";
 
 import { BLOG_MESSAGES } from "../../apps/blog-web/src/i18n/messages.ts";
+import { rootLanguageTarget, applyRootLanguageSelection } from "../../apps/blog-web/src/i18n/root-language.js";
+import { siteConfigSchema } from "../../packages/project-config/src/config-schemas.ts";
 import {
   renderOriginalPostFooter,
   resolveTranslationOrigin,
@@ -17,6 +19,69 @@ import {
 } from "../../packages/project-config/src/i18n.ts";
 
 const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
+
+const homes = { ko: "/", en: "/en/", ja: "/ja/" };
+const at = (pathname = "/", search = "", hash = "") => ({ pathname, search, hash });
+
+test("selects the first supported browser language only at the root", () => {
+  for (const [languages, expected] of [
+    [["en-US", "ja-JP"], "/en/"], [["JA-jp", "en"], "/ja/"],
+    [["fr-FR", "ja"], "/ja/"], [["ko-KR", "en-US"], null],
+    [["de", "fr"], null], [[], null], [[null, "", "english"], null],
+  ] as const) {
+    assert.equal(rootLanguageTarget(at(), languages, homes, "ko"), expected);
+    assert.equal(rootLanguageTarget(at(), languages, homes, "ko"), expected);
+  }
+  for (const path of ["/en/", "/ja/", "/posts/", "/posts/example/", "/search/", "/profile/", "/404.html", "/missing/", "/index.html", "//", "/page/2/"]) {
+    assert.equal(rootLanguageTarget(at(path), ["en"], homes, "ko"), null, path);
+  }
+});
+
+test("preserves explicit Korean choice query fragments and base-path boundaries", () => {
+  assert.equal(rootLanguageTarget(at("/", "?lang=ko", "#main"), ["en"], homes, "ko"), null);
+  assert.equal(rootLanguageTarget(at("/", "?q=test", "#main"), ["ja"], homes, "ko"), "/ja/?q=test#main");
+  const prefixed = { ko: "/blog/", en: "/blog/en/", ja: "/blog/ja/" };
+  assert.equal(rootLanguageTarget(at("/blog/"), ["en-GB"], prefixed, "ko"), "/blog/en/");
+  assert.equal(rootLanguageTarget(at("/blog/", "?lang=ko"), ["ja"], prefixed, "ko"), null);
+  for (const path of ["/", "/blog", "/blog/index.html", "/blog/posts/", "/blog/en/", "/blogs/"]) {
+    assert.equal(rootLanguageTarget(at(path), ["ja"], prefixed, "ko"), null);
+  }
+  for (const target of ["//evil.test/", "https://evil.test/", "/../evil/", "/en/?redirect=1", "/\\evil.test/", "/en/#test"]) {
+    assert.equal(rootLanguageTarget(at(), ["en"], { ...homes, en: target }, "ko"), null);
+  }
+});
+
+test("redirects with replace and keeps static fallback when preferences are unavailable", () => {
+  const redirects: string[] = [];
+  const browser = {
+    location: { ...at(), replace: (target: string) => redirects.push(target) },
+    navigator: { languages: ["ja-JP"], language: "en-US" },
+  };
+  const document = { querySelector: () => ({ dataset: { languageHomes: JSON.stringify(homes), defaultLanguage: "ko" } }) };
+  const run = () => applyRootLanguageSelection(browser as unknown as Window, document as unknown as Document);
+  run();
+  assert.deepEqual(redirects, ["/ja/"]);
+  browser.navigator.languages = [];
+  run();
+  assert.deepEqual(redirects, ["/ja/", "/en/"]);
+  browser.location.pathname = "/en/";
+  let preferenceReads = 0;
+  Object.defineProperty(browser, "navigator", { get() { preferenceReads += 1; throw new Error("Preferences unavailable"); } });
+  run(); // No preference access or redirection on direct localized URLs.
+  assert.equal(preferenceReads, 0);
+  browser.location.pathname = "/";
+  assert.doesNotThrow(run);
+  assert.equal(redirects.length, 2);
+});
+
+test("requires site schema eight and the explicit root-only routing policy", () => {
+  const site = parse(readFileSync(resolve(repositoryRoot, "config/site.yaml"), "utf8"));
+  assert.ok(siteConfigSchema.safeParse(site).success);
+  assert.equal(siteConfigSchema.safeParse({ ...site, schemaVersion: 7 }).success, false);
+  for (const browserSelection of ["manual-only", "always", undefined]) {
+    assert.equal(siteConfigSchema.safeParse({ ...site, languages: { ...site.languages, browserSelection } }).success, false);
+  }
+});
 
 const alternates = [
   { language: "en" as const, route: "/en/posts/example/" },

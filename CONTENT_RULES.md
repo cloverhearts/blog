@@ -238,8 +238,19 @@ specific translation and approves its publication.
 chrome. Every post artifact exposes its current language, `originalLanguage`,
 and published validated language alternates as derived metadata. A renderer may
 use these fields for optional original-language context after the article body
-and for an explicit real-link language switcher. No browser language is read or
-used to redirect a document. Authors do not add a translation banner, nuance
+and for an explicit real-link language switcher. Only the normal blog's exact
+deployment root may use browser preferences (ADR 0009 and `I18N.md`); post and
+managed-page documents never redirect this way. The web layer adds `?lang=ko`
+only to explicit Korean home language links; authors provide no new metadata.
+
+The home hero title links to the already-selected visual post (first Selected
+Work item, otherwise the featured post), using its validated localized route
+and the deployment base path. Missing candidates leave a plain heading;
+cross-language destinations are visibly labeled. This presentation behavior
+requires no new author metadata or changes to publication/selection ordering.
+
+Site configuration schema 8 requires `languages.browserSelection: "root-only"`.
+Authors do not add a translation banner, nuance
 warning, review message, browser preference, or handwritten original URL to
 frontmatter or body Markdown.
 
@@ -926,6 +937,14 @@ security:
 
 ### Optional fields
 
+- `entry.stylesheet`: optional package-relative UTF-8 CSS file, for example
+  `stylesheet: "profile.css"` alongside `format: markdown` and `path: content.md`.
+  It must exist inside the same package, including after resolving symlinks.
+  The controlled adapter inlines this page-owned stylesheet and hashes it as
+  part of the page source. Omitting it preserves unstyled-document compatibility.
+  This network-free adapter rejects markup delimiters, CSS escapes, imports,
+  namespaces, `url()` and `image-set()` resource references. Use system fonts
+  and local styling rules; this is not permission to add external capabilities.
 - `translationKey`: stable lowercase ASCII kebab-case value shared only by
   explicitly authored managed-page translations. Each localized managed page
   remains a separate package with its own entry, assets, and `DESIGN.md`.
@@ -936,6 +955,13 @@ security:
 - A `presentation` page may use `format: markdown` or `format: typescript`. The conventional Markdown path is `slides.md`.
 - An `application` page must use `format: typescript`; its conventional path is `src/main.ts`.
 - A Markdown entry is parsed by the controlled managed-page Markdown adapter. It is not treated as arbitrary executable HTML.
+- The executable Markdown document adapter supports paragraphs, headings,
+  emphasis, lists, quotations, code, tables, and ordinary links through
+  unified/remark and rehype sanitization. Raw HTML, scripts, event attributes,
+  unsafe URL protocols, images, and form controls are not emitted by this
+  text-document adapter. Root-relative links receive the deployment base path;
+  HTTPS links remain unchanged. Do not use this adapter to imply unsupported
+  media, embeds, or interactive application behavior.
 - A TypeScript entry uses the repository-managed adapter and dependency allowlist. A page cannot provide its own package manager lifecycle script or bypass the compiler.
 - Exactly one entry is declared. Other notes or sources may exist, but they do not become public unless the entry imports them through an approved adapter.
 
@@ -963,6 +989,11 @@ Do not add `category`, `tags`, `createdAt`, `updatedAt`, `related`, `readingTime
 ### Configuration behavior
 
 - A `draft` page is omitted from production output unless an explicit preview build is requested.
+- The blog's author-to-profile actions use the matching validated managed
+  manifest, never source-file inspection. Unavailable or draft-only production
+  profiles have no visible profile action. Profile hreflang links include only
+  locale variants available in the same build mode. Preview serves standalone
+  draft pages at their configured routes without indexing them as blog posts.
 - Preview output may contain draft and published pages; the production manifest type permits published pages only.
 - `robots: noindex` must generate the appropriate robots directive even when the page is reachable by URL.
 - A published route is stable. Route changes require an explicit redirect or compatibility plan.
@@ -1049,6 +1080,11 @@ Use `kind: document` for profiles, resumes, reports, and print-oriented long-for
 - Hide navigation, interactive-only decoration, animation, and the return control when printing.
 - Avoid splitting headings from their following content and avoid clipping tables or project entries.
 - A profile or resume must not be indexed unless the user explicitly selected `robots: index` after considering personal information exposure.
+- An owner-requested empty profile may retain an empty `content.md` while
+  `status: published` makes its stable URL reachable. Keep a truthful title and
+  description, the required return link, `robots: noindex`, and `sitemap: false`.
+  Do not invent placeholder biography content. This uses the existing document
+  entry format and does not relax any post publication requirement.
 
 ### Presentation
 
@@ -1217,7 +1253,8 @@ The contract test suite must include valid and invalid posts, malicious markup,
 missing and escaping assets, complete and partial translation groups,
 missing/mismatched translation groups, valid/invalid translation statuses,
 attempted publication of an AI-draft translation, locale routing, absence of
-browser-language redirects, active-language/English/Korean post-link fallback,
+browser-language redirects outside the exact root, root preference ordering
+and explicit Korean choice, active-language/English/Korean post-link fallback,
 missing-fallback omission, original-route resolution, optional
 original-language post-context metadata,
 localized taxonomy,

@@ -1,10 +1,12 @@
-import { cpSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import {
   parsePreviewContentManifest,
   parsePreviewPost,
+  parsePreviewManagedPageManifest,
+  parsePublishedManagedPageManifest,
   parsePublishedContentManifest,
   parsePublishedPost,
   sha256File,
@@ -47,9 +49,19 @@ export interface BuildWebOptions {
   readonly mode: BuildMode;
   readonly contentDirectory?: string;
   readonly outputDirectory?: string;
+  readonly managedDirectory?: string;
 }
 
 export async function buildWeb(options: BuildWebOptions): Promise<WebManifestArtifact<BuildMode>> {
+  const managedPath = resolve(options.managedDirectory ?? resolve(options.config.repositoryRoot, `.artifacts/managed/${options.mode}`), "manifest.json");
+  const managed = existsSync(managedPath)
+    ? (options.mode === "preview" ? parsePreviewManagedPageManifest : parsePublishedManagedPageManifest)(JSON.parse(readFileSync(managedPath, "utf8")))
+    : undefined;
+  // Standalone builds fail closed when the matching managed lane is unavailable.
+  const profileRoutes = new Set(managed?.provenance.configHash === options.config.hashes.configHash
+    && managed.provenance.contentRulesHash === options.config.hashes.contentRulesHash
+    && managed.provenance.localizationRulesHash === options.config.hashes.localizationRulesHash
+    ? managed.pages.map((page) => page.route) : []);
   const contentDirectory =
     options.contentDirectory ?? resolve(options.config.repositoryRoot, `.artifacts/content/${options.mode}`);
   const outputDirectory =
@@ -139,7 +151,7 @@ export async function buildWeb(options: BuildWebOptions): Promise<WebManifestArt
     const home = options.config.localizeRoute(language, options.config.routes.paths.home);
     emit(
       home,
-      renderHome(options.config, language, posts, content.curatedCollections, presentation),
+      renderHome(options.config, language, posts, content.curatedCollections, presentation, profileRoutes),
       "blog",
       `home:${language}`,
     );
@@ -174,6 +186,7 @@ export async function buildWeb(options: BuildWebOptions): Promise<WebManifestArt
       throw new Error(`Missing presentation for ${post.id}`);
     }
     const html = renderPostPage({
+      profileRoutes,
       config: options.config,
       post,
       posts,
@@ -200,7 +213,9 @@ export async function buildWeb(options: BuildWebOptions): Promise<WebManifestArt
     producerVersion: "0.0.0",
     inputHash: sha256Json({
       content: content.provenance.inputHash,
+      managedRoutes: [...profileRoutes].sort(),
       design: sha256File(resolve(options.config.repositoryRoot, "DESIGN.md")),
+      authorAvatar: sha256File(authorAvatarSource()),
     }),
     configHash: options.config.hashes.configHash,
     contentRulesHash: options.config.hashes.contentRulesHash,
@@ -445,6 +460,7 @@ function renderHome(
   posts: readonly PreviewPostArtifact[],
   collections: readonly CuratedCollectionArtifact[],
   presentation: ReadonlyMap<string, PostPresentation>,
+  profileRoutes: ReadonlySet<string>,
 ): string {
   const messages = blogMessages(language);
   const listed = listPostsForLanguage(language, posts).slice(0, config.site.listings.pageSize);
@@ -454,29 +470,32 @@ function renderHome(
   const selected = work ? postsForCollection(language, posts, work).slice(0, 5) : [];
   const heroVisualPost = selected[0] ?? featured;
   const heroThumbnail = heroVisualPost ? presentation.get(heroVisualPost.id)?.thumbnail : undefined;
+  const heroTitle = heroVisualPost
+    ? `<a class="home-hero__title-link" href="${escape(withBasePath(config.resolved.basePath, heroVisualPost.route))}" hreflang="${heroVisualPost.language}" aria-label="${escape(`${messages.heroTitle} — ${heroVisualPost.title}`)}">${escape(messages.heroTitle)}${heroVisualPost.language !== language ? `<small class="home-hero__language">${escape(messages.fallbackLanguage)}: ${escape(languageMeta(config, heroVisualPost.language).nativeLabel)}</small>` : ""}</a>`
+    : escape(messages.heroTitle);
   const profileHref = withBasePath(config.resolved.basePath, config.site.identity.owner.profileRoutes[language]);
   const postsHref = withBasePath(config.resolved.basePath, config.localizeRoute(language, config.routes.paths.posts));
   const workHref = withBasePath(config.resolved.basePath, config.localizeRoute(language, config.routes.curated.work ?? "/work/"));
   const heroVisual = heroThumbnail
     ? `<div class="home-hero__visual" data-home-hero-visual aria-hidden="true"><img class="home-hero__image" src="${escape(heroThumbnail.src)}" srcset="${escape(heroThumbnail.srcset)}" sizes="(max-width: 38.75rem) calc(100vw - 2.5rem), 40rem" width="${heroThumbnail.width}" height="${heroThumbnail.height}" alt="" loading="eager" decoding="async" data-hero-thumbnail="${heroThumbnail.source}"></div>`
     : "";
-  const hero = `<section class="home-hero" data-home-hero>
+  const hero = `<section class="home-hero${heroThumbnail ? "" : " home-hero--text-only"}" data-home-hero>
     <div class="home-hero__copy" data-home-hero-copy>
       <p class="eyebrow" data-eyebrow>${escape(messages.heroEyebrow)}</p>
-      <h1>${escape(messages.heroTitle)}</h1>
+      <h1>${heroTitle}</h1>
       <p>${escape(messages.heroDescription)}</p>
       <p class="hero-actions" data-hero-actions><a class="primary-action" data-primary-action href="${postsHref}">${escape(messages.allPostsCta)} <span aria-hidden="true">→</span></a></p>
     </div>
     ${heroVisual}
   </section>`;
   const author = `<section class="author-intro" data-author-intro>
-    <div class="author-monogram" data-author-monogram aria-hidden="true">CH</div>
+    ${renderAuthorAvatar(config)}
     <div><p class="eyebrow" data-eyebrow>${escape(messages.authorRole)}</p><h2>${escape(config.site.identity.owner.displayName)}</h2><p>${escape(config.site.identity.owner.shortBios[language])}</p></div>
-    <a href="${profileHref}" rel="author">${escape(messages.profile)} <span aria-hidden="true">→</span></a>
+    ${profileRoutes.has(config.site.identity.owner.profileRoutes[language]) ? `<a href="${profileHref}" rel="author">${escape(messages.profile)} <span aria-hidden="true">→</span></a>` : ""}
   </section>`;
   const featuredHtml = featured
     ? `<section class="home-section home-featured" data-home-featured><div class="section-heading" data-section-heading><h2>${escape(messages.featuredPost)}</h2><a href="${postsHref}">${escape(messages.viewAll)} <span aria-hidden="true">→</span></a></div>${renderFeaturedPost(config, language, featured, presentation)}</section>`
-    : `<section class="home-section home-featured" data-home-featured><h2>${escape(messages.featuredPost)}</h2><p class="empty-state" data-empty-state>${escape(messages.emptyCollection)}</p></section>`;
+    : "";
   const recentHtml = `<section class="home-section home-recent" data-home-recent><div class="section-heading" data-section-heading><h2>${escape(messages.recentPosts)}</h2><a href="${postsHref}">${escape(messages.viewAll)} <span aria-hidden="true">→</span></a></div>${renderPostList(config, language, recent, presentation, false, undefined, { headingLevel: 3, wideThumbnail: true })}</section>`;
   const workHtml = `<section class="home-section home-work" data-home-work><div class="section-heading" data-section-heading><h2>${escape(work ? localizedText(work.labels, language) : messages.selectedWork)}</h2><a href="${workHref}">${escape(messages.viewAll)} <span aria-hidden="true">→</span></a></div>${renderPostList(config, language, selected, presentation, false, undefined, { headingLevel: 3, wideThumbnail: true })}</section>`;
   return renderShell(config, language, {
@@ -486,7 +505,7 @@ function renderHome(
     canonical: config.localizeRoute(language, "/"),
     jsonLd: [websiteJsonLd(config, language)],
     pageKind: "home",
-    body: `${hero}${author}${featuredHtml}${recentHtml}${workHtml}`,
+    body: `${hero}${author}${featuredHtml}${recentHtml}${selected.length ? workHtml : ""}`,
   });
 }
 
@@ -736,6 +755,7 @@ function renderPager(
 }
 
 function renderPostPage(input: {
+  readonly profileRoutes: ReadonlySet<string>;
   readonly config: ProjectConfig;
   readonly post: PreviewPostArtifact;
   readonly posts: readonly PreviewPostArtifact[];
@@ -822,11 +842,11 @@ function renderPostPage(input: {
       ${renderOriginalPostFooter(post.language, origin)}
     </div>
     <aside class="post-author" data-post-author data-pagefind-ignore>
-      <div class="author-monogram" data-author-monogram aria-hidden="true">CH</div>
+      ${renderAuthorAvatar(config)}
       <p class="eyebrow" data-eyebrow>${escape(messages.authorRole)}</p>
       <h2>${escape(config.site.identity.owner.displayName)}</h2>
       <p>${escape(config.site.identity.owner.shortBios[post.language])}</p>
-      <a href="${withBasePath(config.resolved.basePath, config.site.identity.owner.profileRoutes[post.language])}" rel="author">${escape(messages.profile)} <span aria-hidden="true">→</span></a>
+      ${input.profileRoutes.has(config.site.identity.owner.profileRoutes[post.language]) ? `<a href="${withBasePath(config.resolved.basePath, config.site.identity.owner.profileRoutes[post.language])}" rel="author">${escape(messages.profile)} <span aria-hidden="true">→</span></a>` : ""}
     </aside>
     <div class="post-after" data-post-after>
       ${postNavigation}
@@ -911,6 +931,14 @@ function renderShell(
     authorName: config.site.identity.owner.displayName,
     searchIndex: `${config.resolved.basePath.replace(/\/$/u, "")}/_assets/search/${language}/`,
     basePath: config.resolved.basePath,
+    rootLanguageSelection: input.pageKind === "home" && language === config.site.languages.default && config.site.languages.browserSelection === "root-only"
+      ? {
+          defaultLanguage: config.site.languages.default,
+          homes: Object.fromEntries(config.site.languages.supported.map(({ id }) => [
+            id, withBasePath(config.resolved.basePath, config.localizeRoute(id, "/")),
+          ])),
+        }
+      : undefined,
     primaryNavigation: config.navigation.primary.map((item) => ({
       href: withBasePath(
         config.resolved.basePath,
@@ -1026,11 +1054,25 @@ function writeSiteFile(siteDirectory: string, artifactPath: string, html: string
   }
 }
 
+function authorAvatarSource(): string {
+  return resolve(dirname(fileURLToPath(import.meta.url)), "assets/author-avatar.png");
+}
+
+function authorAvatarFilename(): string {
+  return `author-avatar-${sha256File(authorAvatarSource()).slice(0, 16)}.png`;
+}
+
+function renderAuthorAvatar(config: ProjectConfig): string {
+  const src = withBasePath(config.resolved.basePath, `/_assets/app/${authorAvatarFilename()}`);
+  return `<div class="author-monogram" data-author-monogram aria-hidden="true"><img class="author-avatar" src="${escape(src)}" width="48" height="48" alt="" decoding="async"></div>`;
+}
+
 function copyAppAssets(config: ProjectConfig, siteDirectory: string): void {
   const here = dirname(fileURLToPath(import.meta.url));
   const cssSource = resolve(here, "styles/blog.css");
   const cssDestination = resolve(siteDirectory, "_assets/app/blog.css");
   mkdirSync(dirname(cssDestination), { recursive: true });
+  cpSync(authorAvatarSource(), resolve(siteDirectory, "_assets/app", authorAvatarFilename()));
   const css = readFileSync(cssSource, "utf8").replace(
     '@import "pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css";',
     '@import "./fonts/pretendardvariable-dynamic-subset.css";',
@@ -1044,6 +1086,10 @@ function copyAppAssets(config: ProjectConfig, siteDirectory: string): void {
   writeFileSync(
     resolve(siteDirectory, "_assets/app/search.js"),
     readFileSync(resolve(here, "search/client.js")),
+  );
+  writeFileSync(
+    resolve(siteDirectory, "_assets/app/root-language.js"),
+    readFileSync(resolve(here, "i18n/root-language.js")),
   );
   writeFileSync(
     resolve(siteDirectory, "_assets/app/image-viewer.js"),

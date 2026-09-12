@@ -32,11 +32,14 @@ but the links remain present and usable when JavaScript or CSS is unavailable.
 
 ## Entry and language flow
 
-- Direct URLs always open the requested static document.
-- Browser language, stored preference, IP location, and analytics state never
-  redirect or replace the requested document.
+- Only the exact deployment root may use the first supported browser-language
+  preference to enter English or Japanese; Korean and unknown preferences keep
+  the complete Korean fallback. All other direct URLs keep their document.
+- Stored preference, IP location, and analytics state never control language.
 - The language navigation always remains visible, uses canonical alternate
-  URLs, and lists only published variants. Readers change language explicitly.
+  URLs, and lists only published variants. The Korean home menu link alone adds
+  `?lang=ko` to preserve explicit selection on entry/reload without storage;
+  canonical alternates remain query-free. Readers can always change language.
 - Korean and English labels receive the first human UX review; Japanese labels
   remain complete and are verified for layout and meaning before release.
 
@@ -48,6 +51,12 @@ posts plus the author introduction and Profile link, then All Posts, Selected
 Work, Daily Notes, Explore, and Search. Categories and Tags remain available
 from Explore and their existing static routes. Archive remains a secondary
 chronological index, reachable from search/404 recovery rather than the footer.
+
+The home hero title opens the post supplying its thumbnail: first Selected Work,
+otherwise the featured post, resolved through the existing localized selection.
+This is a static link with the destination post title in its accessible name
+and a visible language label for fallback destinations. If no post is available,
+the title is not a link. The separate All Posts action keeps its list destination.
 
 Collection pages follow one pattern:
 
@@ -121,10 +130,17 @@ published content. The dialog initially shows a localized scope hint rather
 than fabricated suggestions or saved query history. After submission, every
 result is one full keyboard-reachable link containing its title and excerpt.
 The close control and native Escape behavior return focus to the Search link.
+Clicking or tapping the backdrop also closes the dialog and restores that focus.
+Clicks inside the dialog, including blank padding, do not dismiss it. A drag
+that starts inside and ends outside must not be treated as a backdrop click.
 
 ## Managed-page flow
 
-A normal blog page may intentionally link to a managed page. After entry, the
+A normal blog page may intentionally link to a managed page. The author
+Profile action is available only for a route in the matching build's
+validated managed manifest; an unpublished profile never becomes a broken
+production action. A home with no posts shows one honest Recent Posts empty
+state and a text-only hero rather than repeated empty collections. After entry, the
 managed page owns its design and interaction model. It must retain the floating
 localized return link required by its local `DESIGN.md`, pointing to the exact
 blog route that launched it when safely available or the configured home route
@@ -155,8 +171,8 @@ otherwise.
 
 ## Enhancement boundary
 
-The baseline requires JavaScript only for local search and optional consented
-analytics. All other listed flows work as static
+JavaScript enhances root-only language selection, local search, image enlargement,
+and optional consented analytics. All other listed flows work as static
 HTML links and forms or expose a useful static fallback. A future visual system
 may change presentation but not this flow without updating this contract,
 tests, and `History.md` together.

@@ -18,9 +18,9 @@ export async function buildProduction(
     requireDeploymentInputs: true,
   });
   await compileContent({ config, mode: "production" });
+  await buildManagedPages({ config, mode: "production" });
   await buildWeb({ config, mode: "production" });
   await buildSearch({ config, mode: "production" });
-  await buildManagedPages({ config, mode: "production" });
   buildDiscovery({ config });
   assembleRelease({ config });
   verifyPages(config);

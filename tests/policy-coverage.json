@@ -31,15 +31,15 @@
         },
         {
           "path": "AGENTS.md",
-          "sha256": "01de5bf7ea856bcf13f9bd4668123f9db6058af68349de4da17317fc75ab3819"
+          "sha256": "a6fc073b7e7fad9f7b1e429022c905d6da6b63ffd62c7da1623ba56e83cbbcba"
         },
         {
           "path": "QUALITY_GATES.md",
-          "sha256": "cd9ae722bbd18caa8d848d9d95d9bb0235e232784929b5008b9fa952e248d5c6"
+          "sha256": "bf45983d3338bed9aaff0de4a673cd5e1a55d152aaba2ef03bd40f2e1ae71c74"
         },
         {
           "path": "DEVELOPMENT.md",
-          "sha256": "6680cc88d64bf0ee8ae0a43f3f98fb95b98022fadc7e988a9e6d7a1a7a9bea5f"
+          "sha256": "4c2aba8574f02cf1c1e9d7d88b94361f17f0b3854d3d8421a4c0c1d06842e347"
         },
         {
           "path": "tests/contracts/policy-governance.test.ts",
@@ -57,6 +57,15 @@
           "path": "tests/contracts/site-baseline.test.ts",
           "cases": [
             "keeps agent and runbook baseline instructions aligned"
+          ]
+        },
+        {
+          "path": "tests/contracts/readme-localization.test.ts",
+          "cases": [
+            "links every README language from a dedicated top selector",
+            "rejects nonexistent and nonreciprocal README language links",
+            "keeps README prose separated while preserving sections commands and reference links",
+            "keeps agent README rules aligned with separate extensible translations"
           ]
         },
         {
@@ -113,7 +122,7 @@
         },
         {
           "path": "CONTENT_RULES.md",
-          "sha256": "7148b90466cd15e1bde3f2632730f760907cdc0d3d84ab52fc103f144586eae5"
+          "sha256": "5fc8ee70a7d1546befaf5fc8d51beeeb9d68d2ae10de8e975b5b46029f5ce077"
         },
         {
           "path": "packages/project-config/src/content-provenance.ts",
@@ -169,7 +178,7 @@
       "sources": [
         {
           "path": "ARCHITECTURE.md",
-          "sha256": "aef7f4be5498d49ef791de31ece09d90f3e397cf57cf3cb473ade71e52b7316e"
+          "sha256": "4dd1f3c154d64f610e8f69f74c1a01a6ee2c1c551c663c45f76ff76ba5c6f221"
         },
         {
           "path": "config/embeds.yaml",
@@ -211,7 +220,7 @@
       "sources": [
         {
           "path": "IMPLEMENTATION_SPEC.md",
-          "sha256": "061a3370cca76d9816a7380f324397b99122cf9929beba9e326d3778830acda1"
+          "sha256": "3466e965cf31dc50cf87caf16b87e33a2ec2f786281498d1ad7a810dec05a514"
         },
         {
           "path": "decisions/0004-implementation-stack.md",
@@ -275,7 +284,7 @@
       "sources": [
         {
           "path": "I18N.md",
-          "sha256": "03e126570ff861f5e32ce9a03907e4a670094272ce2b41a17024ce03e462a757"
+          "sha256": "fdfcff8fe979aea5e9bdf15bb1998c5a315de5fe67f7d35494c8b1642743bf2f"
         },
         {
           "path": "decisions/0008-multilingual-publication-and-link-fallback.md",
@@ -283,7 +292,7 @@
         },
         {
           "path": "config/site.yaml",
-          "sha256": "fbabe589a8e4cb5e57bd96a958ef5c48543d826d2fba766777fdac301b1c86f5"
+          "sha256": "18a879df0491f66dff9ddb1cd6c8a26fd1c7e8b3e53b7863bd324f4efd001994"
         },
         {
           "path": "packages/project-config/src/i18n.ts",
@@ -300,6 +309,22 @@
         {
           "path": "apps/blog-web/src/i18n/messages.ts",
           "sha256": "93ea91dc9f5799c0c032482720b8cb4999c6e4fa989d524cb05034704397dff6"
+        },
+        {
+          "path": "decisions/0009-root-only-browser-language-selection.md",
+          "sha256": "3763236ee094578468e00d90fdc8c8497550ba5429a67f246b80ecf033cbed18"
+        },
+        {
+          "path": "apps/blog-web/src/i18n/root-language.js",
+          "sha256": "67e0c4a88cb56594b2b3d6f7da6b7adf9aed7cf44b3c9e29143a73894a02cd5e"
+        },
+        {
+          "path": "packages/project-config/src/config-schemas.ts",
+          "sha256": "5ec9947cfd7ae0b894ebdfbb67ce742cc4fe7f424362ebec3c19e3f5768a68ed"
+        },
+        {
+          "path": "packages/project-config/src/load.ts",
+          "sha256": "8a8d708aca27eec9af13cd6032dc6aca440ba88a110b94bc5376160228536cc7"
         }
       ],
       "tests": [
@@ -316,14 +341,18 @@
             "identifies translated variants and links them to the original",
             "rejects translation metadata when the declared original is absent",
             "renders an optional original reference from validated metadata",
-            "omits the optional original reference from the source-language post"
+            "omits the optional original reference from the source-language post",
+            "selects the first supported browser language only at the root",
+            "preserves explicit Korean choice query fragments and base-path boundaries",
+            "redirects with replace and keeps static fallback when preferences are unavailable",
+            "requires site schema eight and the explicit root-only routing policy"
           ]
         },
         {
           "path": "tests/contracts/curated-discovery.test.ts",
           "cases": [
             "rejects unsafe or placeholder owner contact destinations",
-            "adds a third curated container from configuration only"
+            "keeps permanent curated routes without layout-review sample selectors"
           ]
         },
         {
@@ -337,7 +366,7 @@
         {
           "path": "tests/contracts/site-baseline.test.ts",
           "cases": [
-            "pins production origin, Korean defaults, manual language selection, and fallback order",
+            "pins production origin, Korean defaults, root-only language selection, and fallback order",
             "keeps Japanese supported outside the primary design review pair",
             "uses unprefixed Korean and explicit English and Japanese route trees"
           ]
@@ -345,7 +374,8 @@
         {
           "path": "tests/contracts/pagination-navigation.test.ts",
           "cases": [
-            "keeps related posts in the active language before configured fallbacks"
+            "keeps related posts in the active language before configured fallbacks",
+            "emits root language enhancement without changing direct documents or canonical alternates"
           ]
         }
       ]
@@ -359,11 +389,11 @@
         },
         {
           "path": "DESIGN.md",
-          "sha256": "9ab5dd4e2ad15add299ac4c719a5e89d7d4a7ab35e527a8389f1667a3bc2c234"
+          "sha256": "e61be00ad11d9175e2cac5cc6f9a07cf3e1a52faadadd3f01fb792199dd46d18"
         },
         {
           "path": "UX_FLOW.md",
-          "sha256": "bd5fb202c8ff273daf0cd50460738c0ce3214ee4a19a8c1dd3b2d5847a13b4bf"
+          "sha256": "1854281a6d09b8193a638983ec8b83af61814eeaf138dd92edfca17a22fcb6f0"
         },
         {
           "path": "GITHUB_PAGES.md",
@@ -379,7 +409,7 @@
         },
         {
           "path": "config/curated-collections.yaml",
-          "sha256": "e05e99c980a6fc3e01875c9acb1e6b18456cbfd56c6ae2faf7e8833d1bbcc469"
+          "sha256": "c7a2715d33d2bb56a2a74257c48917da4bcd06eaa0d7a05c5e247083630dcfe3"
         },
         {
           "path": "packages/project-config/src/performance-budgets.ts",
@@ -387,7 +417,7 @@
         },
         {
           "path": "apps/blog-web/src/styles/blog.css",
-          "sha256": "05b52d277f6500b6f0e017358361844d7066c4e66c60c5a998b6790710f011bd"
+          "sha256": "4ccac8d2b24c08b40602d28f13b90c42ecf7da2c0bc024fbe75dd984417ba1fa"
         },
         {
           "path": "apps/blog-web/src/layouts/BlogShell.astro",
@@ -402,16 +432,22 @@
             "defines conservative GitHub Pages Pro budgets",
             "rejects budgets that consume a Pages service ceiling",
             "ships named component CSS with resilient Pretendard fallbacks",
+            "keeps eyebrow letters grouped with distinct word spacing",
             "keeps blog element defaults out of injected browser UI",
             "keeps the Pretendard dynamic subset within the font budget",
-            "defines a static recovery path for every primary UX flow"
+            "defines a static recovery path for every primary UX flow",
+            "keeps hover links free of new underlines while preserving keyboard focus",
+            "keeps explore collections transparent with the shared green hover surface",
+            "preserves the author avatar square and colors across themes"
           ]
         },
         {
           "path": "tests/contracts/pagination-navigation.test.ts",
           "cases": [
             "omits footer navigation while keeping localized archive routes",
-            "renders list and featured posts as one full-card link without inline presentation styles"
+            "renders list and featured posts as one full-card link without inline presentation styles",
+            "links the hero title to its featured fallback across languages and deployment bases",
+            "bundles the approved author avatar for localized homes and posts at both bases"
           ]
         },
         {
@@ -423,6 +459,9 @@
         {
           "path": "tests/contracts/search.test.ts",
           "cases": [
+            "dismisses search only for completed backdrop gestures",
+            "keeps search close feedback flat with visible keyboard focus",
+            "embeds the licensed Lucide search SVG without a runtime icon dependency",
             "does not search until the reader enters a query",
             "resolves only the active-language Pagefind index",
             "renders keyboard-reachable local result links without a server request",
@@ -462,7 +501,7 @@
         },
         {
           "path": "SEO.md",
-          "sha256": "0c214a426e069ca6e5936502d957731cd34cb1d68d263ece893902478ae42f6a"
+          "sha256": "89461fb35aa84f2fd72dd265bed331d0cd22415e88c334bad285f414c9cd03d0"
         }
       ],
       "tests": [
@@ -488,6 +527,56 @@
           "path": "tests/contracts/curated-discovery.test.ts",
           "cases": [
             "rejects include and exclude of the same translation key"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "security-and-managed-profile",
+      "sources": [
+        {
+          "path": "scripts/dev.ts",
+          "sha256": "b59ea858194b76a9cae5ac1ef852c658b282d70923158d07477e795559bc71c3"
+        },
+        {
+          "path": "scripts/build.ts",
+          "sha256": "8a51d9f8dcb633ea066bdb291419d31d1385c142a1baddbf2d94090b3d1fb25f"
+        },
+        {
+          "path": "apps/blog-web/src/build.ts",
+          "sha256": "7290b08b248250e6cc1cb3280597df48f1a68909b0373ea91ea9ebd3c8f20b83"
+        },
+        {
+          "path": "apps/blog-web/src/lib/render-document.ts",
+          "sha256": "af54700ac1e217ec75c2d19b81508a66cb165855446805cd09aedf4713cdff9b"
+        },
+        {
+          "path": "packages/managed-page-compiler/src/index.ts",
+          "sha256": "3c2d4390bf48da66300d33ab74e93db0668980db9d3719f9d78a6dc3d6fe8304"
+        },
+        {
+          "path": "packages/contracts/src/schemas.ts",
+          "sha256": "ef421f56d700b7c8b46a5bb351b3647fdbb902e49906ec4f74634c124d667acb"
+        }
+      ],
+      "tests": [
+        {
+          "path": "tests/contracts/dev-preview.test.ts",
+          "cases": [
+            "confines preview files including encoded traversal and symlinks to the output root",
+            "rejects malformed preview requests without throwing or decoding query values"
+          ]
+        },
+        {
+          "path": "tests/contracts/security-profile.test.ts",
+          "cases": [
+            "escapes script-ending metadata in blog and managed JSON-LD without losing data",
+            "renders safe managed Markdown and rejects stylesheet network and markup escapes",
+            "keeps profile drafts private while rendering static localized review pages deterministically",
+            "hides unavailable profile links and uses one honest empty home state at both deployment bases",
+            "publishes empty noindex profiles without sample discovery at root and subpath",
+            "rejects managed entry and stylesheet paths escaping through traversal or symlinks",
+            "keeps normal blog text opaque and text tokens above AA contrast on light and dark surfaces"
           ]
         }
       ]

@@ -14,9 +14,13 @@
   explicit user decision and a superseding ADR.
 - Vitest is the sole focused unit and contract test runner. Do not add or retain
   a parallel `node:test`, Jest, Mocha, or other unit-test command.
-- Keep the root `README.md` English-first. English is the authoritative text;
-  place the Korean companion translation immediately after the corresponding
-  English section and update both languages in the same change.
+- Keep the root `README.md` in English as the authoritative text. Keep each
+  translation in its own `README.<language-code>.md` file, such as `README.ko.md`
+  and `README.ja.md`; do not interleave translated prose in one README.
+  Every README must have a top language selector linking to all other existing
+  translations and identifying its current language. Create a translated file
+  before linking to it, and update all existing translations in the same change.
+  README languages are independent of the blog's configured publishing locales.
 
 ## Required change-to-test pairing
 
@@ -91,9 +95,10 @@
   localized UI, and language-scoped search/feed behavior. Read it before
   changing any language-aware content, route, UI, search, discovery, or
   managed-page alternate behavior.
-- ADR 0008 owns multilingual publication/discovery, manual-only language
-  switching, partial translation publication, and post-link fallback. Do not
-  redirect any requested route based on browser or stored language, require a
+- ADR 0008 owns multilingual publication/discovery, partial translation
+  publication, and post-link fallback. ADR 0009 permits browser-language
+  selection only at the exact deployment root, with explicit Korean selection
+  preserved. Do not redirect any other route or use stored language, require a
   post footer, or expose a translation banner, nuance warning, or visible
   review-status message without an explicit policy change and tests.
 - `config/analytics.yaml` owns the optional GA4 activation, scope, consent, and data-minimization policy. Analytics belongs only to the blog web layer, is disabled when its public measurement-ID environment value is absent, and must never become a content-compiler input or recommendation signal.

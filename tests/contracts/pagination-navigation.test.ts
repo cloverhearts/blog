@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, resolve } from "node:path";
@@ -18,6 +19,26 @@ let paginationSite: Awaited<ReturnType<typeof buildPaginationSite>>;
 beforeAll(async () => {
   paginationSite = await buildPaginationSite();
 }, 30_000);
+
+test("bundles the approved author avatar for localized homes and posts at both bases", () => {
+  const source = readFileSync(resolve(repositoryRoot, "apps/blog-web/src/assets/author-avatar.png"));
+  const digest = createHash("sha256").update(source).digest("hex").slice(0, 16);
+  assert.equal(source.subarray(1, 4).toString(), "PNG");
+  assert.equal(source.readUInt32BE(16), 192);
+  assert.equal(source.readUInt32BE(20), 192);
+  for (const [directory, base] of [["production", ""], ["blog", "/blog"]]) {
+    const site = resolve(paginationSite.root, `.artifacts/web/${directory}/site`);
+    for (const path of ["index.html", "en/index.html", "ja/index.html", "posts/group-01/index.html", "en/posts/group-21/index.html"]) {
+      const html = readFileSync(resolve(site, path), "utf8");
+      const avatar = html.match(/<div class="author-monogram"[^>]*aria-hidden="true">([\s\S]*?)<\/div>/u)?.[1];
+      assert.ok(avatar, path);
+      assert.ok(avatar.includes(`src="${base}/_assets/app/author-avatar-${digest}.png"`));
+      assert.match(avatar, /width="48" height="48" alt=""/u);
+      assert.doesNotMatch(avatar, /CH|https?:|<script|onerror/u);
+    }
+    assert.deepEqual(readFileSync(resolve(site, `_assets/app/author-avatar-${digest}.png`)), source);
+  }
+});
 
 test("omits footer navigation while keeping localized archive routes", async () => {
   const { root } = await paginationSite;
@@ -52,6 +73,51 @@ test("omits footer navigation while keeping localized archive routes", async () 
   assert.doesNotMatch(footerMarkup(blogHome), /<nav|href="\/blog\/(?:profile|archive)\//u);
   assert.match(blogHome, /href="\/blog\/posts\/"/u);
   assert.doesNotMatch(primaryMenu(blogHome), /\/archive\//u);
+});
+
+test("emits root language enhancement without changing direct documents or canonical alternates", () => {
+  const { root } = paginationSite;
+  for (const [directory, base] of [["production", ""], ["blog", "/blog"]]) {
+    const read = (path: string) => readFileSync(resolve(root, `.artifacts/web/${directory}/site/${path}`), "utf8");
+    const home = read("index.html");
+    assert.match(home, /<html lang="ko"/u);
+    assert.ok(home.includes(`src="${base}/_assets/app/root-language.js"`));
+    assert.ok(home.includes(`href="${base}/?lang=ko" hreflang="ko"`));
+    assert.ok(home.includes(`rel="canonical" href="https://blog.cloverhearts.com${base}/"`));
+    assert.ok(home.includes(`hreflang="x-default" href="https://blog.cloverhearts.com${base}/"`));
+    assert.ok(home.includes(`&quot;en&quot;:&quot;${base}/en/&quot;`));
+    assert.match(home, /<main[\s\S]*검증 가능한 AI 워크플로[\s\S]*<\/main>/u);
+    assert.doesNotMatch(home, /http-equiv="refresh"/iu);
+    assert.equal(read("_assets/app/root-language.js"), readFileSync(resolve(repositoryRoot, "apps/blog-web/src/i18n/root-language.js"), "utf8"));
+    for (const path of ["en/index.html", "ja/index.html", "posts/index.html", "posts/page/2/index.html", "search/index.html", "404/index.html", "posts/group-01/index.html"]) {
+      assert.doesNotMatch(read(path), /data-root-language-selection|src="[^"]*root-language\.js"/u, path);
+    }
+    assert.ok(read("en/index.html").includes(`href="${base}/?lang=ko" hreflang="ko"`));
+    assert.ok(read("posts/index.html").includes(`href="${base}/posts/" hreflang="ko"`));
+  }
+});
+
+test("links the hero title to its featured fallback across languages and deployment bases", () => {
+  const { root } = paginationSite;
+  for (const [directory, base] of [["production", ""], ["blog", "/blog"]]) {
+    for (const locale of ["ko", "en", "ja"]) {
+      const prefix = locale === "ko" ? "" : `${locale}/`;
+      const home = readFileSync(resolve(root, `.artifacts/web/${directory}/site/${prefix}index.html`), "utf8");
+      const hero = home.match(/<h1><a class="home-hero__title-link" href="([^"]+)" hreflang="([^"]+)" aria-label="([^"]+)">([\s\S]*?)<\/a><\/h1>/u);
+      const featured = home.match(/<a class="featured-post-link" href="([^"]+)"/u);
+      assert.ok(hero && featured);
+      assert.equal(hero[1], featured[1], "No Selected Work: title and visual use the featured post");
+      assert.ok(hero[1]!.startsWith(`${base}/`));
+      const target = hero[1]!.slice(base!.length).replace(/^\//u, "");
+      assert.equal(existsSync(resolve(root, `.artifacts/web/${directory}/site/${target}index.html`)), true);
+      const post = readFileSync(resolve(root, `.artifacts/web/${directory}/site/${target}index.html`), "utf8");
+      const title = post.match(/<h1 data-pagefind-meta="title"[^>]*>([^<]+)<\/h1>/u)?.[1];
+      assert.ok(title && hero[3]!.includes(title));
+      assert.doesNotMatch(hero[0], /onclick|javascript:|<script/u);
+      if (hero[2] !== locale) assert.match(hero[4]!, /class="home-hero__language"/u);
+      else assert.doesNotMatch(hero[4]!, /class="home-hero__language"/u);
+    }
+  }
 });
 
 test("renders list and featured posts as one full-card link without inline presentation styles", async () => {

@@ -16,3 +16,4 @@ export function renderSearchResultItems(
   basePath: string,
 ): string;
 export function bindSiteSearch(root: ParentNode): void;
+export function bindDialogBackdrop(dialog: HTMLDialogElement): void;

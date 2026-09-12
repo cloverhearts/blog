@@ -133,9 +133,9 @@ function validateSiteSemantics(site: SiteConfig, issues: string[]): void {
   if (site.languages.source !== DEFAULT_LANGUAGE) {
     issues.push(issue("config/site.yaml.languages.source", "must be ko"));
   }
-  if (site.languages.browserSelection !== "manual-only") {
+  if (site.languages.browserSelection !== "root-only") {
     issues.push(
-      issue("config/site.yaml.languages.browserSelection", "must be manual-only"),
+      issue("config/site.yaml.languages.browserSelection", "must be root-only"),
     );
   }
   const supportedIds = site.languages.supported.map(({ id }) => id);

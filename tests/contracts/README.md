@@ -11,11 +11,22 @@ All focused contract and policy suites run with Vitest. Playwright and axe-core
 are reserved for the later rendered-page conformance lane; `node:test` is not a
 parallel project runner.
 
+`security-profile.test.ts` exercises JSON-LD script-boundary escaping, sanitized
+static managed Markdown, network-free page-local CSS, stylesheet provenance,
+path/symlink rejection, draft-safe localized profile actions, single empty-home
+states at root and subpath deployments, and light/dark text-token contrast.
+It also assembles an empty-post release with three reachable noindex profile
+shells at root and subpath, verifying empty bodies, return links, deterministic
+managed output and exclusion from feeds and sitemap. Rich biography and draft
+fixtures are authored inside tests, independent of the owner's live content.
+`dev-preview.test.ts` includes encoded traversal and malformed-request regression
+coverage. Browser accessibility, print and visual checks remain separate gates.
+
 Planned checks include producer output validation, consumer rejection of malformed or unsupported artifacts, preview/production isolation, provenance compatibility, route and asset collisions, managed entry/design/security conformance, public-route-to-file mapping, embed registry/security/fallback conformance with a synthetic test plugin, heading-anchor determinism, TOC hierarchy and body-HTML parity, fragment-link integrity, final-HTML search coverage, sitemap/robots/RSS discovery coverage, no-JavaScript readability, and golden deterministic artifacts.
 
 Multilingual conformance additionally covers complete, partial, and mismatched
 translation groups, Korean-default and English/Japanese-prefixed route
-resolution, manual-only language switching, active-language/English/Korean
+resolution, root-only browser-language selection and explicit switching, active-language/English/Korean
 post-link fallback, missing-target omission, fallback-language labeling,
 localized UI message completeness, reciprocal published alternates,
 language-isolated search/RSS data, and shared asset behavior. It also verifies
