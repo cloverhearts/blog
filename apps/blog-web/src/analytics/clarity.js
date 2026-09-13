@@ -21,11 +21,12 @@ export function createClarity({ projectId, storageKey = STORAGE_KEY }, browser =
     try { browser.localStorage.setItem(storageKey, value); } catch { /* No persistent storage available. */ }
   };
   const start = () => {
-    if (!projectId || consent !== "granted" || started || !safeEntry()) return;
+    if (!projectId || consent === "denied" || started || !safeEntry()) return;
     doc.body.setAttribute("data-clarity-mask", "true");
     doc.querySelectorAll("[data-clarity-unmask]").forEach((element) => element.removeAttribute("data-clarity-unmask"));
     browser.clarity ??= function (...args) { (browser.clarity.q ??= []).push(args); };
-    browser.clarity("consentv2", { analytics_Storage: "granted", ad_Storage: "denied" });
+    // Queue before fetching the SDK. Old permission never enables cookies.
+    browser.clarity("consentv2", { analytics_Storage: "denied", ad_Storage: "denied" });
     const script = doc.createElement("script");
     script.id = "blog-clarity-script";
     script.async = true;
@@ -36,10 +37,10 @@ export function createClarity({ projectId, storageKey = STORAGE_KEY }, browser =
   };
   const client = {
     getConsent: () => consent,
-    grantConsent() { save("granted"); start(); },
     denyConsent() {
       save("denied");
       if (started) {
+        started = false;
         browser.clarity?.("consentv2", { analytics_Storage: "denied", ad_Storage: "denied" });
         // Denial alone permits cookieless telemetry: unload the SDK as well.
         browser.location.reload();
@@ -54,13 +55,11 @@ if (typeof document !== "undefined") {
   const controls = document.querySelector("[data-clarity-project]");
   if (controls) {
     const client = createClarity({ projectId: controls.dataset.clarityProject, storageKey: controls.dataset.consentKey });
-    const grant = controls.querySelector("[data-analytics-grant]");
     const deny = controls.querySelector("[data-analytics-deny]");
     const update = () => {
-      grant.setAttribute("aria-pressed", String(client.getConsent() === "granted"));
       deny.setAttribute("aria-pressed", String(client.getConsent() === "denied"));
+      deny.disabled = client.getConsent() === "denied";
     };
-    grant.addEventListener("click", () => { client.grantConsent(); update(); });
     deny.addEventListener("click", () => { client.denyConsent(); update(); });
     window.addEventListener("storage", (event) => {
       if ((event.key === null || event.key === controls.dataset.consentKey) && event.newValue !== "granted") client.denyConsent();

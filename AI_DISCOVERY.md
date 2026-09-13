@@ -107,7 +107,7 @@ inputs produce byte-identical output.
 ## Observation and enforcement boundary
 
 GitHub Pages does not give the static application a request-time server hook.
-Clarity is consent-gated and JavaScript-dependent, so it cannot be used as a
+Clarity is optional, cookieless and JavaScript-dependent, so it cannot be used as a
 complete crawler log. Referrers may identify some human visits from AI tools,
 but not background crawlers or spoofed agents.
 

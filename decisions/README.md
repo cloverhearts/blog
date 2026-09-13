@@ -10,6 +10,7 @@ Status values are `proposed`, `accepted`, `superseded`, or `rejected`.
 Accepted records:
 
 - `0010-clarity-only-analytics.md` — replaces the GA4 scaffold with consent-gated Clarity
+- `0011-immediate-cookieless-analytics.md` — replaces the consent request with immediate cookieless collection and an opt-out
 - `0001-github-pages-hosting.md`
 - `0002-open-design-contract.md`
 - `0003-comments-deferred.md`

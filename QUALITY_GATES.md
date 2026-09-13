@@ -101,10 +101,11 @@ merely because it compiles or looks correct in one browser.
 - Every iframe has a title, referrer policy, sandbox/permission policy, declared
   origin, and normal-link fallback.
 - Clarity is disabled when `CLARITY_PROJECT_ID` is absent and an invalid configured
-  value fails the build. The Google loader and analytics CSP origins are emitted
+  value fails the build. The Clarity loader and analytics CSP origins are emitted
   only for an enabled production build.
-- Clarity makes no external request before explicit analytics consent, retains an
-  equally accessible reject/revoke path, and does not block page behavior.
+- Clarity queues both storage denials before immediate SDK loading, never sends
+  granted or writes inferred permission, and honors saved opt-out. A collapsed
+  information/stop control replaces the consent request without blocking reading.
 - Clarity advertising storage is denied and text/inputs are masked. No custom
   identities or raw-search events are sent. Query/fragment entry pages are
   skipped; vendor URL/attribute collection is not claimed to be fully sanitized.

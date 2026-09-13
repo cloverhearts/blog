@@ -109,6 +109,7 @@ translation-origin and review metadata remain independent.
 External embeds arrive as sanitized semantic markup and framework-neutral records. The application may style a generic embed container and host approved progressive enhancement, but it must not import or contain provider-specific plugin logic.
 
 Optional aggregate analytics is blog-owned progressive enhancement. The
-framework shell wires `src/analytics/clarity.js` to accessible consent
-controls. It must pass `null` when `CLARITY_PROJECT_ID` is absent, must not load
-Microsoft before consent, and must keep managed pages outside this integration.
+framework shell wires `src/analytics/clarity.js` to collapsed information and
+a stop control. It must pass `null` when `CLARITY_PROJECT_ID` is absent, queue
+both cookie-storage denials before automatic loading, honor saved refusal,
+and keep managed pages outside this integration. See ADR 0011 and ANALYTICS.md.

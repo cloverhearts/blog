@@ -366,7 +366,7 @@ export const contentProvenanceConfigSchema = z
 
 export const analyticsConfigSchema = z
   .object({
-    schemaVersion: z.literal(2),
+    schemaVersion: z.literal(3),
     provider: z.literal("microsoft-clarity"),
     projectIdEnvironmentVariable: z.literal("CLARITY_PROJECT_ID"),
     enabledWhenConfigured: z.boolean(),
@@ -378,7 +378,7 @@ export const analyticsConfigSchema = z
       .strict(),
     consent: z
       .object({
-        mode: z.literal("basic"),
+        mode: z.literal("cookieless-immediate"),
         default: z.literal("denied"),
         storageKey: z.literal("blog.clarity-consent.v1"),
       })

@@ -13,28 +13,37 @@ service, new server or third-party npm dependency is required.
    variable. It is public, not a credential. This integration accepts 1–32
    lowercase ASCII letters/digits, trims surrounding whitespace and rejects
    snippets/URLs. Blank means disabled; legacy `GA4_MEASUREMENT_ID` is ignored.
-4. In Clarity, require consent, use Strict text masking, and keep advertising
-   features disabled. The local adapter also masks the body and requests
-   `analytics_Storage: granted`, `ad_Storage: denied` only after consent.
+4. In Clarity Settings / Setup, turn the cookie setting OFF (require consent
+   before cookies), use Strict text masking, and keep advertising features off.
+   The local adapter queues `analytics_Storage: denied`, `ad_Storage: denied`
+   before loading the SDK. Never send a granted signal, including for old grants.
+   Verify that `_clck`/`_clsk` are not created with the real project before release.
 5. Build with the production origin and deploy through the existing Pages
    workflow. Check actual collection and masking in Clarity before considering
    activation verified; a successful local stub test is not that verification.
 
 ## Scope and consent
 
-- `config/analytics.yaml` schema 2 is the executable policy. Only eligible
+- `config/analytics.yaml` schema 3 is the executable policy. Only eligible
   production blog documents load the local adapter. Preview, noindex/search/404
   documents and every managed page/profile remain untracked.
-- No Clarity request occurs before explicit or saved Clarity consent. The new
-  storage key is `blog.clarity-consent.v1`; old GA4 consent never carries over.
-- The footer explains Microsoft processing and session replay in the document
-  language, links to Microsoft's privacy statement, and retains allow and
-  decline/withdraw buttons. No-JavaScript pages remain readable and untracked.
-- Withdrawing saves denial, sends ConsentV2 denial and reloads the page to unload
-  the recorder. ConsentV2 denial alone can still permit cookieless collection,
-  so it is not treated as stopping the SDK. Cross-tab denial also triggers this.
-- Storage failure preserves the current-page choice only. Do not infer that
-  denial can persist across pages when browser storage itself is unavailable.
+- The owner approved immediate cookieless collection in ADR 0011. No interaction
+  is required: both cookie-storage purposes remain denied, not implicitly granted.
+  Old grants do not enable cookies. An existing `denied` value in
+  `blog.clarity-consent.v1` still blocks all SDK loading; GA4 consent is ignored.
+- A collapsed, localized footer information disclosure replaces the consent
+  request. It contains Microsoft's privacy link and a keyboard-accessible stop
+  control, but no allow button. No-JavaScript pages remain readable and untracked.
+- Stopping saves denial and reloads to unload the SDK; cross-tab denial also
+  stops recording. ConsentV2 denial alone is not a stop command. No storage is
+  written automatically; localStorage is used only to remember an explicit stop.
+- If storage is unavailable, stopping cannot persist across reloads or visits.
+  The disclosure states this limitation. Browser blocking can prevent collection.
+- Cookieless is not anonymous or a general exemption from privacy obligations.
+  The owner remains responsible for applicable requirements and vendor terms.
+  Cross-page journeys, returning users and session duration are limited: page
+  views can become separate sessions. This deliberately trades continuity for
+  avoiding a consent request, without misrepresenting consent to Microsoft.
 
 ## Data and limitations
 
@@ -69,7 +78,7 @@ privacy statement; masking does not make the service first-party-only.
 
 Run `npm run test:analytics`, `npm run typecheck`, `npm test`, and the normal
 production build/Pages verifier. Validate enabled/disabled, root/subpath,
-preview/excluded-route, fresh consent, legacy consent, storage failure,
+preview/excluded-route, immediate denied-cookie loading, legacy preferences, storage failure,
 withdrawal and deterministic provenance cases. Before deployment activation,
 verify a real project ID, dashboard receipt, masking, denial/revocation and
 network behavior. Those external checks cannot pass with a synthetic test ID.

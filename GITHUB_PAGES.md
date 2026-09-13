@@ -283,7 +283,8 @@ response-header configuration.
   iframe restrictions also live on each iframe element.
 - When Clarity is configured, eligible production blog documents allow only
   the reviewed Clarity origins in `config/security.yaml`. The local adapter
-  loads the remote SDK after consent; no inline bootstrap or advertising origin
+  queues both cookie-storage denials before loading the SDK unless opted out;
+  no inline bootstrap or advertising origin
   is permitted. See `ANALYTICS.md` for setup, exclusions and activation checks.
 - Features requiring secrets, authenticated APIs, personalized responses, or
   server-side consent state must use a separate service. Secrets never enter

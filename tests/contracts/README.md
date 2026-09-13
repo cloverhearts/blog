@@ -59,6 +59,6 @@ named-component semantic shell/CSS behavior, Pretendard subset size, and static
 fallbacks for every primary UX flow.
 
 The current executable scaffolding covers localized route and post-link
-fallback selection, UI-message parity, Clarity disabled/pending consent,
-single-load initialization, query/search-term minimization, invalid Measurement
-IDs, and consent revoke/re-grant behavior.
+fallback selection, UI-message parity, Clarity disabled/immediate cookieless
+loading, both storage denials before initialization, query/search-term
+minimization, invalid project IDs, old denial compatibility and opt-out behavior.

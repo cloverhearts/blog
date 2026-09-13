@@ -40,28 +40,37 @@ test("resolves absent normalized and invalid Clarity configuration without GA4 f
   }
 });
 
-test("requires fresh consent and never loads Clarity when absent denied or legacy-granted", () => {
-  for (const stored of [undefined, "denied", "unexpected"]) {
+test("starts cookieless without consent but honors saved denial and disabled IDs", () => {
+  for (const stored of [undefined, "granted", "unexpected"]) {
     const f = fixture(stored); f.storage.set("blog.analytics-consent.v1", "granted"); f.create();
-    assert.equal(f.scripts.length, 0);
+    assert.equal(f.scripts.length, 1);
+    assert.doesNotMatch(f.commands()!, /granted/u);
   }
-  const disabled = fixture(); disabled.create(null).grantConsent();
+  const denied = fixture("denied"); denied.create(); assert.equal(denied.scripts.length, 0);
+  const disabled = fixture(); disabled.create(null);
   assert.equal(disabled.scripts.length, 0);
 });
 
-test("loads Clarity once after consent with text masking and advertising denied", () => {
-  const f = fixture(); const client = f.create(); client.grantConsent(); client.grantConsent();
+test("queues both storage denials before immediate SDK loading without saving permission", () => {
+  const f = fixture();
+  f.browser.document.head.append = (script) => {
+    assert.match(f.commands()!, /"analytics_Storage":"denied","ad_Storage":"denied"/u);
+    assert.equal(f.attrs.get("data-clarity-mask"), "true");
+    return f.scripts.push(script);
+  };
+  const client = f.create();
   assert.equal(f.scripts.length, 1);
   assert.equal(f.scripts[0]!.src, "https://www.clarity.ms/tag/abc12345");
   assert.equal(f.scripts[0]!.referrerPolicy, "no-referrer");
   assert.equal(f.attrs.get("data-clarity-mask"), "true");
-  assert.match(f.commands()!, /"analytics_Storage":"granted","ad_Storage":"denied"/u);
-  assert.equal(f.storage.get("blog.clarity-consent.v1"), "granted");
+  assert.match(f.commands()!, /"analytics_Storage":"denied","ad_Storage":"denied"/u);
+  assert.equal(f.storage.size, 0);
+  assert.equal(client.grantConsent, undefined);
   const restored = fixture("granted"); restored.create(); assert.equal(restored.scripts.length, 1);
 });
 
 test("withdraws Clarity consent and reloads to stop even cookieless recording", () => {
-  const f = fixture(); const client = f.create(); client.grantConsent(); client.denyConsent();
+  const f = fixture(); const client = f.create(); client.denyConsent(); client.denyConsent();
   assert.equal(f.reloads(), 1);
   assert.equal(client.getConsent(), "denied");
   assert.match(f.commands()!, /"analytics_Storage":"denied","ad_Storage":"denied"/u);
@@ -81,7 +90,7 @@ test("keeps consent functional when browser storage is blocked", () => {
   const f = fixture();
   f.browser.localStorage.getItem = () => { throw new Error("blocked"); };
   f.browser.localStorage.setItem = () => { throw new Error("blocked"); };
-  const client = f.create(); client.grantConsent(); assert.equal(f.scripts.length, 1);
+  const client = f.create(); assert.equal(f.scripts.length, 1);
   client.denyConsent(); assert.equal(f.reloads(), 1);
 });
 
@@ -89,7 +98,9 @@ test("rejects weaker Clarity privacy policies", () => {
   const config = loadProjectConfig({ repositoryRoot, env: {} }).analytics;
   for (const changed of [{ ...config, scope: { blog: true, managedPages: true } },
     { ...config, collection: { ...config.collection, maskText: false } },
-    { ...config, consent: { ...config.consent, default: "granted" } }]) {
+    { ...config, consent: { ...config.consent, default: "granted" } },
+    { ...config, consent: { ...config.consent, mode: "basic" } },
+    { ...config, schemaVersion: 2 }]) {
     assert.equal(analyticsConfigSchema.safeParse(changed).success, false);
   }
 });
@@ -107,7 +118,8 @@ test("emits only eligible production Clarity controls and preserves deterministi
       const html = readFileSync(resolve(root, `.artifacts/web/production/site/${prefix}index.html`), "utf8");
       assert.ok(html.includes(`src="${base}/_assets/app/clarity.js"`));
       assert.match(html, /data-clarity-project="abc12345"/u);
-      assert.match(html, /data-analytics-grant[\s\S]*data-analytics-deny/u);
+      assert.doesNotMatch(html, /data-analytics-grant/u);
+      assert.match(html, /<details class="analytics-consent"[^>]*><summary[\s\S]*data-analytics-deny/u);
       assert.match(html, /Content-Security-Policy/u);
       assert.doesNotMatch(html, /googletagmanager|google-analytics|unsafe-inline|c\.bing\.com/u);
       for (const route of ["search/", "404/"]) {

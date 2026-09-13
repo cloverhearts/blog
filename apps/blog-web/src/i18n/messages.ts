@@ -3,7 +3,7 @@ import type { SupportedLanguage } from "../../../../packages/project-config/src/
 export interface BlogMessages {
   readonly analyticsDisclosure: string;
   readonly analyticsPrivacy: string;
-  readonly allowAnalytics: string;
+  readonly analyticsNotice: string;
   readonly archive: string;
   readonly backHome: string;
   readonly categories: string;
@@ -25,7 +25,6 @@ export interface BlogMessages {
   readonly relatedPosts: string;
   readonly readOriginal: string;
   readonly fallbackLanguage: string;
-  readonly revokeAnalytics: string;
   readonly search: string;
   readonly searchEmpty: string;
   readonly searchHint: string;
@@ -79,14 +78,14 @@ export function blogMessages(language: SupportedLanguage): BlogMessages {
 
 export const BLOG_MESSAGES: Readonly<Record<SupportedLanguage, BlogMessages>> = {
   en: {
-    analyticsDisclosure: "With your consent, Microsoft Clarity collects visits, clicks, scrolling and masked session replays to improve this blog. Text and inputs are masked; URL and device metadata may be collected. You can decline or withdraw here at any time; withdrawal reloads this page to stop recording.",
+    analyticsDisclosure: "Microsoft Clarity starts limited, cookieless analytics automatically on eligible pages. Text and inputs are masked; URL and device metadata may be collected. Returning visitors and cross-page journeys cannot be reliably identified. You can stop collection here; this reloads the page. Without browser storage, this preference may not persist.",
     analyticsPrivacy: "Microsoft privacy statement",
-    allowAnalytics: "Allow analytics",
+    analyticsNotice: "Analytics information",
     archive: "Archive",
     backHome: "Back to home",
     categories: "Categories",
     closeNavigation: "Close navigation",
-    denyAnalytics: "Decline analytics",
+    denyAnalytics: "Stop analytics",
     home: "Home",
     language: "Language",
     menu: "Menu",
@@ -103,7 +102,6 @@ export const BLOG_MESSAGES: Readonly<Record<SupportedLanguage, BlogMessages>> = 
     relatedPosts: "Related posts",
     readOriginal: "Read the original",
     fallbackLanguage: "Available in",
-    revokeAnalytics: "Revoke analytics consent",
     search: "Search",
     searchEmpty: "No matching posts were found.",
     searchHint: "Search titles, article text, and tags.",
@@ -144,14 +142,14 @@ export const BLOG_MESSAGES: Readonly<Record<SupportedLanguage, BlogMessages>> = 
     allPostsCta: "View all posts",
   },
   ko: {
-    analyticsDisclosure: "동의하면 Microsoft Clarity가 방문·클릭·스크롤과 텍스트가 가려진 세션 재생 정보를 수집하여 블로그 개선에 사용합니다. 텍스트와 입력값은 가리지만 URL·기기 정보는 수집될 수 있습니다. 여기에서 언제든 거부하거나 철회할 수 있으며, 철회 시 기록을 중지하기 위해 페이지를 새로고침합니다.",
+    analyticsDisclosure: "허용된 페이지에서는 Microsoft Clarity가 쿠키 없이 제한적인 분석을 자동으로 시작합니다. 텍스트와 입력값은 가리지만 URL·기기 정보는 수집될 수 있습니다. 재방문자와 페이지 간 이동 경로는 정확히 구분하기 어렵습니다. 여기에서 수집을 중지하면 페이지를 새로고침합니다. 브라우저 저장소를 사용할 수 없으면 중지 선택이 유지되지 않을 수 있습니다.",
     analyticsPrivacy: "Microsoft 개인정보처리방침",
-    allowAnalytics: "분석 허용",
+    analyticsNotice: "분석 안내",
     archive: "보관함",
     backHome: "홈으로 돌아가기",
     categories: "카테고리",
     closeNavigation: "네비게이션 닫기",
-    denyAnalytics: "분석 거부",
+    denyAnalytics: "분석 수집 중지",
     home: "홈",
     language: "언어",
     menu: "메뉴",
@@ -168,7 +166,6 @@ export const BLOG_MESSAGES: Readonly<Record<SupportedLanguage, BlogMessages>> = 
     relatedPosts: "연관 포스트",
     readOriginal: "원문 읽기",
     fallbackLanguage: "제공 언어",
-    revokeAnalytics: "분석 동의 철회",
     search: "검색",
     searchEmpty: "일치하는 포스트가 없습니다.",
     searchHint: "제목, 본문과 태그에서 검색합니다.",
@@ -209,14 +206,14 @@ export const BLOG_MESSAGES: Readonly<Record<SupportedLanguage, BlogMessages>> = 
     allPostsCta: "전체 글 보기",
   },
   ja: {
-    analyticsDisclosure: "同意すると、Microsoft Clarity が訪問・クリック・スクロールとテキストをマスクしたセッション再生を収集し、ブログの改善に使用します。テキストと入力値はマスクしますが、URL・端末情報が収集される場合があります。ここでいつでも拒否・撤回でき、撤回時は記録を停止するためページを再読み込みします。",
+    analyticsDisclosure: "対象ページでは Microsoft Clarity が Cookie を使わない限定的な分析を自動で開始します。テキストと入力値はマスクしますが、URL・端末情報が収集される場合があります。再訪問者やページ間の移動経路は正確に識別できません。ここで収集を停止するとページを再読み込みします。ブラウザーのストレージが使えない場合、停止の設定が保持されないことがあります。",
     analyticsPrivacy: "Microsoft プライバシーステートメント",
-    allowAnalytics: "アクセス解析を許可",
+    analyticsNotice: "アクセス解析について",
     archive: "アーカイブ",
     backHome: "ホームに戻る",
     categories: "カテゴリー",
     closeNavigation: "ナビゲーションを閉じる",
-    denyAnalytics: "アクセス解析を拒否",
+    denyAnalytics: "アクセス解析を停止",
     home: "ホーム",
     language: "言語",
     menu: "メニュー",
@@ -233,7 +230,6 @@ export const BLOG_MESSAGES: Readonly<Record<SupportedLanguage, BlogMessages>> = 
     relatedPosts: "関連記事",
     readOriginal: "原文を読む",
     fallbackLanguage: "提供言語",
-    revokeAnalytics: "アクセス解析の同意を取り消す",
     search: "検索",
     searchEmpty: "一致する記事が見つかりません。",
     searchHint: "タイトル、本文、タグを検索します。",

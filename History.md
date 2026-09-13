@@ -4,6 +4,55 @@ This file records non-routine changes to the blog project. Entries are ordered
 newest first and use the `Asia/Seoul` timezone. Routine post authoring is omitted
 unless it changes shared content behavior, routes, schemas, or project rules.
 
+## 2026-09-13T17:44:02+09:00 — Prepare the cookieless analytics deployment
+
+- Change type/reason: Owner requested committing, pushing and deploying the
+  approved immediate cookieless analytics change.
+- Scope/result: Release the schema-3 adapter, collapsed information/stop UI,
+  ADR 0011, documentation and paired tests together using the existing main
+  branch GitHub Pages workflow and previously requested unsigned commit.
+- Validation: Re-ran full Vitest: 133 passed in 23 files; whitespace check
+  passed. The preceding change also passed typecheck, production build/Pages
+  verification and two stubbed Chromium cases. Read back the repository project
+  ID and confirmed the custom domain, Actions publishing and HTTPS enforcement.
+- Follow-up: At commit preparation, remote CI/deployment and public-site checks
+  are pending and will be reported separately. Microsoft dashboard cookie
+  settings and actual collection remain unverified; deployment alone does not
+  establish that external-service gate. No collection scope was expanded.
+
+## 2026-09-13T17:42:47+09:00 — Start limited cookieless Clarity without a consent request
+
+- Change type/reason: Owner explicitly accepted the limited cookieless mode
+  and requested immediate collection without a consent prompt. ADR 0011
+  supersedes ADR 0010 only for loading/consent UI; analytics schema moves to 3.
+- Scope/result: Queue both ConsentV2 storage purposes as denied before loading
+  the SDK. Remove the allow action and inferred permission writes. Replace the
+  large request with collapsed localized information, privacy link and stop
+  control. Preserve saved Clarity refusal, cross-tab stop/reload, body masking,
+  blank-ID disabling, query/fragment/referrer guards and all route/preview
+  exclusions. Cookie use is never enabled by a previous grant.
+- Tests/contracts: Intentionally replace opt-in expectations with
+  `starts cookieless without consent but honors saved denial and disabled IDs`
+  and `queues both storage denials before immediate SDK loading without saving
+  permission`. Retain opt-out, storage failure, entry exclusion and deterministic
+  locale/base-path cases. Browser cases cover automatic loading, collapsed UI,
+  keyboard stop and persisted/cross-tab refusal. Reviewed policy mappings;
+  updated runbooks and all README translations. CONTENT_RULES.md still accurately
+  forbids author tracking fields; no content syntax or artifact change is needed.
+- Validation: Focused analytics suite 8 passed; full Vitest 133 passed in 23
+  files; typecheck passed. Two Chromium desktop/mobile cases passed, and their
+  collapsed/expanded screenshots were inspected. Production build with the
+  configured ID, Pages verification and whitespace checks passed. Initial
+  checks caught a test callback return type and duplicate policy ownership;
+  both were corrected before the passing runs. Browser launch required sandbox
+  approval; all provider requests were stubbed, not sent to Microsoft.
+- Compatibility/follow-up: No commit, push or deployment in this task. Verify
+  Clarity Settings / Setup cookies OFF, real cookie/network behavior and dashboard
+  receipt before activation. Cookieless data cannot reliably join returning
+  users or multi-page journeys and is not a privacy-law exemption. Blocked
+  browser storage prevents persisting opt-out across reloads. Local preview and
+  query entries such as `?lang=ko` remain untracked.
+
 ## 2026-09-13T17:28:25+09:00 — Prepare the approved design and Clarity release
 
 - Change type/reason: Owner requested committing, pushing and deploying all

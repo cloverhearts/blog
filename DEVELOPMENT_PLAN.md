@@ -21,7 +21,7 @@ Pagefind extended, Sharp, Vitest, Playwright, and axe-core are accepted in ADR
   sitemap, AI-aware robots, `llms.txt`, and one post-only RSS feed per language
   after managed routes are known.
 - Analytics: optional blog-only Clarity using `CLARITY_PROJECT_ID`; blank disables
-  it, basic consent mode prevents pre-consent requests, and managed pages are
+  it, immediate cookieless mode denies both storage purposes, and managed pages are
   excluded by default.
 - Localization: Korean is the unprefixed default/fallback and authoring source,
   English is at `/en/`, Japanese is at `/ja/`, and every blog route is a
@@ -144,9 +144,9 @@ Exit criteria:
   `/page/<n>/` routes with normal sequential links and self canonicals.
 - Resolve artifact-relative assets to configured public routes.
 - Render provider-neutral embed containers, approved privacy/consent states, and optional progressive-enhancement loading from artifact records.
-- Wire the blog-owned Clarity adapter and accessible consent controls. Emit no
+- Wire the blog-owned Clarity adapter and collapsed information/stop controls. Emit no
   loader or analytics origins when the project ID is absent, make no Clarity
-  request before consent, and keep advertising signals and personalization off.
+  request after saved refusal, and keep both cookie-storage purposes denied.
 - Ensure primary post content and navigation links exist in initial HTML.
 - Emit real published language-switcher links, localized framework copy, self
   canonicals, and reciprocal `hreflang` alternates. Browser-language navigation
@@ -273,7 +273,7 @@ Exit criteria:
 - Validate `WebSite`, `BlogPosting`, `BreadcrumbList`, conditional
   `ProfilePage`/`Person`, managed-page structured data, favicon, pagination,
   and all representative-image derivatives.
-- Verify absent/invalid/configured Clarity IDs, consent grant/revoke behavior,
+- Verify absent/invalid/configured Clarity IDs, immediate cookieless/opt-out behavior,
   single-load initialization, safe page-view URLs, and conditional CSP origins.
 
 Exit criteria:

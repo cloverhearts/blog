@@ -27,8 +27,9 @@ target, centered spacing, natural expansion, all nine recovery links, footer
 separation and no clipping or horizontal overflow, without restoring posts.
 
 The Clarity consent fixture uses production HTML and the actual local module
-with a stubbed remote SDK. Two desktop/mobile cases verify no tracker request
-before consent, keyboard acceptance, load-once, text masking and withdrawal
+with a stubbed remote SDK. Desktop/mobile cases verify immediate loading with
+both storage denials queued, no automatic preference write, no allow button,
+collapsed information, keyboard stopping, text masking and withdrawal
 reload with no second SDK request. No test traffic reaches Microsoft; dashboard
 receipt and real vendor capture/masking remain separate activation gates.
 

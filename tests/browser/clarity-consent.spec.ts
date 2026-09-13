@@ -23,10 +23,10 @@ test.beforeAll(async () => {
 });
 
 for (const width of [1137, 390]) {
-  test(`requires consent before SDK request and stops on withdrawal at ${width}px`, async ({ page }) => {
+  test(`starts cookieless without interaction and honors opt-out at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 905 });
     const trackerRequests: string[] = [];
-    await page.route("**/*", async (route) => {
+    await page.context().route("**/*", async (route) => {
       const url = new URL(route.request().url());
       if (url.hostname.endsWith("clarity.ms")) {
         trackerRequests.push(url.href);
@@ -40,22 +40,31 @@ for (const width of [1137, 390]) {
     });
     await page.goto("https://blog.cloverhearts.com/");
     await page.waitForLoadState("networkidle");
-    expect(trackerRequests).toHaveLength(0);
-    const grant = page.locator("[data-analytics-grant]");
-    const deny = page.locator("[data-analytics-deny]");
-    await deny.click();
-    await expect(deny).toHaveAttribute("aria-pressed", "true");
-    expect(trackerRequests).toHaveLength(0);
-    await grant.focus(); await page.keyboard.press("Enter");
-    await expect(grant).toHaveAttribute("aria-pressed", "true");
-    await expect.poll(() => trackerRequests.length).toBe(1);
+    expect(trackerRequests).toHaveLength(1);
+    await expect(page.locator("[data-analytics-grant]")).toHaveCount(0);
+    await expect(page.locator("details.analytics-consent")).not.toHaveAttribute("open", "");
+    const commands = await page.evaluate(() => JSON.stringify((window as unknown as { clarity: { q: unknown[] } }).clarity.q));
+    expect(commands).toContain('"analytics_Storage":"denied","ad_Storage":"denied"');
+    expect(commands).not.toContain("granted");
+    expect(await page.evaluate(() => localStorage.length)).toBe(0);
     await expect(page.locator("body")).toHaveAttribute("data-clarity-mask", "true");
-    await grant.click(); expect(trackerRequests).toHaveLength(1);
-    await Promise.all([page.waitForEvent("load"), deny.click()]);
+    await page.screenshot({ path: test.info().outputPath("analytics-collapsed.png"), fullPage: true });
+    await page.locator("details.analytics-consent summary").focus();
+    await page.keyboard.press("Enter");
+    await page.screenshot({ path: test.info().outputPath("analytics-information.png"), fullPage: true });
+    const other = await page.context().newPage();
+    await other.goto("https://blog.cloverhearts.com/");
+    await other.waitForLoadState("networkidle");
+    expect(trackerRequests).toHaveLength(2);
+    const deny = page.locator("[data-analytics-deny]");
+    await deny.focus();
+    await Promise.all([page.waitForEvent("load"), other.waitForEvent("load"), page.keyboard.press("Enter")]);
     await page.waitForLoadState("networkidle");
     await expect(deny).toHaveAttribute("aria-pressed", "true");
-    expect(trackerRequests).toHaveLength(1);
+    await expect(deny).toBeDisabled();
+    expect(trackerRequests).toHaveLength(2);
     await expect(page.locator("#blog-clarity-script")).toHaveCount(0);
+    await expect(other.locator("#blog-clarity-script")).toHaveCount(0);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   });
 }

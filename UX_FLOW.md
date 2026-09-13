@@ -176,14 +176,15 @@ otherwise.
 ## Enhancement boundary
 
 Optional analytics uses Microsoft Clarity alone. Eligible production blog
-pages show a localized footer disclosure with equally available allow and
-decline/withdraw controls; withdrawal reloads the document to stop recording.
-Previously granted GA4 consent does not authorize Clarity session replay.
+pages start cookieless collection automatically with both storage purposes denied.
+A collapsed localized footer disclosure offers information and a stop control,
+not an allow request. Stopping saves denial and reloads to unload the recorder.
+Old Clarity denial remains respected; no old grant enables cookies.
 Preview, managed, search and noindex routes are excluded. Text is masked and
 query/fragment entries are skipped; ANALYTICS.md documents provider limitations.
 
 JavaScript enhances root-only language selection, local search, image enlargement,
-and optional consented analytics. All other listed flows work as static
+and optional cookieless analytics. All other listed flows work as static
 HTML links and forms or expose a useful static fallback. A future visual system
 may change presentation but not this flow without updating this contract,
 tests, and `History.md` together.

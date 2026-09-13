@@ -151,7 +151,9 @@ CLARITY_PROJECT_ID=yourprojectid
 ```
 
 Blank disables tracking; malformed IDs fail the build. Only eligible production
-blog pages can load Clarity, after reader consent. Text and inputs are masked;
-search, preview and managed pages are excluded. Decline/withdraw controls remain
-available. URL metadata has provider-specific limitations and query entries are
+blog pages start limited cookieless Clarity automatically, with both cookie-storage
+purposes denied. Text and inputs are masked; search, preview and managed pages
+are excluded. A collapsed information section provides a stop control and honors
+previous refusal. Returning-user and cross-page analysis are limited.
+URL metadata has provider-specific limitations and query entries are
 skipped; see [analytics setup and privacy boundaries](ANALYTICS.md) before activation.

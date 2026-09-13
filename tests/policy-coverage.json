@@ -36,11 +36,11 @@
         },
         {
           "path": "QUALITY_GATES.md",
-          "sha256": "b814326864943f5cca0fae7cfdf6acd60b1dd20e26c6a90fc3264ad641d94973"
+          "sha256": "8a8ea23c7aa1aab95e2fc3b311d5e418823454aada7f18c97094251670ffed88"
         },
         {
           "path": "DEVELOPMENT.md",
-          "sha256": "85bf72c90a4597c11b6a75943853fe5762c154c56a29b4b78c0ecb80eef8b02b"
+          "sha256": "b4477ba7a53937f5df03c431d9f516e51cb2fc57d889af1337754f1f86f16f0a"
         },
         {
           "path": "tests/contracts/policy-governance.test.ts",
@@ -88,7 +88,7 @@
         },
         {
           "path": "AI_DISCOVERY.md",
-          "sha256": "d1502c2fae3051e29483b93598b37c38c1f60c85bcaa4cbaf3fc4d7c7cc6f9ce"
+          "sha256": "f39e113ae2c89aa6f0749d83720e3c37b965898064846cfee58b5c326aa5db74"
         },
         {
           "path": "packages/site-discovery/src/ai-discovery.ts",
@@ -179,7 +179,7 @@
       "sources": [
         {
           "path": "ARCHITECTURE.md",
-          "sha256": "38d01dfdb3fc4aae97bc1e2ee6fa2be5c40c310bc403ebe8eb5ccb98d64639b5"
+          "sha256": "04685638df6156e1d1418f9da92829d99971650a13b6949878065f0a6c840bc8"
         },
         {
           "path": "config/embeds.yaml",
@@ -309,7 +309,7 @@
         },
         {
           "path": "apps/blog-web/src/i18n/messages.ts",
-          "sha256": "e6f646e2d402da42bed59944c42afcf377b5a5be989432c2495b9dbc810dba6f"
+          "sha256": "4b8f712c5cc3584301208570b25f3e1fa15aa5f06db5a7cca5f3023de87f9976"
         },
         {
           "path": "decisions/0009-root-only-browser-language-selection.md",
@@ -321,7 +321,7 @@
         },
         {
           "path": "packages/project-config/src/config-schemas.ts",
-          "sha256": "66a530b7416e04098ea94514d59522094f82162b1413a28efe3aa60508d4517c"
+          "sha256": "71bef2c9dea69c8f2bfe5044f94270e181795311b7daec03ddd7db08f49aa338"
         },
         {
           "path": "packages/project-config/src/load.ts",
@@ -390,15 +390,15 @@
         },
         {
           "path": "DESIGN.md",
-          "sha256": "4bddd9cff75728061005ffe9b745eac846ce790e4012763f3867489d226a7b52"
+          "sha256": "79470a6cf3c45b46a235ecb317d44255dc23924c459b266fde01a604e852adec"
         },
         {
           "path": "UX_FLOW.md",
-          "sha256": "dbc366a502d87648381eb1653ec143c28b27e9ddfa399a8f89271bb5072635a2"
+          "sha256": "b5561fe44e1aa0368930c2670d3925979d0a336092bfbf42a50a3be99dbe5ebf"
         },
         {
           "path": "GITHUB_PAGES.md",
-          "sha256": "09f417ed983bbc7593739750749393ddd17166d8474ea448fb0b5efb027e153c"
+          "sha256": "ab50248e2055b6ae97fbb94bbcece212b3ef0c41c28643237802aa5f0539d9ac"
         },
         {
           "path": "config/performance-budgets.yaml",
@@ -548,7 +548,7 @@
         },
         {
           "path": "apps/blog-web/src/build.ts",
-          "sha256": "f0084a53e9a6a92a345d94d7f3f06d83a1bbbfae54e21a6f1b746526f5490860"
+          "sha256": "f0b7b08d753faa3cceaa9aac53c9d3b934fe2977f39c751566d43f7c3a415340"
         },
         {
           "path": "apps/blog-web/src/lib/render-document.ts",
@@ -586,19 +586,19 @@
       ]
     },
     {
-      "id": "clarity-only-consent-analytics",
+      "id": "clarity-only-cookieless-analytics",
       "sources": [
         {
           "path": "ANALYTICS.md",
-          "sha256": "4f9ff4b01fa4ba3c3b5f02fbe3f8f6c2787a406b7d20512003817366168141cb"
+          "sha256": "0f8bc089f3e7172a5e60bef022c6bc8115680ae9129fd43f7ce280e648563832"
         },
         {
           "path": "decisions/0010-clarity-only-analytics.md",
-          "sha256": "e395c2c92c2d8cdefc59c3f67a20aa038c2ec023a7f72fc6bb4564a73c74e90e"
+          "sha256": "98ce0d5e9ad32b6814b30935331b52714f2498abd75351b9f6b73c08e1ae0710"
         },
         {
           "path": "config/analytics.yaml",
-          "sha256": "193e84c6b531e50e92b2a633e05078a008aa3f7d3760efd6ff17afa7abc95179"
+          "sha256": "152d2929d3b929da06fb5a5af4408105cfe71670e5f7478644e9f44402418fa0"
         },
         {
           "path": "packages/project-config/src/analytics.ts",
@@ -606,7 +606,11 @@
         },
         {
           "path": "apps/blog-web/src/analytics/clarity.js",
-          "sha256": "0f052323e29d5f895796fb90d471aff0a101f334bc42348746a426a70d84a5fd"
+          "sha256": "4d28e6be0313f13c2f09f330422717bd7f0cfd091aa1f00abaafdefedbddb53d"
+        },
+        {
+          "path": "decisions/0011-immediate-cookieless-analytics.md",
+          "sha256": "65e5cad8e61a7f19a6374afed940db7ca9a32d0025d8dcf01065e422f6065521"
         }
       ],
       "tests": [
@@ -614,8 +618,8 @@
           "path": "tests/contracts/clarity.test.ts",
           "cases": [
             "resolves absent normalized and invalid Clarity configuration without GA4 fallback",
-            "requires fresh consent and never loads Clarity when absent denied or legacy-granted",
-            "loads Clarity once after consent with text masking and advertising denied",
+            "starts cookieless without consent but honors saved denial and disabled IDs",
+            "queues both storage denials before immediate SDK loading without saving permission",
             "withdraws Clarity consent and reloads to stop even cookieless recording",
             "skips query fragment and sensitive-referrer entries without rewriting navigation",
             "keeps consent functional when browser storage is blocked",

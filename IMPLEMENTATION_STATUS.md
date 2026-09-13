@@ -168,11 +168,14 @@ design, but no biography. Playwright and assistive-technology checks remain
 separate manual gates.
 
 Clarity replaces the earlier GA4 scaffold as the sole analytics adapter. Its
-external module, localized consent/withdraw controls, preview exclusions,
+external module, localized collapsed information/stop controls, preview exclusions,
 masking and CSP are wired into the web build. Unit/contract checks use synthetic
 IDs only. The owner-supplied project ID is configured in the GitHub repository
 variable and validated in a local production build; deployment, dashboard
 receipt and provider-network verification remain activation gates in ANALYTICS.md.
+ADR 0011 changes loading to immediate cookieless collection with both storage
+purposes denied; previous refusal is honored, and no permission is inferred.
+Actual dashboard cookie settings and network behavior still require verification.
 
 Targeted image-viewer browser regression checks now exist under `tests/browser/`
 for viewport containment, captions, and keyboard behavior. They use synthetic
@@ -199,7 +202,7 @@ technology coverage remains a follow-up gate.
 - External providers are explicit reviewed build-time plugins. No provider
   scanning, runtime marketplace, arbitrary iframe/script, or implicit network
   access is allowed.
-- Clarity is optional, blog-only, consent-gated, and disabled when its public
+- Clarity is optional, blog-only, cookieless with an opt-out, and disabled when its public
   project ID is absent. It never influences search or recommendations.
 - Open Design is an authoring input, not a production dependency.
 - Comments remain out of scope until a new accepted privacy/security/cost ADR.

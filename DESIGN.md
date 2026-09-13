@@ -263,11 +263,12 @@ no icon font, runtime package, external request, or CSS-drawn lens is used.
 
 There is no newsletter or subscription interface.
 
-When Clarity is configured, the footer includes a localized plain-language
-session-replay disclosure, Microsoft privacy link and equally accessible
-allow/decline-withdraw controls using the existing control styles. The choice
-is persistent but never blocks reading with a modal. A pressed state indicates
-the saved choice; withdrawal reloads to unload the recorder. See ANALYTICS.md.
+When Clarity is configured, the footer includes a collapsed native details
+element with a localized Analytics Information summary, cookieless-collection
+disclosure, Microsoft privacy link and a stop control. There is no consent
+request or allow button. Existing control styles and keyboard access remain.
+Stopping reloads to unload the recorder; the saved stop disables the control.
+See ANALYTICS.md for scope, storage failure and provider limitations.
 
 ## 7. Post page and long-form content
 

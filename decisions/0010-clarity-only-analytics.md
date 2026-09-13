@@ -1,6 +1,7 @@
 # ADR 0010: Clarity-only consent-gated blog analytics
 
 - Status: accepted by the owner request to use Clarity alone (2026-09-13).
+- Loading and consent-request UI superseded by ADR 0011; other boundaries remain.
 - Scope: replaces the earlier GA4 adapter/configuration; no hosting or content
   processing dependency changes, and no new paid services.
 

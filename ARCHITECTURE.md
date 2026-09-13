@@ -310,7 +310,7 @@ Responsibilities:
   original language, and validated alternates; any post-body treatment is
   optional, exposes no review state, and may link the authored original without
   redirecting the current route;
-- optional consent-gated aggregate analytics through the reviewed blog-owned
+- optional cookieless analytics with an opt-out through the reviewed blog-owned
   Clarity adapter;
 - emitting a web manifest and route claims for the generated HTML.
 
@@ -325,8 +325,8 @@ change therefore rerenders these actions, without coupling either design system.
 
 The Clarity adapter is not an embed plugin and is not part of content
 compilation. It consumes only the public project ID in the blog layer.
-The locally emitted module requests the remote SDK only after fresh Clarity
-consent. It masks body text, denies advertising storage, excludes search and
+The locally emitted module queues both cookie-storage denials before immediately
+requesting the remote SDK, unless saved refusal blocks it. It masks body text, excludes search and
 noindex pages, and skips query/fragment/referrer-query entries. Withdrawal
 reloads the document because ConsentV2 denial alone can permit cookieless data.
 The provider captures browser/URL metadata; this is not the former sanitized
@@ -652,8 +652,8 @@ Required checks:
 - the search index covers eligible final blog HTML and excludes managed pages by default;
 - repeated builds with identical inputs produce identical integrity-bearing artifacts;
 - changing a registered plugin version or policy changes provenance and prevents stale artifact reuse.
-- absent, invalid, consent-denied, consent-granted, and consent-revoked Clarity
-  cases; disabled/denied cases make no Clarity request, text is masked, and
+- absent, invalid, immediate cookieless, old-grant and opted-out Clarity
+  cases; disabled/opted-out cases make no Clarity request, text is masked, and
   query/fragment entries are excluded as documented in ANALYTICS.md.
 
 ## Enforcement

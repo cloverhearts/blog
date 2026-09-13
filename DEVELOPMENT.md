@@ -106,7 +106,7 @@ being described as passed.
   the authored original.
 - Local and preview builds do not collect analytics even when a developer has a
   project ID in their shell; the production web build is the only eligible
-  mode and still waits for explicit reader consent.
+  mode and uses immediate cookieless collection with both storage purposes denied.
 
 ## Open Design workflow
 
