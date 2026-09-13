@@ -141,17 +141,17 @@ coverage, policy-to-test traceability, fixtures, exemptions, and validation
 reporting. High-impact policies are mapped to exact test cases in
 `tests/policy-coverage.json`.
 
-## Optional GA4 analytics
+## Optional Clarity analytics
 
-The normal blog has a consent-gated GA4 adapter. Add one public build value to
-enable it:
+Microsoft Clarity is the only analytics provider. To enable it, set the public
+GitHub repository or `github-pages` environment variable:
 
 ```text
-GA4_MEASUREMENT_ID=G-XXXXXXXXXX
+CLARITY_PROJECT_ID=yourprojectid
 ```
 
-Leaving the value blank disables analytics completely. A configured value is
-validated during the build, Google is not contacted before reader consent, URL
-queries and raw search terms are not collected, and managed pages remain
-untracked by default. On GitHub Pages, store the value as the
-`GA4_MEASUREMENT_ID` repository or `github-pages` environment variable.
+Blank disables tracking; malformed IDs fail the build. Only eligible production
+blog pages can load Clarity, after reader consent. Text and inputs are masked;
+search, preview and managed pages are excluded. Decline/withdraw controls remain
+available. URL metadata has provider-specific limitations and query entries are
+skipped; see [analytics setup and privacy boundaries](ANALYTICS.md) before activation.

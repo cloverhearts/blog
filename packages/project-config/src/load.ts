@@ -11,7 +11,7 @@ import {
   type PostAuthorshipDisclosureArtifact,
   type SupportedLanguage,
 } from "../../contracts/src/index.ts";
-import { resolveGa4AnalyticsConfig, type ResolvedAnalyticsConfig } from "./analytics.ts";
+import { resolveClarityAnalyticsConfig, type ResolvedAnalyticsConfig } from "./analytics.ts";
 import {
   aiCrawlersConfigSchema,
   analyticsConfigSchema,
@@ -88,7 +88,7 @@ export interface ProjectConfig {
   readonly resolved: {
     readonly origin: string;
     readonly basePath: string;
-    readonly ga4: ResolvedAnalyticsConfig;
+    readonly clarity: ResolvedAnalyticsConfig;
   };
   readonly hashes: {
     readonly configHash: string;
@@ -579,7 +579,7 @@ export function loadProjectConfig(options: LoadProjectConfigOptions): ProjectCon
 
   let origin = "";
   let basePath = "";
-  let ga4: ResolvedAnalyticsConfig | undefined;
+  let clarity: ResolvedAnalyticsConfig | undefined;
   if (site && analytics) {
     const originRaw = env[site.originEnvironmentVariable];
     const basePathRaw = env[site.basePathEnvironmentVariable];
@@ -610,11 +610,11 @@ export function loadProjectConfig(options: LoadProjectConfigOptions): ProjectCon
       issues.push(issue("SITE_BASE_PATH", error instanceof Error ? error.message : String(error)));
     }
     try {
-      ga4 = resolveGa4AnalyticsConfig(env, analytics.measurementIdEnvironmentVariable);
+      clarity = resolveClarityAnalyticsConfig(env, analytics.projectIdEnvironmentVariable);
     } catch (error) {
       issues.push(
         issue(
-          analytics.measurementIdEnvironmentVariable,
+          analytics.projectIdEnvironmentVariable,
           error instanceof Error ? error.message : String(error),
         ),
       );
@@ -638,7 +638,7 @@ export function loadProjectConfig(options: LoadProjectConfigOptions): ProjectCon
     !performanceBudgetsSource ||
     !performanceBudgets ||
     !authorshipDisclosure ||
-    !ga4
+    !clarity
   ) {
     throw new ConfigurationError(["Configuration failed to load a required file."]);
   }
@@ -680,7 +680,7 @@ export function loadProjectConfig(options: LoadProjectConfigOptions): ProjectCon
     resolved: {
       origin,
       basePath,
-      ga4,
+      clarity,
     },
     hashes: {
       configHash,

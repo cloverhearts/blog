@@ -227,9 +227,22 @@ with a programmatic current state. On desktop, previous, numbered, and next
 controls remain in one centered horizontal flex row; compact screens may wrap
 that row without changing its semantic order.
 
+The 404 page uses a minimum height of 80% of the dynamic viewport remaining
+below the header (65px wide / 114px two-row header). Its border-box section owns
+the vertical padding; generic main padding and the footer's extra top margin
+are removed only on this page. The content stack is vertically centered, with
+a responsive 96–160px error code, explicit spacing between the code, title and
+description, and a larger separation before recovery actions. This is a minimum,
+not a fixed height: short viewports, zoom and wrapped translations expand the
+section naturally without clipping or overlaying the footer.
+
 The 404 page is a calm recovery surface with an oversized dark-text “404,” a short
 localized explanation, and working routes back to home, posts, categories,
-tags, archive, and search. Search has a labeled form, result/empty states, a
+tags, archive, and search. Recovery links have no arrows, transparent resting
+backgrounds, and at least `44px` interaction height. Hover and keyboard focus
+use the existing `--primary-surface` highlight without elevation or underlines;
+the shared focus outline remains visible. Links wrap in source order on narrow
+screens. Search has a labeled form, result/empty states, a
 dialog enhancement, and a complete no-JavaScript browse fallback. The enhanced
 search uses a centered command-palette surface up to `48rem` wide: a compact
 title/ESC-close header, one large green-outlined query field, a truthful search
@@ -249,6 +262,12 @@ The input uses the single Lucide Search SVG with a `24 × 24` view box, rounded
 no icon font, runtime package, external request, or CSS-drawn lens is used.
 
 There is no newsletter or subscription interface.
+
+When Clarity is configured, the footer includes a localized plain-language
+session-replay disclosure, Microsoft privacy link and equally accessible
+allow/decline-withdraw controls using the existing control styles. The choice
+is persistent but never blocks reading with a modal. A pressed state indicates
+the saved choice; withdrawal reloads to unload the recorder. See ANALYTICS.md.
 
 ## 7. Post page and long-form content
 
@@ -297,10 +316,15 @@ post enhancement loaded, an unlinked article image becomes a pointer- and
 keyboard-operable zoom target. It opens in a large native modal dialog with a
 contained image, a transparent dialog surface over a blurred `30%` white
 backdrop, localized top-right close control, and native Escape dismissal;
-closing returns focus to the source image. The caption sits `.75rem` directly
-below the image with `1rem` padding on a `50%` white surface and stable dark
-text. Linked images retain their original link behavior and are not
-intercepted.
+closing returns focus to the source image. The figure includes its padding in
+the dialog's height. Image and caption share the remaining vertical space;
+the contained image can shrink without cropping to keep the caption visible.
+The caption sits `.5rem` below the image with `.375rem` vertical and `.75rem`
+horizontal padding on a `50%` white surface and stable dark text. Long text
+wraps within the available width; unusually long captions scroll inside a
+keyboard-focusable region capped at 30% of the figure content height or 10rem,
+whichever is smaller. Empty captions remain hidden. Linked images retain their
+original link behavior and are not intercepted.
 
 Article rules:
 

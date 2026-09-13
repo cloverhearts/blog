@@ -1,43 +1,23 @@
-/**
- * Build-time GA4 configuration resolution.
- *
- * `GA4_MEASUREMENT_ID` is a public build value, not a secret. An absent value
- * disables analytics completely. Runtime YAML schema validation will own the
- * surrounding source object after the project's schema library is selected.
- */
+import { z } from "zod";
 
-export const GA4_MEASUREMENT_ID_PATTERN = /^G-[A-Z0-9]{4,20}$/u;
+// Public project identifier, never a URL, script snippet or secret.
+export const CLARITY_PROJECT_ID_PATTERN = /^[a-z0-9]{1,32}$/u;
+export const resolvedAnalyticsSchema = z.object({
+  enabled: z.boolean(),
+  provider: z.literal("microsoft-clarity"),
+  projectId: z.string().regex(CLARITY_PROJECT_ID_PATTERN).nullable(),
+}).strict();
+export type ResolvedAnalyticsConfig = z.infer<typeof resolvedAnalyticsSchema>;
 
-export interface ResolvedAnalyticsConfig {
-  readonly enabled: boolean;
-  readonly provider: "google-analytics-4";
-  readonly measurementId: string | null;
-}
-
-export function resolveGa4AnalyticsConfig(
+export function resolveClarityAnalyticsConfig(
   environment: Readonly<Record<string, string | undefined>>,
-  environmentVariable = "GA4_MEASUREMENT_ID",
+  environmentVariable = "CLARITY_PROJECT_ID",
 ): ResolvedAnalyticsConfig {
-  const rawValue = environment[environmentVariable];
-  const measurementId = rawValue?.trim().toUpperCase() ?? "";
-
-  if (measurementId.length === 0) {
-    return {
-      enabled: false,
-      provider: "google-analytics-4",
-      measurementId: null,
-    };
+  const projectId = environment[environmentVariable]?.trim() ?? "";
+  if (projectId && !CLARITY_PROJECT_ID_PATTERN.test(projectId)) {
+    throw new Error(`${environmentVariable} must contain only 1–32 lowercase letters or digits, not a URL or tracking snippet.`);
   }
-
-  if (!GA4_MEASUREMENT_ID_PATTERN.test(measurementId)) {
-    throw new Error(
-      `${environmentVariable} must be a GA4 Measurement ID such as G-XXXXXXXXXX.`,
-    );
-  }
-
-  return {
-    enabled: true,
-    provider: "google-analytics-4",
-    measurementId,
-  };
+  return resolvedAnalyticsSchema.parse({
+    enabled: projectId.length > 0, provider: "microsoft-clarity", projectId: projectId || null,
+  });
 }

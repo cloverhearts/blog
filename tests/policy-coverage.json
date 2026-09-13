@@ -6,7 +6,7 @@
       "sources": [
         {
           "path": ".github/workflows/pages.yml",
-          "sha256": "2f44c0716d4e6d542f42c0c08c5a0e8f9eb68c9e1aa6022be1a15de7e9e364cd"
+          "sha256": "255e81eed5e93a3f1b95757cd77c84c519d9e4629b6e8c86a80222860250b7b4"
         },
         {
           "path": ".github/workflows/quality.yml",
@@ -17,7 +17,8 @@
         {
           "path": "tests/contracts/implementation-stack.test.ts",
           "cases": [
-            "deploys only a verified custom-domain release and isolates portability builds"
+            "deploys only a verified custom-domain release and isolates portability builds",
+            "passes the public Clarity variable only to production build and verification"
           ]
         }
       ]
@@ -31,15 +32,15 @@
         },
         {
           "path": "AGENTS.md",
-          "sha256": "a6fc073b7e7fad9f7b1e429022c905d6da6b63ffd62c7da1623ba56e83cbbcba"
+          "sha256": "5c6e5ed71ee98a2f1ac987bd5be2e20b9daee6112215b8f1e53e35ce599dc5ea"
         },
         {
           "path": "QUALITY_GATES.md",
-          "sha256": "bf45983d3338bed9aaff0de4a673cd5e1a55d152aaba2ef03bd40f2e1ae71c74"
+          "sha256": "b814326864943f5cca0fae7cfdf6acd60b1dd20e26c6a90fc3264ad641d94973"
         },
         {
           "path": "DEVELOPMENT.md",
-          "sha256": "4c2aba8574f02cf1c1e9d7d88b94361f17f0b3854d3d8421a4c0c1d06842e347"
+          "sha256": "85bf72c90a4597c11b6a75943853fe5762c154c56a29b4b78c0ecb80eef8b02b"
         },
         {
           "path": "tests/contracts/policy-governance.test.ts",
@@ -87,7 +88,7 @@
         },
         {
           "path": "AI_DISCOVERY.md",
-          "sha256": "e4679b0b110ca5e4a809185d2b6964f6cd892eba4b2946adb4d6c899bb86f85a"
+          "sha256": "d1502c2fae3051e29483b93598b37c38c1f60c85bcaa4cbaf3fc4d7c7cc6f9ce"
         },
         {
           "path": "packages/site-discovery/src/ai-discovery.ts",
@@ -122,7 +123,7 @@
         },
         {
           "path": "CONTENT_RULES.md",
-          "sha256": "5fc8ee70a7d1546befaf5fc8d51beeeb9d68d2ae10de8e975b5b46029f5ce077"
+          "sha256": "30da09186c3479d9d9c3562876f9b7da36e38aff5663765dc94ff4c9bee8232c"
         },
         {
           "path": "packages/project-config/src/content-provenance.ts",
@@ -178,7 +179,7 @@
       "sources": [
         {
           "path": "ARCHITECTURE.md",
-          "sha256": "4dd1f3c154d64f610e8f69f74c1a01a6ee2c1c551c663c45f76ff76ba5c6f221"
+          "sha256": "38d01dfdb3fc4aae97bc1e2ee6fa2be5c40c310bc403ebe8eb5ccb98d64639b5"
         },
         {
           "path": "config/embeds.yaml",
@@ -228,7 +229,7 @@
         },
         {
           "path": "package.json",
-          "sha256": "2978862c4d74f3d8473759b3caeb5d66f214ada6aba7464a7d57723465a4873d"
+          "sha256": "bc559c00cac72a1a22b090fe358ee9da83b293eb969293e0d359a5dd555a8768"
         },
         {
           "path": "package-lock.json",
@@ -308,7 +309,7 @@
         },
         {
           "path": "apps/blog-web/src/i18n/messages.ts",
-          "sha256": "93ea91dc9f5799c0c032482720b8cb4999c6e4fa989d524cb05034704397dff6"
+          "sha256": "e6f646e2d402da42bed59944c42afcf377b5a5be989432c2495b9dbc810dba6f"
         },
         {
           "path": "decisions/0009-root-only-browser-language-selection.md",
@@ -320,11 +321,11 @@
         },
         {
           "path": "packages/project-config/src/config-schemas.ts",
-          "sha256": "5ec9947cfd7ae0b894ebdfbb67ce742cc4fe7f424362ebec3c19e3f5768a68ed"
+          "sha256": "66a530b7416e04098ea94514d59522094f82162b1413a28efe3aa60508d4517c"
         },
         {
           "path": "packages/project-config/src/load.ts",
-          "sha256": "8a8d708aca27eec9af13cd6032dc6aca440ba88a110b94bc5376160228536cc7"
+          "sha256": "c5a402ba38efdae2812695aa050d74ccd8e7110c1d03cba93ed670f4a9889f30"
         }
       ],
       "tests": [
@@ -359,7 +360,7 @@
           "path": "tests/contracts/project-config.test.ts",
           "cases": [
             "loads every shared configuration file and resolves public URLs",
-            "rejects a malformed GA4 measurement ID",
+            "rejects a malformed Clarity project ID",
             "accepts a portability base path without changing the production origin"
           ]
         },
@@ -389,15 +390,15 @@
         },
         {
           "path": "DESIGN.md",
-          "sha256": "e61be00ad11d9175e2cac5cc6f9a07cf3e1a52faadadd3f01fb792199dd46d18"
+          "sha256": "4bddd9cff75728061005ffe9b745eac846ce790e4012763f3867489d226a7b52"
         },
         {
           "path": "UX_FLOW.md",
-          "sha256": "1854281a6d09b8193a638983ec8b83af61814eeaf138dd92edfca17a22fcb6f0"
+          "sha256": "dbc366a502d87648381eb1653ec143c28b27e9ddfa399a8f89271bb5072635a2"
         },
         {
           "path": "GITHUB_PAGES.md",
-          "sha256": "6557227d7bae82a61f20ef030be9bc8d332dada401f7ab8946745bd5c83fc83d"
+          "sha256": "09f417ed983bbc7593739750749393ddd17166d8474ea448fb0b5efb027e153c"
         },
         {
           "path": "config/performance-budgets.yaml",
@@ -417,7 +418,7 @@
         },
         {
           "path": "apps/blog-web/src/styles/blog.css",
-          "sha256": "4ccac8d2b24c08b40602d28f13b90c42ecf7da2c0bc024fbe75dd984417ba1fa"
+          "sha256": "aaa271f405652dd237addb40abde1ec83df72d154ffd153ad797377b6e93a49c"
         },
         {
           "path": "apps/blog-web/src/layouts/BlogShell.astro",
@@ -438,6 +439,8 @@
             "defines a static recovery path for every primary UX flow",
             "keeps hover links free of new underlines while preserving keyboard focus",
             "keeps explore collections transparent with the shared green hover surface",
+            "keeps recovery links transparent until hover or keyboard focus",
+            "sizes recovery content to the available viewport without a fixed height",
             "preserves the author avatar square and colors across themes"
           ]
         },
@@ -445,6 +448,7 @@
           "path": "tests/contracts/pagination-navigation.test.ts",
           "cases": [
             "omits footer navigation while keeping localized archive routes",
+            "renders arrow-free recovery links in source order across locales and deployment bases",
             "renders list and featured posts as one full-card link without inline presentation styles",
             "links the hero title to its featured fallback across languages and deployment bases",
             "bundles the approved author avatar for localized homes and posts at both bases"
@@ -544,11 +548,11 @@
         },
         {
           "path": "apps/blog-web/src/build.ts",
-          "sha256": "7290b08b248250e6cc1cb3280597df48f1a68909b0373ea91ea9ebd3c8f20b83"
+          "sha256": "f0084a53e9a6a92a345d94d7f3f06d83a1bbbfae54e21a6f1b746526f5490860"
         },
         {
           "path": "apps/blog-web/src/lib/render-document.ts",
-          "sha256": "af54700ac1e217ec75c2d19b81508a66cb165855446805cd09aedf4713cdff9b"
+          "sha256": "b3317d14702b8a5c975793a02194a6b957cb523d2aa06c1193ae550814b36cc0"
         },
         {
           "path": "packages/managed-page-compiler/src/index.ts",
@@ -577,6 +581,46 @@
             "publishes empty noindex profiles without sample discovery at root and subpath",
             "rejects managed entry and stylesheet paths escaping through traversal or symlinks",
             "keeps normal blog text opaque and text tokens above AA contrast on light and dark surfaces"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "clarity-only-consent-analytics",
+      "sources": [
+        {
+          "path": "ANALYTICS.md",
+          "sha256": "4f9ff4b01fa4ba3c3b5f02fbe3f8f6c2787a406b7d20512003817366168141cb"
+        },
+        {
+          "path": "decisions/0010-clarity-only-analytics.md",
+          "sha256": "e395c2c92c2d8cdefc59c3f67a20aa038c2ec023a7f72fc6bb4564a73c74e90e"
+        },
+        {
+          "path": "config/analytics.yaml",
+          "sha256": "193e84c6b531e50e92b2a633e05078a008aa3f7d3760efd6ff17afa7abc95179"
+        },
+        {
+          "path": "packages/project-config/src/analytics.ts",
+          "sha256": "885834da958d178d5848ead696d37426927f82acf6c991113628310478a66102"
+        },
+        {
+          "path": "apps/blog-web/src/analytics/clarity.js",
+          "sha256": "0f052323e29d5f895796fb90d471aff0a101f334bc42348746a426a70d84a5fd"
+        }
+      ],
+      "tests": [
+        {
+          "path": "tests/contracts/clarity.test.ts",
+          "cases": [
+            "resolves absent normalized and invalid Clarity configuration without GA4 fallback",
+            "requires fresh consent and never loads Clarity when absent denied or legacy-granted",
+            "loads Clarity once after consent with text masking and advertising denied",
+            "withdraws Clarity consent and reloads to stop even cookieless recording",
+            "skips query fragment and sensitive-referrer entries without rewriting navigation",
+            "keeps consent functional when browser storage is blocked",
+            "rejects weaker Clarity privacy policies",
+            "emits only eligible production Clarity controls and preserves deterministic base-path builds"
           ]
         }
       ]

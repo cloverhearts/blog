@@ -7,9 +7,9 @@ The mandatory change-to-test workflow is defined in `TESTING.md`.
 case names, and `policy-governance.test.ts` rejects missing paths, stale source
 hashes, duplicate entries, or mappings to nonexistent test cases.
 
-All focused contract and policy suites run with Vitest. Playwright and axe-core
-are reserved for the later rendered-page conformance lane; `node:test` is not a
-parallel project runner.
+All focused contract and policy suites run with Vitest. Playwright owns the
+separate rendered-page checks under `tests/browser/`; broader axe-core coverage
+remains a later gate. `node:test` is not a parallel project runner.
 
 `security-profile.test.ts` exercises JSON-LD script-boundary escaping, sanitized
 static managed Markdown, network-free page-local CSS, stylesheet provenance,
@@ -59,6 +59,6 @@ named-component semantic shell/CSS behavior, Pretendard subset size, and static
 fallbacks for every primary UX flow.
 
 The current executable scaffolding covers localized route and post-link
-fallback selection, UI-message parity, GA4 disabled/pending consent,
+fallback selection, UI-message parity, Clarity disabled/pending consent,
 single-load initialization, query/search-term minimization, invalid Measurement
 IDs, and consent revoke/re-grant behavior.

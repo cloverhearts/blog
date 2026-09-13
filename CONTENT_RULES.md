@@ -626,7 +626,7 @@ Cross-lane values come from runtime-validated files under `config/`:
 - `redirects.yaml`: explicit compatibility routes for published URL changes;
 - `security.yaml`: project-wide static-document defaults and the maximum direct managed-page external-origin and iframe-permission policy;
 - `embeds.yaml`: explicit local provider-plugin registry and global embed safety policy;
-- `analytics.yaml`: optional blog-only GA4 activation, consent, and collection policy; it does not add any author-controlled post or managed-page field.
+- `analytics.yaml`: optional blog-only Clarity activation, consent, and collection policy; it does not add any author-controlled post or managed-page field.
 - `content-provenance.yaml`: required owner-declared post authorship and limited
   AI-assistance metadata; it is derived into artifacts and cannot be overridden
   by a post.
@@ -657,7 +657,7 @@ Every ID uses lowercase ASCII kebab-case. Every published ID has all three
 non-empty labels. An alias maps source wording to exactly one declared tag ID;
 it is an authoring-normalization aid and never becomes a second public tag.
 
-Analytics is presentation-layer behavior. Authors must not add GA4 Measurement
+Analytics is presentation-layer behavior. Authors must not add Clarity project
 IDs, tracking snippets, analytics event declarations, consent values, or user
 identifiers to Markdown, assets, post frontmatter, or `page.yaml`. Managed pages
 are excluded from analytics by default. This analytics addition does not change

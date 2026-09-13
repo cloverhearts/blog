@@ -3,8 +3,8 @@ export {
   type PostAuthorshipDisclosureSource,
 } from "./content-provenance.ts";
 export {
-  GA4_MEASUREMENT_ID_PATTERN,
-  resolveGa4AnalyticsConfig,
+  CLARITY_PROJECT_ID_PATTERN,
+  resolveClarityAnalyticsConfig,
   type ResolvedAnalyticsConfig,
 } from "./analytics.ts";
 export {

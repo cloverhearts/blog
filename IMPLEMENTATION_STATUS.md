@@ -32,10 +32,10 @@ remain follow-up work.
 | -------------------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
 | Root tooling         | Implemented | npm workspaces, lockfile, Node/npm pins, TypeScript, Vitest, documented command surface, watch-based preview rebuilds with development-only browser live reload, quality and Pages workflows | Live custom-domain/Search Console operational checks                                                                   |
 | Artifact contracts   | Implemented | Zod 4 schemas, inferred types, parse helpers, generated JSON Schema, 150-character descriptions, optional thumbnail records                                            | Schema-8 removal of compatibility `excerpt` remains a later explicit migration                                         |
-| Shared configuration | Implemented | Zod-backed loader for every `config/*.yaml` file, URL resolver, route registry, GA4/provenance/budget validation                                                       | None for the current configuration set                                                                                 |
+| Shared configuration | Implemented | Zod-backed loader for every `config/*.yaml` file, URL resolver, route registry, Clarity/provenance/budget validation                                                       | None for the current configuration set                                                                                 |
 | Content compiler     | Implemented | Discovery, frontmatter, sanitization, assets, headings/TOC, translation groups, related posts, 150-character descriptions, compatibility excerpts, optional thumbnails | First reviewed production posts                                                                                        |
 | Embed core           | Implemented | Runtime schemas, explicit registry, safe iframe validation, deterministic execution, synthetic test plugin, and reviewed local YouTube provider                         | Additional providers only after separate review                                                                        |
-| Blog web             | Implemented | Static renderer, localized routes, named-component external CSS, Open Design refined white/green editorial shell, full-link post cards with restrained thumbnail transitions, overlapping workflow hero, numbered ruled lists, 132/704/132 post layout, mobile white hero, TOC, Open Graph, description summaries, 16:9 list thumbnails, dark/print modes, GA4-off default | Ongoing populated-corpus cross-browser and device visual regression checks                                             |
+| Blog web             | Implemented | Static renderer, localized routes, named-component external CSS, Open Design refined white/green editorial shell, full-link post cards with restrained thumbnail transitions, overlapping workflow hero, numbered ruled lists, 132/704/132 post layout, mobile white hero, TOC, Open Graph, description summaries, 16:9 list thumbnails, dark/print modes, Clarity-off default | Ongoing populated-corpus cross-browser and device visual regression checks                                             |
 | Search               | Implemented | Pagefind per-language indexes, labeled search form, no-JS fallback, and language-isolated client enhancement                                                           | Field ranking checks against a larger published corpus                                                                 |
 | Managed pages        | Partial | Static sanitized Markdown documents, optional network-free page-local CSS, route-aware profile links, return control, preview/production manifests; three published, empty noindex profile shells | Real profile content and owner review; TypeScript applications and interactive presentations remain fallback-only, not complete adapters |
 | Site discovery       | Implemented | Config/artifact ingestion, sitemap, robots, llms.txt, per-language RSS, discovery manifest                                                                             | None until indexable managed pages exist                                                                               |
@@ -69,7 +69,7 @@ npm run dev
 ```
 
 Production `build` requires `SITE_ORIGIN=https://blog.cloverhearts.com`. An
-absent or blank `GA4_MEASUREMENT_ID` is the supported analytics-off state.
+absent or blank `CLARITY_PROJECT_ID` is the supported analytics-off state.
 
 ## Fixed implementation inputs and outputs
 
@@ -167,6 +167,18 @@ selectors. Profiles keep their stable routes, title, return control and local
 design, but no biography. Playwright and assistive-technology checks remain
 separate manual gates.
 
+Clarity replaces the earlier GA4 scaffold as the sole analytics adapter. Its
+external module, localized consent/withdraw controls, preview exclusions,
+masking and CSP are wired into the web build. Unit/contract checks use synthetic
+IDs only. The owner-supplied project ID is configured in the GitHub repository
+variable and validated in a local production build; deployment, dashboard
+receipt and provider-network verification remain activation gates in ANALYTICS.md.
+
+Targeted image-viewer browser regression checks now exist under `tests/browser/`
+for viewport containment, captions, and keyboard behavior. They use synthetic
+images without restoring sample posts; broad cross-browser and assistive-
+technology coverage remains a follow-up gate.
+
 ## High-risk rules the implementation must not reinterpret
 
 - Korean is unprefixed. English uses `/en/`; Japanese uses `/ja/`.
@@ -187,8 +199,8 @@ separate manual gates.
 - External providers are explicit reviewed build-time plugins. No provider
   scanning, runtime marketplace, arbitrary iframe/script, or implicit network
   access is allowed.
-- GA4 is optional, blog-only, consent-gated, and disabled when its public
-  Measurement ID is absent. It never influences search or recommendations.
+- Clarity is optional, blog-only, consent-gated, and disabled when its public
+  project ID is absent. It never influences search or recommendations.
 - Open Design is an authoring input, not a production dependency.
 - Comments remain out of scope until a new accepted privacy/security/cost ADR.
 

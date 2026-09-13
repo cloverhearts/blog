@@ -44,12 +44,12 @@ jobs:
 
       - name: Build production site
         env:
-          GA4_MEASUREMENT_ID: ${{ vars.GA4_MEASUREMENT_ID }}
+          CLARITY_PROJECT_ID: ${{ vars.CLARITY_PROJECT_ID }}
         run: npm run build
 
       - name: Verify Pages release
         env:
-          GA4_MEASUREMENT_ID: ${{ vars.GA4_MEASUREMENT_ID }}
+          CLARITY_PROJECT_ID: ${{ vars.CLARITY_PROJECT_ID }}
         run: npm run verify:pages
 
       - name: Configure Pages

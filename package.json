@@ -26,7 +26,7 @@
     "validate:embeds": "node --experimental-strip-types packages/embed-core/src/cli.ts",
     "test:i18n": "vitest run tests/contracts/i18n.test.ts",
     "test:seo": "vitest run tests/contracts/open-graph.test.ts tests/contracts/discovery.test.ts",
-    "test:analytics": "vitest run tests/contracts/google-analytics.test.ts",
+    "test:analytics": "vitest run tests/contracts/clarity.test.ts",
     "test:quality": "vitest run tests/contracts",
     "build:content": "node --experimental-strip-types packages/content-compiler/src/cli.ts",
     "build:web": "node --experimental-strip-types apps/blog-web/src/cli.ts",

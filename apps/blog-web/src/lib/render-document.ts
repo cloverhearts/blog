@@ -120,7 +120,7 @@ ${input.pageKind === "post" ? `    <dialog class="image-viewer" data-image-viewe
         <button class="site-control site-control--button image-viewer__close" type="button" data-image-viewer-close aria-label="${escapeHtml(messages.imagePreviewClose)}"><kbd aria-hidden="true">ESC</kbd><span>${escapeHtml(messages.imagePreviewClose)}</span></button>
         <figure class="image-viewer__figure">
           <img data-image-viewer-image alt="">
-          <figcaption data-image-viewer-caption hidden></figcaption>
+          <figcaption data-image-viewer-caption tabindex="0" hidden></figcaption>
         </figure>
       </div>
     </dialog>

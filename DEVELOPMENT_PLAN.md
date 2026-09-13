@@ -20,7 +20,7 @@ Pagefind extended, Sharp, Vitest, Playwright, and axe-core are accepted in ADR
 - Discovery ownership: a post-build `packages/site-discovery/` lane owns
   sitemap, AI-aware robots, `llms.txt`, and one post-only RSS feed per language
   after managed routes are known.
-- Analytics: optional blog-only GA4 using `GA4_MEASUREMENT_ID`; blank disables
+- Analytics: optional blog-only Clarity using `CLARITY_PROJECT_ID`; blank disables
   it, basic consent mode prevents pre-consent requests, and managed pages are
   excluded by default.
 - Localization: Korean is the unprefixed default/fallback and authoring source,
@@ -67,7 +67,7 @@ exits. A later branded design remains optional and cannot delay semantic UX.
   selection, and active-language/English/Korean post-link fallback.
 - Validate the project-wide document/direct-managed-page security maximum in `config/security.yaml`.
 - Validate `config/analytics.yaml` and resolve the optional public
-  `GA4_MEASUREMENT_ID`; reject malformed non-blank values and expose a disabled
+  `CLARITY_PROJECT_ID`; reject malformed non-blank values and expose a disabled
   result for blank values.
 - Validate `config/ai-crawlers.yaml`, reject duplicate or malformed User-Agent
   rules, and expose deterministic inputs for `robots.txt` and `llms.txt`.
@@ -144,8 +144,8 @@ Exit criteria:
   `/page/<n>/` routes with normal sequential links and self canonicals.
 - Resolve artifact-relative assets to configured public routes.
 - Render provider-neutral embed containers, approved privacy/consent states, and optional progressive-enhancement loading from artifact records.
-- Wire the blog-owned GA4 adapter and accessible consent controls. Emit no
-  loader or analytics origins when the Measurement ID is absent, make no Google
+- Wire the blog-owned Clarity adapter and accessible consent controls. Emit no
+  loader or analytics origins when the project ID is absent, make no Clarity
   request before consent, and keep advertising signals and personalization off.
 - Ensure primary post content and navigation links exist in initial HTML.
 - Emit real published language-switcher links, localized framework copy, self
@@ -186,8 +186,8 @@ Exit criteria:
 - every TOC link resolves to exactly one heading in the initial HTML with
   JavaScript disabled.
 - analytics-disabled and consent-denied builds retain identical content and
-  navigation behavior; analytics events omit raw searches, identifiers, URL
-  queries, and fragments.
+  navigation behavior; Clarity masks text and excludes query/fragment entries,
+  with the provider metadata limitations documented in ANALYTICS.md.
 - JavaScript-disabled visits retain the requested complete static document;
   browser language never changes a non-root route or article content.
 
@@ -273,7 +273,7 @@ Exit criteria:
 - Validate `WebSite`, `BlogPosting`, `BreadcrumbList`, conditional
   `ProfilePage`/`Person`, managed-page structured data, favicon, pagination,
   and all representative-image derivatives.
-- Verify absent/invalid/configured GA4 IDs, consent grant/revoke behavior,
+- Verify absent/invalid/configured Clarity IDs, consent grant/revoke behavior,
   single-load initialization, safe page-view URLs, and conditional CSP origins.
 
 Exit criteria:
@@ -289,7 +289,7 @@ Exit criteria:
 - Add the custom GitHub Actions workflow only after the root package scripts and lockfile exist.
 - Run validation and build for pull requests without deployment permissions.
 - Build production output from the default branch and upload exactly `dist/` with the official Pages artifact action.
-- Pass `vars.GA4_MEASUREMENT_ID` into the production build; leaving the
+- Pass `vars.CLARITY_PROJECT_ID` into the production build; leaving the
   repository/environment variable unset is the supported analytics-off state.
 - Deploy through the protected `github-pages` environment with minimum permissions and serialized production deployments.
 - Configure and verify the custom domain in repository settings before changing Route 53 records.

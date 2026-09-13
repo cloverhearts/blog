@@ -4,6 +4,158 @@ This file records non-routine changes to the blog project. Entries are ordered
 newest first and use the `Asia/Seoul` timezone. Routine post authoring is omitted
 unless it changes shared content behavior, routes, schemas, or project rules.
 
+## 2026-09-13T17:28:25+09:00 — Prepare the approved design and Clarity release
+
+- Change type/reason: Owner requested committing, pushing and deploying all
+  pending approved changes, using the previously requested unsigned commit.
+- Scope: Image-viewer caption containment, viewport-sized arrow-free 404
+  recovery, Clarity-only consent-gated analytics and the related documentation,
+  policy mappings and regression suites. The earlier sample-content removal
+  commit is also ahead of the remote and will be included in the push.
+- Validation: Full Vitest: 133 passed in 23 files; typecheck passed. All 20
+  Chromium tests passed (2 Clarity consent, 6 image-viewer, 12 recovery layout).
+  Real-ID production build, Pages verification and whitespace checks passed.
+  Browser analytics tests stub Microsoft requests and do not verify its dashboard.
+- Compatibility/follow-up: Repository Clarity variable was read back successfully.
+  At preparation time GitHub deployment and public-site checks are pending and
+  will be reported separately after the push. No source content was added and
+  existing privacy exclusions remain unchanged.
+
+## 2026-09-13T17:25:20+09:00 — Connect the owner-supplied Clarity project
+
+- Change type/reason: Owner supplied the manual Clarity snippet to connect the
+  existing consent-gated integration to the real project.
+- Scope/result: Extracted the public project ID without embedding the inline
+  snippet. Checked repository and Pages-environment variables, then set and
+  read back the repository CLARITY_PROJECT_ID variable for cloverhearts/blog.
+  Existing production build/verification steps consume this variable; test and
+  preview jobs remain unconfigured. No consent or collection scope was widened.
+- Tests: Added `passes the public Clarity variable only to production build
+  and verification`, covering both consumers, exclusion from quality jobs and
+  absence of a legacy GA4 variable or pasted vendor loader. Updated policy mapping.
+- Validation: Focused workflow/Clarity suites: 17 passed; full Vitest: 133
+  passed in 23 files; typecheck and whitespace checks passed. Production build
+  with the supplied ID and Pages verification passed. Inspected generated HTML
+  for the ID in three localized homes and for absence of the analytics module
+  in profile, search and 404 outputs. No test activity was sent to Microsoft.
+- Compatibility/follow-up: The public ID is a deployment variable, not post
+  metadata or a hard-coded script. Code remains uncommitted and undeployed;
+  real SDK/network/CSP behavior, dashboard receipt and replay masking still
+  require post-deployment verification. Local preview remains untracked.
+
+## 2026-09-13T13:11:20+09:00 — Replace GA4 scaffold with consent-gated Clarity
+
+- Change type/reason: Owner selected Clarity as the single analytics provider
+  for visitor behavior and reading-region analysis, without paid services.
+- Scope/result: Replaced the GA4 adapter/configuration with Clarity schema 2,
+  public CLARITY_PROJECT_ID validation and production-workflow wiring. The old
+  GA4 scaffold was not wired to execute in rendered pages; the new local ES
+  module is wired to localized disclosure and allow/decline-withdraw controls.
+  Fresh Clarity-specific consent is required; old GA4 consent is ignored.
+- Privacy: No remote loader before consent; advertising storage denied; body
+  text masked; no custom identity/event-payload API. Preview, managed/profile,
+  search and noindex pages are excluded. Query/fragment entries and sensitive
+  referrers suppress loading. Withdrawal saves denial and reloads to unload the
+  SDK because vendor consent denial alone permits limited cookieless tracking.
+  Only Clarity origins are allowed, with no Google/Bing advertising origins or
+  unsafe-inline permission. Provider-owned URL/attribute collection is not
+  represented as fully sanitized; ANALYTICS.md explains limitations and gates.
+- Contracts/migration: ADR 0010, shared policy, authoring restriction references,
+  architecture, UX/design, runbooks and all three README translations updated.
+  The public ID participates in web provenance, not content artifacts. Existing
+  GA4 tests were replaced with equivalent Clarity activation/consent regressions;
+  custom GA4 event sanitization intentionally becomes conservative entry
+  exclusion and masked provider recording, not an equivalent page-view API.
+  No post metadata, managed routes, dependencies or sample content changed.
+- Validation: Focused Clarity Vitest: 8 passed; full Vitest: 132 passed in 23
+  files; typecheck and whitespace checks passed. Two Chromium production-HTML
+  desktop/mobile tests passed for no pre-consent request, keyboard grant,
+  load-once, masking and revoke/reload; the remote SDK was stubbed and no test
+  traffic reached Microsoft. Enabled root and /blog production builds passed,
+  then a blank-ID root build restored tracking-disabled output. Pages verification
+  passed; generated profiles were checked for absence of the analytics module.
+  Local preview was started with analytics excluded.
+- Remaining gates: No real project ID has been supplied. GitHub variable setup,
+  actual SDK/network/CSP behavior, dashboard receipt and real replay masking
+  are not verified. No live activation, commit, push or deployment performed.
+
+## 2026-09-13T00:22:14+09:00 — Give recovery content a viewport-sized reading area
+
+- Change type/reason: Owner requested a taller 404 content area occupying
+  roughly 80% of the screen's internal content height with generous alignment.
+- Scope/result: The recovery section now has a minimum height of 80% of the
+  dynamic viewport below the desktop/two-row header. It owns its padding and
+  centers the content stack vertically. Enlarged the responsive error code and
+  separated the title, description and recovery actions with explicit spacing.
+  Removed inherited main padding and extra footer margin only on 404 pages.
+  Short viewports and wrapped translations expand naturally, without a fixed
+  height or clipping. Arrow-free green-highlight links remain unchanged.
+- Contracts/tests: Updated DESIGN and reviewed its CSS policy mappings. Added
+  `sizes recovery content to the available viewport without a fixed height` and
+  twelve real-renderer Playwright recovery layout cases, documented in the
+  browser-test guide. The empty temporary fixture does not restore sample posts.
+- Validation: Focused Vitest: 19 passed; full Vitest: 129 passed in 23 files;
+  typecheck and whitespace checks passed. Chromium: 12 recovery cases passed
+  across Korean, English and Japanese at 1137x905, 1920x1080, 390x844 and
+  320x320. Checks cover minimum/natural height, centered spacing, content/footer
+  separation, all nine links, 44px targets and horizontal bounds. Inspected
+  desktop Korean and mobile Japanese screenshots. The browser fixtures block
+  network requests and use fallback fonts; other engines, physical devices and
+  explicit browser-zoom checks were not run.
+- Compatibility/follow-up: CSS-only presentation change; content authoring,
+  routes and publication contracts are unchanged. No commit, push or deployment.
+
+## 2026-09-13T00:18:27+09:00 — Simplify 404 recovery link feedback
+
+- Change type/reason: Owner requested arrow-free recovery navigation with
+  transparent resting backgrounds and a highlight on hover/focus.
+- Scope/result: Removed decorative arrows only from the 404 recovery links.
+  Added 44px-minimum link targets with horizontal inset and wrapping gaps.
+  Hover and keyboard focus use the existing green `--primary-surface` token;
+  no shadow, movement or underline is added. The shared focus outline and all
+  localized static destinations/order are preserved.
+- Contracts/tests: Updated DESIGN and reviewed the renderer/style policy
+  mappings. Added `renders arrow-free recovery links in source order across
+  locales and deployment bases` and `keeps recovery links transparent until
+  hover or keyboard focus`. The route fixture covers three locales, root and
+  `/blog` bases, and omission of unavailable curated actions.
+- Validation: Full Vitest: 128 passed in 23 files. Typecheck and whitespace
+  checks passed. Local Chromium checks passed for 1137px and 320px widths in
+  light/dark mode: all nine live recovery links, transparent rest, green hover
+  and keyboard focus, visible outlines, 44px targets and no horizontal overflow.
+  Inspected the desktop screenshot. Other browser engines and physical-device
+  checks were not run. Restarted local preview to load the renderer change.
+- Compatibility/follow-up: Presentation-only change; no route, author syntax,
+  content contract or publication change. Existing sample removals and blank
+  profiles remain intact. No commit, push or deployment performed.
+
+## 2026-09-13T00:12:18+09:00 — Keep enlarged-image captions visible and slim
+
+- Change type/reason: Fix caption clipping in the image enlargement dialog and
+  reduce the caption surface's vertical padding as requested by the owner.
+- Scope/result: The figure now uses border-box sizing, so its 100% height
+  includes padding instead of overflowing the clipped dialog. A shrinkable,
+  contained image shares the available height with a non-shrinking caption.
+  Caption padding is 6px vertically/12px horizontally, with an 8px image gap.
+  Long text wraps; exceptionally long captions have a bounded, keyboard-
+  focusable scrolling region. Empty captions remain hidden. The close control,
+  Escape behavior and return focus are preserved.
+- Contracts/tests: Updated DESIGN, UX_FLOW, component/renderer assertions and
+  their reviewed policy hashes. Added six Playwright image-viewer regressions
+  using the actual renderer, CSS and enhancement with synthetic images, without
+  restoring deleted sample posts. Documented the separate browser-test command.
+- Validation: Focused Vitest: 19 passed; full Vitest: 126 passed in 23 files;
+  typecheck and whitespace checks passed. Chromium browser tests: 6 passed,
+  covering desktop landscape, large portrait, mobile portrait, mobile landscape
+  with a long caption, compact unbroken text and an empty caption. They verify
+  geometry, wrapping, 6px padding, keyboard scrolling, Escape and focus return.
+  Desktop/mobile screenshots were inspected. Browser fixtures use system-font
+  fallbacks and block network requests; physical-device, other-engine and
+  assistive-technology checks were not performed. Local preview was restarted.
+- Compatibility/follow-up: Presentation-only change with no new content syntax
+  or author metadata; CONTENT_RULES remains accurate. Empty post sources and
+  reachable blank profiles are unchanged. No commit, push or deployment.
+
 ## 2026-09-13T00:06:33+09:00 — Finalize design and clear layout-review content
 
 - Change type/reason: Owner accepted the blog design and requested a clean

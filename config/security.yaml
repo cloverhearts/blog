@@ -11,14 +11,11 @@ documents:
 analytics:
   approvedExternalOrigins:
     script:
-      - "https://www.googletagmanager.com"
+      - "https://*.clarity.ms"
     connect:
-      - "https://*.google-analytics.com"
-      - "https://*.analytics.google.com"
-      - "https://www.googletagmanager.com"
+      - "https://*.clarity.ms"
     image:
-      - "https://*.google-analytics.com"
-      - "https://www.googletagmanager.com"
+      - "https://*.clarity.ms"
 # Direct capabilities requested by managed-page application source. Provider
 # directives are separately governed by config/embeds.yaml and embed-core.
 managedPages:

@@ -101,7 +101,7 @@
   preserved. Do not redirect any other route or use stored language, require a
   post footer, or expose a translation banner, nuance warning, or visible
   review-status message without an explicit policy change and tests.
-- `config/analytics.yaml` owns the optional GA4 activation, scope, consent, and data-minimization policy. Analytics belongs only to the blog web layer, is disabled when its public measurement-ID environment value is absent, and must never become a content-compiler input or recommendation signal.
+- `config/analytics.yaml` owns the optional Clarity activation, scope, consent, and data-minimization policy. Analytics belongs only to the blog web layer, is disabled when its public project-ID environment value is absent, and must never become a content-compiler input or recommendation signal.
 - Post sources and the content compiler must not import or depend on the blog web application's components, layout, routing, framework, or CSS.
 - The blog web application must not traverse `docs/`, parse source Markdown, or resolve source assets. It consumes only the versioned artifact contract from `packages/contracts/` and `.artifacts/content/<mode>/`.
 - Post heading IDs and ordered TOC metadata are produced together by the content
@@ -130,7 +130,7 @@
   original-work authorship and limited AI-assistance declaration. Do not copy
   it into frontmatter or body Markdown, and do not publish substantially
   AI-drafted source material under the proofreading-only declaration.
-- GA4 uses the public build value named by `config/analytics.yaml`. Never put a measurement ID, tracking snippet, event payload, or consent state in post frontmatter, managed-page metadata, or generated content artifacts. Managed pages are not tracked unless a later explicit architecture and privacy decision changes that default.
+- Clarity uses the public build value named by `config/analytics.yaml`. Never put a measurement ID, tracking snippet, event payload, or consent state in post frontmatter, managed-page metadata, or generated content artifacts. Managed pages are not tracked unless a later explicit architecture and privacy decision changes that default.
 - `packages/project-config/` owns runtime configuration validation and route registration. Blog presentation settings and managed-page design do not belong there.
 - Cross-boundary data must be validated at runtime by `packages/contracts/` both when produced and when consumed. TypeScript interfaces alone are not sufficient.
 - Once runtime schemas are implemented, infer exported TypeScript types from them; do not maintain a second handwritten type definition that can drift.

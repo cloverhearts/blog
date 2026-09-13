@@ -107,14 +107,14 @@ inputs produce byte-identical output.
 ## Observation and enforcement boundary
 
 GitHub Pages does not give the static application a request-time server hook.
-GA4 is consent-gated and JavaScript-dependent, so it cannot be used as a
+Clarity is consent-gated and JavaScript-dependent, so it cannot be used as a
 complete crawler log. Referrers may identify some human visits from AI tools,
 but not background crawlers or spoofed agents.
 
 If abusive automated traffic later requires verified IP matching, rate limits,
 or blocking, that enforcement belongs in a separately approved CDN/WAF layer.
 It must not be hidden in content compilation, browser fingerprinting, or the
-GA4 adapter. Provider-published IP ranges and behavior signals may assist that
+Clarity adapter. Provider-published IP ranges and behavior signals may assist that
 future edge policy, but user-directed agents should continue to be treated as
 readers unless there is concrete abuse.
 

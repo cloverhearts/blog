@@ -95,7 +95,7 @@ config/
 ├── embeds.yaml                  # Explicit local plugin registry and safety policy
 ├── ai-crawlers.yaml             # AI crawler access and llms.txt policy
 ├── content-provenance.yaml      # Shared post authorship/AI-use declaration
-└── analytics.yaml               # Optional GA4 activation, consent, and collection policy
+└── analytics.yaml               # Optional Clarity activation, consent, and collection policy
 
 DESIGN.md                        # Open Design contract for normal blog only
 UX_FLOW.md                       # Semantic navigation and interaction contract
@@ -171,15 +171,15 @@ Shared configuration owns:
   generated agent-guide inclusion policy;
 - the owner-declared original-work authorship and limited AI-assistance policy
   copied into every post artifact;
-- the optional public GA4 environment key, blog-only scope, consent mode, and
+- the optional public Clarity environment key, blog-only scope, consent mode, and
   data-minimization policy.
 
 It does not own blog colors, layout, typography, components, or managed-page design. Those belong to the root blog `DESIGN.md` and page-local `DESIGN.md` files respectively.
 
 Analytics configuration is resolved at build time. A missing or blank
-`GA4_MEASUREMENT_ID` produces a disabled configuration and the blog renderer
-must emit no Google loader or analytics origins. A configured ID is public and
-must match the `G-...` GA4 Measurement ID format; it is never treated as a
+`CLARITY_PROJECT_ID` produces a disabled configuration and the blog renderer
+must emit no Clarity loader or analytics origins. A configured ID is public and
+must match the lowercase-alphanumeric Clarity project ID format; it is never treated as a
 secret. Invalid non-blank values fail configuration validation.
 
 Every route-producing lane emits route claims using the shared contract. The route registry validates normalized paths before expensive rendering where possible, and the release assembler repeats the collision check against emitted files. No producer silently renames a conflicting route.
@@ -311,7 +311,7 @@ Responsibilities:
   optional, exposes no review state, and may link the authored original without
   redirecting the current route;
 - optional consent-gated aggregate analytics through the reviewed blog-owned
-  GA4 adapter;
+  Clarity adapter;
 - emitting a web manifest and route claims for the generated HTML.
 
 It may import inferred types and validators from `packages/contracts/`, read validated `.artifacts/content/<mode>/`, and consume validated shared configuration. It must not traverse `docs/`, parse Markdown, resolve source asset paths, or import managed-page source.
@@ -323,15 +323,17 @@ before the web lane; absent/mismatched manifests suppress profile actions.
 The sorted available routes participate in web provenance. A managed publication
 change therefore rerenders these actions, without coupling either design system.
 
-The analytics adapter is not an embed plugin and is not part of content
-compilation. It receives only the validated public Measurement ID. In basic
-consent mode it must not request `gtag.js` until the reader grants analytics
-consent. It strips URL queries and fragments from page-view locations, disables
-Google Signals and advertising personalization, and must not receive raw search
-terms, user IDs, email addresses, post text, or code. Analytics failure or
-blocking may never delay or alter static content, navigation, search,
-recommendations, SEO, or release assembly. Managed pages do not import the blog
-adapter and remain untracked by default.
+The Clarity adapter is not an embed plugin and is not part of content
+compilation. It consumes only the public project ID in the blog layer.
+The locally emitted module requests the remote SDK only after fresh Clarity
+consent. It masks body text, denies advertising storage, excludes search and
+noindex pages, and skips query/fragment/referrer-query entries. Withdrawal
+reloads the document because ConsentV2 denial alone can permit cookieless data.
+The provider captures browser/URL metadata; this is not the former sanitized
+GA4 page-view model. See ANALYTICS.md for exclusions and residual URL risks.
+Analytics never changes static content, navigation, search or recommendations;
+managed pages remain untracked. Resolved IDs affect web provenance only, not
+content artifacts. Missing IDs and previews emit no adapter references.
 
 ### Search indexer
 
@@ -601,7 +603,7 @@ Local development may watch several lanes together, but each command must keep i
 | One `managed-pages/<id>/` package             | That managed-page build, discovery, release assembly                    | Editing or importing blog source             |
 | `config/` route or URL policy                 | All affected validation/build lanes                                     | Duplicating constants in each package        |
 | `config/embeds.yaml`                          | Embed registry validation, content compile, downstream artifacts        | Editing content compiler or blog UI          |
-| `config/analytics.yaml`, `GA4_MEASUREMENT_ID` | Config validation and blog render                                       | Rebuilding content or changing managed pages |
+| `config/analytics.yaml`, `CLARITY_PROJECT_ID` | Config validation and blog render                                       | Rebuilding content or changing managed pages |
 | One `plugins/embeds/<id>/` package            | That plugin's tests, content compile, downstream artifacts              | Editing embed-core or blog UI                |
 | `packages/contracts/`                         | All affected producers, consumers, fixtures                             | Silent compatibility assumptions             |
 | `CONTENT_RULES.md`                            | Related schemas, validators, examples, provenance                       | Unsupported documented behavior              |
@@ -650,9 +652,9 @@ Required checks:
 - the search index covers eligible final blog HTML and excludes managed pages by default;
 - repeated builds with identical inputs produce identical integrity-bearing artifacts;
 - changing a registered plugin version or policy changes provenance and prevents stale artifact reuse.
-- absent, invalid, consent-denied, consent-granted, and consent-revoked GA4
-  cases; disabled/denied cases make no Google request and page views omit URL
-  queries and fragments.
+- absent, invalid, consent-denied, consent-granted, and consent-revoked Clarity
+  cases; disabled/denied cases make no Clarity request, text is masked, and
+  query/fragment entries are excluded as documented in ANALYTICS.md.
 
 ## Enforcement
 
@@ -666,7 +668,7 @@ When the implementation stack is selected, add automated checks for:
 - implicit plugin discovery, remote plugin loading, and unregistered directive execution;
 - embed fallback, sanitization, CSP-origin, permission, and provenance conformance;
 - runtime artifact and shared-config validation;
-- GA4 Measurement ID validation, consent gating, event data minimization, and
+- Clarity project ID validation, consent gating, event data minimization, and
   conditional CSP-origin emission;
 - unsupported schema versions and incompatible provenance;
 - preview artifacts or drafts entering production release assembly;

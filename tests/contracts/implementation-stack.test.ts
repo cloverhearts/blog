@@ -28,6 +28,16 @@ function read(path: string): string {
   return readFileSync(resolve(repositoryRoot, path), "utf8");
 }
 
+test("passes the public Clarity variable only to production build and verification", () => {
+  const pages = parse(read(".github/workflows/pages.yml"));
+  const steps = pages.jobs.build.steps as Array<{ name?: string; env?: Record<string, string> }>;
+  const configured = steps.filter((step) => step.env?.CLARITY_PROJECT_ID !== undefined);
+  assert.deepEqual(configured.map((step) => step.name), ["Build production site", "Verify Pages release"]);
+  for (const step of configured) assert.equal(step.env?.CLARITY_PROJECT_ID, "${{ vars.CLARITY_PROJECT_ID }}");
+  assert.doesNotMatch(read(".github/workflows/pages.yml"), /GA4_MEASUREMENT_ID|clarity\.ms\/tag/u);
+  assert.doesNotMatch(read(".github/workflows/quality.yml"), /CLARITY_PROJECT_ID/u);
+});
+
 test("pins Node 24 LTS and bundled npm for every environment", () => {
   const packageJson = JSON.parse(read("package.json")) as RootPackage;
   assert.equal(read(".nvmrc").trim(), "24.19.0");

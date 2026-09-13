@@ -210,6 +210,25 @@ test("preserves the author avatar square and colors across themes", () => {
   assert.doesNotMatch(css, /\.author-avatar[^}]*\b(?:filter|opacity|transform):/u);
 });
 
+test("keeps recovery links transparent until hover or keyboard focus", () => {
+  const css = read("apps/blog-web/src/styles/blog.css");
+  assert.match(css, /\.not-found ul \{[^}]*flex-wrap: wrap[^}]*gap: \.5rem \.25rem/u);
+  assert.match(css, /\.not-found a \{[^}]*display: inline-flex[^}]*min-height: 2\.75rem[^}]*padding: \.375rem \.75rem[^}]*background: transparent[^}]*text-decoration: none/u);
+  assert.match(css, /\.not-found a:hover, \.not-found a:focus-visible \{ background: var\(--primary-surface\); \}/u);
+  assert.doesNotMatch(css, /\.not-found[^{}]*\{[^}]*[;\s](?:box-shadow|transform|content):/u);
+  assert.match(css, /:focus-visible \{ outline: \.2rem solid var\(--primary\); outline-offset: \.2rem/u);
+});
+
+test("sizes recovery content to the available viewport without a fixed height", () => {
+  const css = read("apps/blog-web/src/styles/blog.css");
+  assert.match(css, /\.page--not-found main \{ min-height: 0; padding-block: 0; \}/u);
+  assert.match(css, /\.not-found \{[^}]*flex-direction: column[^}]*justify-content: center[^}]*box-sizing: border-box[^}]*min-height: calc\(\(100dvh - var\(--recovery-header-height\)\) \* \.8\)/u);
+  assert.match(css, /\.page--not-found \{ --recovery-header-height: 4\.0625rem; \}/u);
+  assert.match(css, /@media \(max-width: 64rem\) \{\s*\.page--not-found \{ --recovery-header-height: 7\.125rem; \}/u);
+  assert.match(css, /\.page--not-found \.site-footer \{ margin-block-start: 0; \}/u);
+  assert.doesNotMatch(css, /\.not-found \{[^}]*[;\s](?:height|max-height|overflow):/u);
+});
+
 test("ships named component CSS with resilient Pretendard fallbacks", () => {
   const css = read("apps/blog-web/src/styles/blog.css");
   assert.match(css, /pretendardvariable-dynamic-subset\.css/u);
@@ -296,7 +315,9 @@ test("ships named component CSS with resilient Pretendard fallbacks", () => {
   assert.match(css, /\.image-viewer::backdrop[^}]*background: rgb\(255 255 255 \/ 30%\)[^}]*backdrop-filter: blur\(\.5rem\)/u);
   assert.match(css, /\.image-viewer__close[^}]*position: absolute[^}]*inset-inline-end: 1rem/u);
   assert.match(css, /\.image-viewer__figure[^}]*display: flex[^}]*flex-direction: column[^}]*justify-content: center/u);
-  assert.match(css, /\.image-viewer__figure figcaption[^}]*margin-block-start: \.75rem[^}]*padding: 1rem[^}]*background: rgb\(255 255 255 \/ 50%\)/u);
+  assert.match(css, /\.image-viewer__figure[^}]*box-sizing: border-box[^}]*gap: \.5rem/u);
+  assert.match(css, /\.image-viewer__figure img[^}]*flex: 0 1 auto[^}]*min-height: 0[^}]*max-height: 100%/u);
+  assert.match(css, /\.image-viewer__figure figcaption[^}]*flex: 0 0 auto[^}]*max-width: min\(72ch, 100%\)[^}]*max-height: min\(30%, 10rem\)[^}]*padding: \.375rem \.75rem[^}]*overflow: auto[^}]*overflow-wrap: anywhere[^}]*background: rgb\(255 255 255 \/ 50%\)/u);
   const imageViewer = read("apps/blog-web/src/post/image-viewer.js");
   assert.match(imageViewer, /querySelectorAll\("\[data-article-body\] img"\)/u);
   assert.match(imageViewer, /!image\.closest\("a"\)/u);

@@ -19,7 +19,7 @@ and remaining operational follow-up.
   used only by the isolated portability build.
 - `SOURCE_DATE_EPOCH`: optional explicit timestamp input for human diagnostic
   reports when a reproducible timestamp is required.
-- `GA4_MEASUREMENT_ID`: optional public GA4 Measurement ID in `G-...` form.
+- `CLARITY_PROJECT_ID`: optional public Clarity project ID using lowercase letters/digits.
   Blank or absent disables analytics; an invalid non-blank value fails the
   build. It is provided as a GitHub Actions repository/environment variable,
   not a secret and never as content metadata.
@@ -105,7 +105,7 @@ being described as passed.
   redirect a requested document; optional post-language context may link only
   the authored original.
 - Local and preview builds do not collect analytics even when a developer has a
-  Measurement ID in their shell; the production web build is the only eligible
+  project ID in their shell; the production web build is the only eligible
   mode and still waits for explicit reader consent.
 
 ## Open Design workflow

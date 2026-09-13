@@ -75,6 +75,25 @@ test("omits footer navigation while keeping localized archive routes", async () 
   assert.doesNotMatch(primaryMenu(blogHome), /\/archive\//u);
 });
 
+test("renders arrow-free recovery links in source order across locales and deployment bases", () => {
+  for (const [directory, base] of [["production", ""], ["blog", "/blog"]]) {
+    for (const locale of ["ko", "en", "ja"]) {
+      const prefix = locale === "ko" ? "" : `${locale}/`;
+      const site = resolve(paginationSite.root, `.artifacts/web/${directory}/site`);
+      const html = readFileSync(resolve(site, `${prefix}404/index.html`), "utf8");
+      const recovery = html.match(/<section class="not-found"[\s\S]*?<nav[^>]+>([\s\S]*?)<\/nav>/u)?.[1];
+      assert.ok(recovery);
+      assert.doesNotMatch(recovery, /→|<svg|<button|onclick|tabindex/u);
+      const links = [...recovery.matchAll(/<a href="([^"]+)"><span>([^<]+)<\/span><\/a>/gu)];
+      // This fixture deliberately has no curated collections: absent labels
+      // must not produce empty Work/Daily recovery actions.
+      const paths = ["", "posts/", "explore/", "categories/", "tags/", "archive/", "search/"];
+      assert.deepEqual(links.map((link) => link[1]), paths.map((path) => `${base}/${prefix}${path}`));
+      for (const path of paths) assert.ok(existsSync(resolve(site, `${prefix}${path}index.html`)));
+    }
+  }
+});
+
 test("emits root language enhancement without changing direct documents or canonical alternates", () => {
   const { root } = paginationSite;
   for (const [directory, base] of [["production", ""], ["blog", "/blog"]]) {

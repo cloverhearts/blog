@@ -53,6 +53,11 @@ export interface BuildWebOptions {
 }
 
 export async function buildWeb(options: BuildWebOptions): Promise<WebManifestArtifact<BuildMode>> {
+  if (options.mode === "preview") {
+    options = { ...options, config: { ...options.config, resolved: {
+      ...options.config.resolved, clarity: { ...options.config.resolved.clarity, enabled: false, projectId: null },
+    } } };
+  }
   const managedPath = resolve(options.managedDirectory ?? resolve(options.config.repositoryRoot, `.artifacts/managed/${options.mode}`), "manifest.json");
   const managed = existsSync(managedPath)
     ? (options.mode === "preview" ? parsePreviewManagedPageManifest : parsePublishedManagedPageManifest)(JSON.parse(readFileSync(managedPath, "utf8")))
@@ -216,6 +221,8 @@ export async function buildWeb(options: BuildWebOptions): Promise<WebManifestArt
       managedRoutes: [...profileRoutes].sort(),
       design: sha256File(resolve(options.config.repositoryRoot, "DESIGN.md")),
       authorAvatar: sha256File(authorAvatarSource()),
+      analytics: options.config.resolved.clarity,
+      analyticsSource: sha256File(resolve(dirname(fileURLToPath(import.meta.url)), "analytics/clarity.js")),
     }),
     configHash: options.config.hashes.configHash,
     contentRulesHash: options.config.hashes.contentRulesHash,
@@ -576,7 +583,7 @@ function renderNotFound(config: ProjectConfig, language: SupportedLanguage): str
   ).filter((item) => item[1].length > 0)
     .map(
       ([route, label]) =>
-        `<li><a href="${withBasePath(config.resolved.basePath, config.localizeRoute(language, route))}"><span>${escape(label)}</span><span aria-hidden="true">→</span></a></li>`,
+        `<li><a href="${withBasePath(config.resolved.basePath, config.localizeRoute(language, route))}"><span>${escape(label)}</span></a></li>`,
     )
     .join("");
   return renderShell(config, language, {
@@ -915,10 +922,15 @@ function renderShell(
   },
 ): string {
   const messages = blogMessages(language);
-  const consent =
-    config.resolved.ga4.enabled && config.analytics.scope.blog && input.robots.includes("index")
-      ? `<p class="analytics-consent" data-analytics-consent><button class="site-control site-control--button analytics-consent__grant" type="button" data-analytics-grant>${escape(messages.allowAnalytics)}</button> <button class="site-control site-control--button analytics-consent__deny" type="button" data-analytics-deny>${escape(messages.denyAnalytics)}</button></p>`
+  const analyticsEnabled = config.resolved.clarity.enabled && config.analytics.enabledWhenConfigured
+    && config.analytics.scope.blog && !input.robots.includes("noindex")
+    && input.pageKind !== "search" && input.pageKind !== "not-found";
+  const consent = analyticsEnabled
+      ? `<section class="analytics-consent" data-analytics-consent data-pagefind-ignore data-clarity-project="${escape(config.resolved.clarity.projectId!)}" data-consent-key="${escape(config.analytics.consent.storageKey)}" aria-label="Microsoft Clarity"><p>${escape(messages.analyticsDisclosure)} <a href="https://privacy.microsoft.com/privacystatement" rel="noreferrer">${escape(messages.analyticsPrivacy)}</a></p><button class="site-control site-control--button analytics-consent__grant" type="button" data-analytics-grant aria-pressed="false">${escape(messages.allowAnalytics)}</button> <button class="site-control site-control--button analytics-consent__deny" type="button" data-analytics-deny aria-pressed="false">${escape(messages.denyAnalytics)} / ${escape(messages.revokeAnalytics)}</button></section>`
       : "";
+  const analyticsHead = analyticsEnabled
+    ? `<meta http-equiv="Content-Security-Policy" content="script-src 'self' ${config.security.analytics.approvedExternalOrigins.script.join(" ")}; connect-src 'self' ${config.security.analytics.approvedExternalOrigins.connect.join(" ")}; img-src 'self' data: ${config.security.analytics.approvedExternalOrigins.image.join(" ")}"><script type="module" src="${withBasePath(config.resolved.basePath, "/_assets/app/clarity.js")}"></script>`
+    : "";
   return renderDocument({
     language,
     title: input.title,
@@ -955,7 +967,7 @@ function renderShell(
         hreflang: item,
         current: item === language,
       })),
-    head: input.head ?? "",
+    head: `${analyticsHead}${input.head ?? ""}`,
     body: input.body,
     footer: `<div class="site-footer__identity" data-footer-identity><strong>${escape(config.site.identity.name)}</strong><p>${escape(localizedText(config.site.identity.descriptions, language))}</p></div>${renderFooterNavigation(config, language)}${consent}`,
     pageKind: input.pageKind,
@@ -1072,6 +1084,9 @@ function copyAppAssets(config: ProjectConfig, siteDirectory: string): void {
   const cssSource = resolve(here, "styles/blog.css");
   const cssDestination = resolve(siteDirectory, "_assets/app/blog.css");
   mkdirSync(dirname(cssDestination), { recursive: true });
+  if (config.resolved.clarity.enabled && config.analytics.enabledWhenConfigured) {
+    cpSync(resolve(here, "analytics/clarity.js"), resolve(siteDirectory, "_assets/app/clarity.js"));
+  }
   cpSync(authorAvatarSource(), resolve(siteDirectory, "_assets/app", authorAvatarFilename()));
   const css = readFileSync(cssSource, "utf8").replace(
     '@import "pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css";',

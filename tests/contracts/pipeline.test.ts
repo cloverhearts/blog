@@ -79,6 +79,7 @@ test("adds the localized image viewer only to post documents", () => {
 
   assert.match(post, /<dialog class="image-viewer"[^>]*data-image-viewer/u);
   assert.match(post, /aria-label="이미지 확대 보기"/u);
+  assert.match(post, /<figcaption data-image-viewer-caption tabindex="0" hidden><\/figcaption>/u);
   assert.match(post, /<script type="module" src="\/_assets\/app\/image-viewer.js">/u);
   assert.doesNotMatch(collection, /data-image-viewer/u);
   assert.doesNotMatch(collection, /image-viewer.js/u);

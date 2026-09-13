@@ -31,8 +31,8 @@ Allowed inputs:
 - interfaces from `packages/contracts/`;
 - runtime-validated, read-only artifacts from `.artifacts/content/<mode>/`;
 - validated shared route/locale configuration;
-- validated optional analytics configuration, with only a public GA4
-  Measurement ID exposed to the browser adapter;
+- validated optional analytics configuration, with only a public Clarity
+  project ID exposed to the browser adapter;
 - the reviewed root `DESIGN.md`, blog-specific implementation tokens, and web assets owned by this application.
 
 Forbidden dependencies:
@@ -109,6 +109,6 @@ translation-origin and review metadata remain independent.
 External embeds arrive as sanitized semantic markup and framework-neutral records. The application may style a generic embed container and host approved progressive enhancement, but it must not import or contain provider-specific plugin logic.
 
 Optional aggregate analytics is blog-owned progressive enhancement. The
-framework shell wires `src/analytics/google-analytics.ts` to accessible consent
-controls. It must pass `null` when `GA4_MEASUREMENT_ID` is absent, must not load
-Google before consent, and must keep managed pages outside this integration.
+framework shell wires `src/analytics/clarity.js` to accessible consent
+controls. It must pass `null` when `CLARITY_PROJECT_ID` is absent, must not load
+Microsoft before consent, and must keep managed pages outside this integration.

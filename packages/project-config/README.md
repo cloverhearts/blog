@@ -20,13 +20,13 @@ It owns:
 - the explicit local embed-plugin registry and global embed safety policy;
 - AI crawler/data-use policy and the shared owner-declared original-work
   authorship/proofreading-only provenance policy;
-- optional GA4 configuration, including strict Measurement ID validation,
+- optional Clarity configuration, including strict project ID validation,
   blog-only scope, consent defaults, and conditional analytics origins;
 - production-origin parity and the GitHub Pages repository, release, route,
   deployment, page-transfer, image, and font budgets;
 - route-claim collision detection before rendering.
 
-It must remain framework-neutral. It must not contain blog design, parse post Markdown, render managed pages, or read environment secrets beyond resolving explicitly declared public build values such as the canonical site origin. `GA4_MEASUREMENT_ID` is also an explicitly declared public build value: blank disables analytics and an invalid non-blank value fails validation.
+It must remain framework-neutral. It must not contain blog design, parse post Markdown, render managed pages, or read environment secrets beyond resolving explicitly declared public build values such as the canonical site origin. `CLARITY_PROJECT_ID` is also an explicitly declared public build value: blank disables analytics and an invalid non-blank value fails validation.
 
 `src/i18n.ts` remains the pure language/route resolver. The YAML loader
 validates that `config/site.yaml` expresses the same supported set.

@@ -366,30 +366,30 @@ export const contentProvenanceConfigSchema = z
 
 export const analyticsConfigSchema = z
   .object({
-    schemaVersion: z.literal(1),
-    provider: z.literal("google-analytics-4"),
-    measurementIdEnvironmentVariable: z.string().min(1),
+    schemaVersion: z.literal(2),
+    provider: z.literal("microsoft-clarity"),
+    projectIdEnvironmentVariable: z.literal("CLARITY_PROJECT_ID"),
     enabledWhenConfigured: z.boolean(),
     scope: z
       .object({
-        blog: z.boolean(),
-        managedPages: z.boolean(),
+        blog: z.literal(true),
+        managedPages: z.literal(false),
       })
       .strict(),
     consent: z
       .object({
         mode: z.literal("basic"),
-        default: z.enum(["denied", "granted"]),
-        storageKey: z.string().min(1),
+        default: z.literal("denied"),
+        storageKey: z.literal("blog.clarity-consent.v1"),
       })
       .strict(),
     collection: z
       .object({
-        googleSignals: z.boolean(),
-        adPersonalization: z.boolean(),
-        stripUrlQueryAndFragment: z.boolean(),
-        collectRawSearchTerms: z.boolean(),
-        preview: z.boolean(),
+        advertisingStorage: z.literal(false),
+        maskText: z.literal(true),
+        skipQueryPages: z.literal(true),
+        collectRawSearchTerms: z.literal(false),
+        preview: z.literal(false),
       })
       .strict(),
   })

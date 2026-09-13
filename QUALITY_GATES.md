@@ -100,13 +100,15 @@ merely because it compiles or looks correct in one browser.
   requests are a subset of `config/embeds.yaml`.
 - Every iframe has a title, referrer policy, sandbox/permission policy, declared
   origin, and normal-link fallback.
-- GA4 is disabled when `GA4_MEASUREMENT_ID` is absent and an invalid configured
+- Clarity is disabled when `CLARITY_PROJECT_ID` is absent and an invalid configured
   value fails the build. The Google loader and analytics CSP origins are emitted
   only for an enabled production build.
-- GA4 makes no external request before explicit analytics consent, retains an
+- Clarity makes no external request before explicit analytics consent, retains an
   equally accessible reject/revoke path, and does not block page behavior.
-- Google Signals, advertising personalization, raw search terms, user IDs,
-  email addresses, URL queries/fragments, post text, and code are not collected.
+- Clarity advertising storage is denied and text/inputs are masked. No custom
+  identities or raw-search events are sent. Query/fragment entry pages are
+  skipped; vendor URL/attribute collection is not claimed to be fully sanitized.
+  Require the masking and activation checks documented in ANALYTICS.md.
 - Managed pages remain outside blog analytics by default. Any future expansion
   of scope, comments, or other telemetry requires a new explicit privacy and
   architecture decision.

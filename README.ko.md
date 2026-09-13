@@ -141,17 +141,17 @@ Pretendard Variable, [UX_FLOW.md](./UX_FLOW.md)의 흐름을 사용합니다. UX
 영향도가 높은 정책은 `tests/policy-coverage.json`에서 정확한 테스트
 케이스와 연결합니다.
 
-## 선택적 GA4 분석
+## 선택적 Clarity 분석
 
-일반 블로그에는 사용자 동의를 요구하는 GA4 어댑터가 있습니다. 활성화할
-때는 다음 공개 빌드 값 하나를 추가합니다.
+분석 도구는 Microsoft Clarity 하나만 사용합니다. 활성화하려면 GitHub 저장소
+또는 `github-pages` 환경에 다음 공개 변수를 설정합니다.
 
 ```text
-GA4_MEASUREMENT_ID=G-XXXXXXXXXX
+CLARITY_PROJECT_ID=yourprojectid
 ```
 
-값을 비워 두면 분석 기능이 완전히 비활성화됩니다. 설정된 값은 빌드에서
-검증하며, 사용자가 동의하기 전에는 Google에 연결하지 않습니다. URL 쿼리와
-원본 검색어는 수집하지 않고 관리 페이지는 기본적으로 추적하지 않습니다.
-GitHub Pages에서는 이 값을 `GA4_MEASUREMENT_ID` 저장소 변수 또는
-`github-pages` 환경 변수로 보관합니다.
+빈 값이면 추적하지 않으며 잘못된 ID는 빌드에서 거부합니다. 허용된 운영 블로그
+페이지에서 방문자가 동의한 뒤에만 Clarity를 실행합니다. 텍스트와 입력값은
+가리고 검색·미리보기·관리 페이지는 제외합니다. 거부·철회 버튼은 계속 제공됩니다.
+URL 메타데이터에는 제공자별 한계가 있으며 쿼리가 있는 진입은 측정하지 않습니다.
+활성화 전 [설정 및 개인정보 경계](ANALYTICS.md)를 확인하세요.

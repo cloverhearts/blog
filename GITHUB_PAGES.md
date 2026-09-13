@@ -176,9 +176,9 @@ The workflow will:
 9. deploy through `actions/deploy-pages` in the `github-pages` environment.
 
 The production build receives the optional public repository/environment
-variable as `GA4_MEASUREMENT_ID: ${{ vars.GA4_MEASUREMENT_ID }}`. It is a public
-GA4 Measurement ID, not a secret. If the variable is absent or blank, the build
-must succeed with analytics disabled and emit no Google loader or analytics CSP
+variable as `CLARITY_PROJECT_ID: ${{ vars.CLARITY_PROJECT_ID }}`. It is a public
+Clarity project ID, not a secret. If the variable is absent or blank, the build
+must succeed with analytics disabled and emit no Clarity loader or analytics CSP
 origins. Pull-request and portability builds keep analytics disabled so they do
 not pollute production measurements.
 
@@ -281,11 +281,10 @@ response-header configuration.
 - Blog and managed-page renderers emit a validated CSP `<meta>` policy for
   directives that browsers support in document metadata. Security-critical
   iframe restrictions also live on each iframe element.
-- When GA4 is configured, the blog renderer may add only the reviewed
-  `googletagmanager.com` script origin and the non-advertising Google Analytics
-  collection origins allowed by `config/security.yaml`. The adapter is bundled
-  locally, uses no inline bootstrap, and does not load the remote script before
-  consent.
+- When Clarity is configured, eligible production blog documents allow only
+  the reviewed Clarity origins in `config/security.yaml`. The local adapter
+  loads the remote SDK after consent; no inline bootstrap or advertising origin
+  is permitted. See `ANALYTICS.md` for setup, exclusions and activation checks.
 - Features requiring secrets, authenticated APIs, personalized responses, or
   server-side consent state must use a separate service. Secrets never enter
   the static build output.

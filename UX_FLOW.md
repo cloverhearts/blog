@@ -107,6 +107,10 @@ enhancement loads, unlinked images open a native modal enlargement by pointer,
 Enter, or Space. The dialog provides a localized close button, native Escape
 dismissal, a blurred backdrop, and focus restoration to the originating image.
 Images that are already links keep their authored destination.
+The enlargement keeps the image and its caption inside the dialog, reducing
+image size when needed. Long captions wrap and can be scrolled with pointer,
+touch or keyboard focus; empty captions remain hidden. The close control stays
+available independently of caption scrolling.
 
 The optional language-context region sits after the article body when the
 chosen UX enables it. It may identify and link the authored original. It never
@@ -170,6 +174,13 @@ otherwise.
   link URLs.
 
 ## Enhancement boundary
+
+Optional analytics uses Microsoft Clarity alone. Eligible production blog
+pages show a localized footer disclosure with equally available allow and
+decline/withdraw controls; withdrawal reloads the document to stop recording.
+Previously granted GA4 consent does not authorize Clarity session replay.
+Preview, managed, search and noindex routes are excluded. Text is masked and
+query/fragment entries are skipped; ANALYTICS.md documents provider limitations.
 
 JavaScript enhances root-only language selection, local search, image enlargement,
 and optional consented analytics. All other listed flows work as static

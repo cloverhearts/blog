@@ -1,6 +1,8 @@
 import type { SupportedLanguage } from "../../../../packages/project-config/src/i18n.ts";
 
 export interface BlogMessages {
+  readonly analyticsDisclosure: string;
+  readonly analyticsPrivacy: string;
   readonly allowAnalytics: string;
   readonly archive: string;
   readonly backHome: string;
@@ -77,6 +79,8 @@ export function blogMessages(language: SupportedLanguage): BlogMessages {
 
 export const BLOG_MESSAGES: Readonly<Record<SupportedLanguage, BlogMessages>> = {
   en: {
+    analyticsDisclosure: "With your consent, Microsoft Clarity collects visits, clicks, scrolling and masked session replays to improve this blog. Text and inputs are masked; URL and device metadata may be collected. You can decline or withdraw here at any time; withdrawal reloads this page to stop recording.",
+    analyticsPrivacy: "Microsoft privacy statement",
     allowAnalytics: "Allow analytics",
     archive: "Archive",
     backHome: "Back to home",
@@ -140,6 +144,8 @@ export const BLOG_MESSAGES: Readonly<Record<SupportedLanguage, BlogMessages>> = 
     allPostsCta: "View all posts",
   },
   ko: {
+    analyticsDisclosure: "동의하면 Microsoft Clarity가 방문·클릭·스크롤과 텍스트가 가려진 세션 재생 정보를 수집하여 블로그 개선에 사용합니다. 텍스트와 입력값은 가리지만 URL·기기 정보는 수집될 수 있습니다. 여기에서 언제든 거부하거나 철회할 수 있으며, 철회 시 기록을 중지하기 위해 페이지를 새로고침합니다.",
+    analyticsPrivacy: "Microsoft 개인정보처리방침",
     allowAnalytics: "분석 허용",
     archive: "보관함",
     backHome: "홈으로 돌아가기",
@@ -203,6 +209,8 @@ export const BLOG_MESSAGES: Readonly<Record<SupportedLanguage, BlogMessages>> = 
     allPostsCta: "전체 글 보기",
   },
   ja: {
+    analyticsDisclosure: "同意すると、Microsoft Clarity が訪問・クリック・スクロールとテキストをマスクしたセッション再生を収集し、ブログの改善に使用します。テキストと入力値はマスクしますが、URL・端末情報が収集される場合があります。ここでいつでも拒否・撤回でき、撤回時は記録を停止するためページを再読み込みします。",
+    analyticsPrivacy: "Microsoft プライバシーステートメント",
     allowAnalytics: "アクセス解析を許可",
     archive: "アーカイブ",
     backHome: "ホームに戻る",
