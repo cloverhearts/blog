@@ -267,6 +267,11 @@ When Clarity is configured, the footer includes a collapsed native details
 element with a localized Analytics Information summary, cookieless-collection
 disclosure, Microsoft privacy link and a stop control. There is no consent
 request or allow button. Existing control styles and keyboard access remain.
+The disclosure shares the footer identity's centered container, gutter, muted
+color and `.82rem` type size. Its bold summary text starts at the same left
+edge as CloverHearts Labs; a small trailing chevron replaces the leading native
+marker. The summary retains a 44px target. Expanded copy uses the same left
+edge and type size with a 65ch maximum measure, without a new panel surface.
 Stopping reloads to unload the recorder; the saved stop disables the control.
 See ANALYTICS.md for scope, storage failure and provider limitations.
 

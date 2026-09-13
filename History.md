@@ -4,6 +4,38 @@ This file records non-routine changes to the blog project. Entries are ordered
 newest first and use the `Asia/Seoul` timezone. Routine post authoring is omitted
 unless it changes shared content behavior, routes, schemas, or project rules.
 
+## 2026-09-13T18:39:29+09:00 — Prepare the aligned footer release
+
+- Change type/reason: Owner requested committing, pushing and deploying the
+  approved footer analytics-information alignment change.
+- Scope: Footer CSS, design contract, browser/contract regressions and reviewed
+  policy mappings; existing GitHub Pages workflow and unsigned commit retained.
+- Validation: Re-ran full Vitest: 134 passed in 23 files; whitespace check
+  passed. The preceding task passed typecheck and both desktop/mobile browser
+  cases. Remote main matches the local parent before committing.
+- Follow-up: CI, deployment and public CSS checks are pending at commit
+  preparation and will be reported separately. Analytics policy is unchanged.
+
+## 2026-09-13T18:38:30+09:00 — Align analytics information with the footer identity
+
+- Change type/reason: Owner requested matching the analytics disclosure's
+  alignment and type size to the CloverHearts Labs text immediately above it.
+- Scope/result: Share the identity container's width, automatic margins and
+  gutters; inherit the footer's .82rem size and muted color. Keep the summary
+  bold, replace its leading native marker with a small trailing chevron, and
+  align expanded copy to the same edge with a 65ch maximum measure. Preserve
+  the 44px keyboard/touch target and unchanged cookieless/stop behavior.
+- Tests: Added `aligns analytics information with footer identity typography
+  and gutters` and extended both production-HTML browser cases to compare
+  exact horizontal alignment, computed text size/color, expanded-copy position
+  and target height. Reviewed and updated design/style policy coverage.
+- Validation: Full Vitest 134 passed in 23 files; typecheck and two Chromium
+  desktop/mobile cases passed. Inspected collapsed desktop and expanded mobile
+  screenshots. Browser fixtures block remote activity and use fallback fonts;
+  other engines and physical devices were not tested.
+- Compatibility: CSS-only change; content contracts and analytics collection
+  policy are unchanged. No commit, push or deployment in this task.
+
 ## 2026-09-13T17:44:02+09:00 — Prepare the cookieless analytics deployment
 
 - Change type/reason: Owner requested committing, pushing and deploying the

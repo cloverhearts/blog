@@ -21,6 +21,19 @@ function readYaml<T>(path: string): T {
   return parse(read(path)) as T;
 }
 
+test("aligns analytics information with footer identity typography and gutters", () => {
+  const css = read("apps/blog-web/src/styles/blog.css");
+  const panel = css.match(/\.site-footer > \.analytics-consent \{([^}]+)\}/u)![1]!;
+  assert.match(panel, /padding-inline: var\(--gutter\)/u);
+  assert.match(panel, /margin-inline: auto/u);
+  assert.match(panel, /font-size: inherit/u);
+  assert.match(panel, /color: inherit/u);
+  const summary = css.match(/\.analytics-consent > summary \{([^}]+)\}/u)![1]!;
+  assert.match(summary, /list-style: none/u);
+  assert.match(summary, /font-weight: 700/u);
+  assert.match(css, /\.analytics-consent > summary::after/u);
+});
+
 interface SiteConfiguration {
   readonly schemaVersion: number;
   readonly production: { readonly origin: string; readonly basePath: string };

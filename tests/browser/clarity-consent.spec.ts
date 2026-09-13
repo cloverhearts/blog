@@ -48,9 +48,24 @@ for (const width of [1137, 390]) {
     expect(commands).not.toContain("granted");
     expect(await page.evaluate(() => localStorage.length)).toBe(0);
     await expect(page.locator("body")).toHaveAttribute("data-clarity-mask", "true");
+    const alignment = await page.evaluate(() => {
+      const brand = document.querySelector(".site-footer__identity strong")!;
+      const summary = document.querySelector(".analytics-consent > summary")!;
+      return { brandX: brand.getBoundingClientRect().x, summaryX: summary.getBoundingClientRect().x,
+        brandSize: getComputedStyle(brand).fontSize, summarySize: getComputedStyle(summary).fontSize,
+        brandColor: getComputedStyle(brand).color, summaryColor: getComputedStyle(summary).color,
+        height: summary.getBoundingClientRect().height };
+    });
+    expect(Math.abs(alignment.brandX - alignment.summaryX)).toBeLessThan(1);
+    expect(alignment.summarySize).toBe(alignment.brandSize);
+    expect(alignment.summaryColor).toBe(alignment.brandColor);
+    expect(alignment.height).toBeGreaterThanOrEqual(44);
     await page.screenshot({ path: test.info().outputPath("analytics-collapsed.png"), fullPage: true });
     await page.locator("details.analytics-consent summary").focus();
     await page.keyboard.press("Enter");
+    const description = await page.locator(".analytics-consent > p").boundingBox();
+    expect(Math.abs(description!.x - alignment.brandX)).toBeLessThan(1);
+    expect(await page.locator(".analytics-consent > p").evaluate(el => getComputedStyle(el).fontSize)).toBe(alignment.brandSize);
     await page.screenshot({ path: test.info().outputPath("analytics-information.png"), fullPage: true });
     const other = await page.context().newPage();
     await other.goto("https://blog.cloverhearts.com/");

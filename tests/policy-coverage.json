@@ -390,7 +390,7 @@
         },
         {
           "path": "DESIGN.md",
-          "sha256": "79470a6cf3c45b46a235ecb317d44255dc23924c459b266fde01a604e852adec"
+          "sha256": "e970b06f6d555522a893906fda3f85fd301907e67d3c7c48546705bc90813a02"
         },
         {
           "path": "UX_FLOW.md",
@@ -418,7 +418,7 @@
         },
         {
           "path": "apps/blog-web/src/styles/blog.css",
-          "sha256": "aaa271f405652dd237addb40abde1ec83df72d154ffd153ad797377b6e93a49c"
+          "sha256": "90f972c40c1c46ce980c641090c8932241f0b597dbf41c36cbb7dfe9dbbef8c3"
         },
         {
           "path": "apps/blog-web/src/layouts/BlogShell.astro",
@@ -441,7 +441,8 @@
             "keeps explore collections transparent with the shared green hover surface",
             "keeps recovery links transparent until hover or keyboard focus",
             "sizes recovery content to the available viewport without a fixed height",
-            "preserves the author avatar square and colors across themes"
+            "preserves the author avatar square and colors across themes",
+            "aligns analytics information with footer identity typography and gutters"
           ]
         },
         {
